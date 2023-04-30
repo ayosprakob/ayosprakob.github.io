@@ -64,23 +64,20 @@ sideNav.addEventListener('mouseenter', () => {
 	allow_click_trigger = false;
   });
 
-sideNav.addEventListener('click', () => {
-	if(allow_click_trigger){
-		openmenu();
-		allow_click_trigger = false;
-	}
-  });
-  
 sideNav.addEventListener('mouseleave', () => {
 	closemenu();
 	allow_click_trigger = true;
   });
 
-/*
-function winonload(){
-	setInterval(function () {
-		sideNav.style.backgroundColor = "#"+Math.floor(Math.random()*16777215).toString(16);
-		apply_smooth_transition();
-		}, 1000);
+	
+if (navigator.userAgent.match(/Android/i)
+	|| navigator.userAgent.match(/webOS/i)
+	|| navigator.userAgent.match(/iPhone/i)
+	|| navigator.userAgent.match(/iPad/i)
+	|| navigator.userAgent.match(/iPod/i)
+	|| navigator.userAgent.match(/BlackBerry/i)
+	|| navigator.userAgent.match(/Windows Phone/i)) {
+		sideNav.style.opacity = 0;
 }
-*/
+	
+
