@@ -33,9 +33,9 @@ const hoverHeight = '150px';
 
 // Set the default text
 sideNavContent.innerHTML = defaultText;
+allow_click_trigger = true
 
-
-sideNav.addEventListener('mouseenter', () => {
+function openmenu(){
 	apply_smooth_transition();
 	setTimeout(() => {
 		sideNavContent.innerHTML = hoverText;
@@ -45,9 +45,9 @@ sideNav.addEventListener('mouseenter', () => {
 		apply_smooth_transition();
 	}, 100);
 	apply_smooth_transition();
-  });
-  
-sideNav.addEventListener('mouseleave', () => {
+}
+
+function closemenu(){
 	apply_smooth_transition();
 	setTimeout(() => {
 		sideNavContent.innerHTML = defaultText;
@@ -57,6 +57,23 @@ sideNav.addEventListener('mouseleave', () => {
 		apply_smooth_transition();
 	}, 100);
 	apply_smooth_transition();
+}
+
+sideNav.addEventListener('mouseenter', () => {
+	openmenu();
+	allow_click_trigger = false;
+  });
+
+sideNav.addEventListener('click', () => {
+	if(allow_click_trigger){
+		openmenu();
+		allow_click_trigger = false;
+	}
+  });
+  
+sideNav.addEventListener('mouseleave', () => {
+	closemenu();
+	allow_click_trigger = true;
   });
 
 /*
