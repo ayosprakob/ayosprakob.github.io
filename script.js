@@ -89,7 +89,7 @@ if (navigator.userAgent.match(/Android/i)
 	|| navigator.userAgent.match(/Windows Phone/i)) {
 		sideNav.style.opacity = 0;
 		header.style.fontSize = "130%";
-		mainNav.style.fontSize = "130%";
+		mainNav.style.fontSize = "150%";
 		footer.style.fontSize = "100%";
 		section.style.fontSize = "120%";
 }
