@@ -1,0 +1,42 @@
+.. ayosprakob documentation master file, created by
+   sphinx-quickstart on Tue Jul 11 15:10:11 2023.
+   You can adapt this file completely to your liking, but it should at least
+   contain the root `toctree` directive.
+
+About me
+======================================
+
++------------------+-------------------------------------------------------------+
+| Name             | Atis Yosprakob                                              | 
++------------------+-------------------------------------------------------------+
+| Hometown         | Bangkok, Thailand                                           |
++------------------+-------------------------------------------------------------+
+| Current position | Postdoc @ Condensed matter theory group, Niigata University |
++------------------+-------------------------------------------------------------+
+| Email            | yosprakob2-at-gmail.com,   ayosp-at-phys.sc.niigata-u.ac.jp |
++------------------+-------------------------------------------------------------+
+| Inspire HEP      | https://inspirehep.net/authors/1844398                      |
++------------------+-------------------------------------------------------------+
+| github           | https://github.com/ayosprakob                               |
++------------------+-------------------------------------------------------------+
+
+Research interests
+--------------------------------------
+I am studying high energy and condensed matter physics using numerical techniques.
+I am especially interested in non-perturbative formulation, where physics cannot
+be studied with small-parameter expansions or Feynman diagrams.
+This includes the use of Monte Carlo methods and tensor networks.
+I am also interested in the sign problem.
+
+Currently, I am working on the development and application of Grassmann tensor network on two-dimensional fermionic systems.
+
+Educational background
+--------------------------------------
++----------------------+-------+---------------------------------------------------------------+
+| May 2012 - Jun 2016  | B.Sc. | Department of Physics, Faculty of Science,                    |
+|                      |       | Mahidol University, Thailand                                  |
++----------------------+-------+---------------------------------------------------------------+
+| Oct 2017 - Sep 2022  | Ph.D. | Department of Particle and Nuclear Physics,                   |
+|                      |       | School of High-energy Accelerator Science,                    |
+|                      |       | The Graduate University for Advanced Studies (SOKENDAI), Japan|
++----------------------+-------+---------------------------------------------------------------+
