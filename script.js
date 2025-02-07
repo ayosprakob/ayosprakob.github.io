@@ -17,8 +17,10 @@ function updatepage(linkdetails) {
     if(link2){
         link2.innerHTML = linkdetails
     }
+    box_embed()
 }
 
+//Citations
 document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll("cite[src]").forEach(cite => {
         let sup = document.createElement("sup");
@@ -33,6 +35,7 @@ document.addEventListener("DOMContentLoaded", function() {
     });
 });
 
+//Section symbols
 document.addEventListener("DOMContentLoaded", function () {
   const anchorDiv = document.getElementById("anchors");
   const sections = document.querySelectorAll("section[anchor]");
@@ -54,3 +57,9 @@ document.addEventListener("DOMContentLoaded", function () {
   listHTML += "</ul>";
   anchorDiv.innerHTML = listHTML;
 });
+
+function box_embed(){
+    document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
+                return `<div class="equation">$$${content}$$</div>`;
+            });
+}

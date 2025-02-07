@@ -1,11 +1,36 @@
 
+/*
+To test the mobile version (Win/Linux)
+[Ctrl + Shift + I]
+then
+[Ctrl + Shift + M]
+*/
+
 .text-box {
-    width: 500px; /* Fixed width */
+    width: 500px;
     padding: 20px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     margin: 20px auto;
     text-align: left;
 }
+/* Adjust font size for smaller screens (mobile) */
+@media screen and (max-width: 768px) {
+    .text-box {
+        width: 90%;
+        padding: 15px;
+    }
+}
+
 a::before { content: attr(data-text); }
 a { text-decoration: none; }
+
+.equation {
+            width: 90%;
+            max-width: 600px; /* Adjust as needed */
+            padding: 10px;
+            overflow-x: auto; /* Enable horizontal scrolling */
+            white-space: nowrap; /* Prevent line breaks */
+            display: block;
+            margin: 20px auto;
+        }

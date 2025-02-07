@@ -80,26 +80,26 @@
     <br><br>
     This unphysical artifact can be removed if we replace the derivative by a <i>covariant</i> derivative
     $$
-    D_x:=\partial_x+igA(x)
+    D_x:=\partial_x+iA(x)
     $$
     where $A(x)$ is a new field we introduce with the property that it is a Hermitian matrix which transforms under the local transformation as
     $$
-    A(x)\longrightarrow A(x)-\frac{1}{g}\partial_x\Phi(x).
+    A(x)\longrightarrow A(x)-\partial_x\Phi(x).
     $$
     Let's redefine the momentum operator as $\hat p:=-iD_x$, then the transformation above becomes
     $$
     \begin{align}
     \psi^\dagger(x)\hat p\psi(x) &=
     -i\psi^\dagger(x)\partial_x\psi(x)
-    +g\psi^\dagger(x)A(x)\psi(x)
+    +\psi^\dagger(x)A(x)\psi(x)
     \\
     &\!\!\!\!\longrightarrow -i\psi^\dagger(x)e^{-i\Phi(x)}\partial_x\left\{e^{i\Phi(x)}\psi(x)\right\}\\
     &\qquad\qquad
-    +g\psi^\dagger(x)e^{-i\Phi(x)}\left\{A(x)-\frac{1}{g}\partial_x\Phi(x)\right\}e^{i\Phi(x)}\psi(x)
+    +\psi^\dagger(x)e^{-i\Phi(x)}\left\{A(x)-\partial_x\Phi(x)\right\}e^{i\Phi(x)}\psi(x)
     \\
     &=\psi^\dagger(x)\partial_x\Phi(x)\psi(x)-i\psi^\dagger(x)\partial_x\psi(x)\\
     &\qquad\qquad
-    +g\psi^\dagger(x)A(x)\psi(x)
+    +\psi^\dagger(x)A(x)\psi(x)
     -\psi^\dagger(x)\partial_x\Phi(x)\psi(x)\\
     &=\psi^\dagger(x)\hat p\psi(x).
     \end{align}
@@ -131,23 +131,23 @@
     <br><br>
     We can define a covariant derivative as
     $$
-    D_x := \partial_x + igA^\rho(x)
+    D_x := \partial_x + iA^\rho(x)
     $$
     where $A^\rho(x)$ is a gauge field which transforms as
     $$
-    A^\rho(x)\longrightarrow V^\rho(x)A^\rho(x)V^{\rho\dagger}(x)+\frac{i}{g}\left\{\partial_xV^\rho(x)\right\}V^{\rho\dagger}(x).
+    A^\rho(x)\longrightarrow V^\rho(x)A^\rho(x)V^{\rho\dagger}(x)+i\left\{\partial_xV^\rho(x)\right\}V^{\rho\dagger}(x).
     $$
     The gauge field $A(x)$ belongs to the algebra $\mathfrak{g}$ rather than the group $G$.
     <br><br>
     The reasoning behind this definition is that we want the covariant derivative to also transform like a vector:
     $$
     \begin{align}
-    D_x\psi(x)&=\partial_x\psi(x)+igA^\rho(x)\psi(x)
+    D_x\psi(x)&=\partial_x\psi(x)+iA^\rho(x)\psi(x)
     \\
     &\!\!\!\!\longrightarrow
-    \left\{\partial_xV^\rho(x)\right\}\psi(x)+V^\rho(x)\partial_x\psi_x+igV^\rho(x)A^\rho(x)\psi(x)
+    \left\{\partial_xV^\rho(x)\right\}\psi(x)+V^\rho(x)\partial_x\psi_x+iV^\rho(x)A^\rho(x)\psi(x)
     -\left\{\partial_xV^\rho(x)\right\}\psi(x)\\
-    &= V^\rho(x)\left\{\partial_x\psi(x)+igA^\rho(x)\psi(x)\right\}\\
+    &= V^\rho(x)\left\{\partial_x\psi(x)+iA^\rho(x)\psi(x)\right\}\\
     &= V^\rho(x)D_x\psi(x).
     \end{align}
     $$
@@ -164,33 +164,33 @@
     <section anchor="parallel-transport">Parallel transport</section>
     Gauge fields can be used to construct a parallel transport. Some would even say that that is the real definition of a gauge field!
     <br><br>
-    Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{-ig\epsilon A(x)}$ for some infinitesimal $\epsilon$?
+    Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{i\epsilon A(x)}$ for some infinitesimal $\epsilon$?
     $$
     \begin{align}
-    U_\epsilon(x)&=1-ig\epsilon A(x)+O(\epsilon^2)\\
+    U_\epsilon(x)&=1+i\epsilon A(x)+O(\epsilon^2)\\
     &\!\!\!\!\longrightarrow
-    1-ig\epsilon V(x)A(x)V^{\dagger}(x)+\epsilon\left\{\partial_xV(x)\right\}V^{\dagger}(x)+O(\epsilon^2)\\
+    1+i\epsilon V(x)A(x)V^{\dagger}(x)+\epsilon V(x) \partial_xV^{\dagger}(x)+O(\epsilon^2)\\
     &=
-    1-ig\epsilon V(x+\epsilon)A(x)V^{\dagger}(x)
-    +\left\{V(x+\epsilon)-V(x)\right\}V^{\dagger}(x)+O(\epsilon^2)
+    1+i\epsilon V(x)A(x)V^{\dagger}(x+\epsilon)
+    +V(x)\left\{V^{\dagger}(x+\epsilon)-V^{\dagger}(x)\right\}+O(\epsilon^2)
     \\
     &=
-    V(x+\epsilon)\left\{-ig\epsilon A(x)
-    +1+O(\epsilon^2)\right\}V^{\dagger}(x)\\
+    V(x)\left\{i\epsilon A(x)
+    +1+O(\epsilon^2)\right\}V^{\dagger}(x+\epsilon)\\
     &=
-    V(x+\epsilon)e^{-ig\epsilon A(x)+O(\epsilon^2)}V^{\dagger}(x)\\
+    V(x)e^{i\epsilon A(x)+O(\epsilon^2)}V^{\dagger}(x+\epsilon)\\
     &=
-    V(x+\epsilon)U_\epsilon(x)V^{\dagger}(x).
+    V(x)U_\epsilon(x)V^{\dagger}(x+\epsilon).
     \end{align}
     $$
-    In other words, if we multiply $U_\epsilon(x)$ to some field at $x$, the result will transform like it is a field at $x+\epsilon$!
+    In other words, if we multiply $U_\epsilon(x)$ to some field at $x+\epsilon$, the result will transform like it is a field at $x$!
     $$
-    U_\epsilon(x)\psi(x)\longrightarrow
-    V(x+\epsilon)U_\epsilon(x)\psi(x).
+    U_\epsilon(x)\psi(x+\epsilon)\longrightarrow
+    V(x)U_\epsilon(x)\psi(x+\epsilon).
     $$
     We can keep multiplying the infinitesimal transport along a certain path to form a finite parallel transport. In general, we can construct a general parallel transport, also known as a Wilson line, along a path $\Gamma:x_1\rightarrow x_2$ with
     $$
-    U_\Gamma(x_2;x_1)=\mathcal{P}\exp\left\{-ig\int_\Gamma dx A(x)\right\}
+    U_\Gamma(x_1;x_2)=\mathcal{P}\exp\left\{i\int_\Gamma dx A(x)\right\}
     $$
     where $\mathcal{P}$ is the path-ordering operator.
 
@@ -201,8 +201,8 @@
     $$
     \begin{align}
     D_{x'}U_\Gamma(x';x)
-    &=(\partial_{x'}+igA(x'))\mathcal{P}\exp\left\{-ig\int_x^{x'} ds A(s)\right\}\\
-    &=(-igA(x')+igA(x'))\mathcal{P}\exp\left\{-ig\int_x^{x'} ds A(s)\right\}\\
+    &=(\partial_{x'}+iA(x'))\mathcal{P}\exp\left\{i\int^x_{x'} ds A(s)\right\}\\
+    &=(-iA(x')+iA(x'))\mathcal{P}\exp\left\{i\int^x_{x'} ds A(s)\right\}\\
     &=0.
     \end{align}
     $$

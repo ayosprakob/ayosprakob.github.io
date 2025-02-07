@@ -48,19 +48,19 @@
     </div>
     I sneaked the word "pure" in there to remove matter fields from the consideration. Also, the Wilson loop is defined as a Wilson line along a closed loop $C$
     $$
-    W_C = \text{Tr}~\mathcal{P}\exp\left\{-ig\oint_C dx A(x)\right\}.
+    W_C = \text{Tr}~\mathcal{P}\exp\left\{i\oint_C dx A(x)\right\}.
     $$
     Note here that we need to take the trace to 'join' both ends.
     <br><br>
     To understand what this claim is saying, let us first note that we want to build a gauge-invariant quantity purely out of gauge field $A(x)$ for its kinetic term. Be reminded that $A(x)$ can be written in terms of infinitesimal Wilson lines:
     $$
-    A(x) = \frac{i}{2g\epsilon}\left\{U_\epsilon(x)-U^{\dagger}_\epsilon(x)\right\}
+    A(x) = \frac{1}{2i\epsilon}\left\{U_\epsilon(x)-U^{\dagger}_\epsilon(x)\right\}
     $$
-    where $U_\epsilon(x)=e^{-ig\epsilon A(x)}$. So let us build everything out of $U_\epsilon(x)$ instead of $A(x)$ because the gauge transformation of $U_\epsilon(x)$ (which belongs to a group) is more easily understandable than $A(x)$ (which belongs to an algebra). See the <a href="gauge_symmetry.html">previous section</a> if you forget how the two objects transform under the gauge transformation.
+    where $U_\epsilon(x)=e^{i\epsilon A(x)}$. So let us build everything out of $U_\epsilon(x)$ instead of $A(x)$ because the gauge transformation of $U_\epsilon(x)$ (which belongs to a group) is more easily understandable than $A(x)$ (which belongs to an algebra). See the <a href="gauge_symmetry.html">previous section</a> if you forget how the two objects transform under the gauge transformation.
     <br><br>
-    Of course, Wilson lines by themselves are not gauge invariant. Say, consider a Wilson line from $x_1$ to $x_2$; $U(x_2; x_1)$. Its gauge transformation is given by
+    Of course, Wilson lines by themselves are not gauge invariant. Say, consider a Wilson line from $x_1$ to $x_2$; $U(x_1; x_2)$. Its gauge transformation is given by
     $$
-    U(x_2; x_1)\longrightarrow V(x_2)U(x_2; x_1)V^\dagger(x_1).
+    U(x_1; x_2)\longrightarrow V(x_1)U(x_1; x_2)V^\dagger(x_2).
     $$
     Look what happens when we consider a closed loop and take the trace, a.k.a. the Wilson loop:
 
@@ -81,32 +81,32 @@
     $$
     This is a Wilson line along a tiny square on the $\mu\nu$-plane at $x$. It is the simplest loop one can construct. We would like to rewrite this in terms of gauge fields.
     <br><br>
-    The easiest way is to use the Baker–Campbell–Hausdorff formula <cite src="https://en.wikipedia.org/wiki/Baker%E2%80%93Campbell%E2%80%93Hausdorff_formula"></cite>. For notational simplicity, let us define $\delta:=-g\epsilon$. Then we have
+    The easiest way is to use the Baker–Campbell–Hausdorff formula <cite src="https://en.wikipedia.org/wiki/Baker%E2%80%93Campbell%E2%80%93Hausdorff_formula"></cite>:
     $$
     \begin{align}
         U_\mu(x)U_\nu(x+\epsilon\hat\mu)
-        &=e^{i\delta A_\mu(x)}e^{i\delta A_\nu(x+\epsilon\hat\mu)}\\
-        &=e^{i\delta(A_\mu(x)+A_\nu(x+\epsilon\hat\mu))-\frac{\delta^2}{2}[A_\mu(x),A_\nu(x)]+O(\delta^3)},\\
+        &=e^{i\epsilon A_\mu(x)}e^{i\epsilon A_\nu(x+\epsilon\hat\mu)}\\
+        &=e^{i\epsilon(A_\mu(x)+A_\nu(x+\epsilon\hat\mu))-\frac{\epsilon^2}{2}[A_\mu(x),A_\nu(x)]+O(\epsilon^3)},\\
         U^\dagger_\mu(x+\epsilon\hat\nu)U^\dagger_\nu(x)
-        &=e^{-i\delta A_\mu(x+\epsilon\hat\nu)}e^{-i\delta A_\nu(x)}\\
-        &=e^{-i\delta(A_\nu(x)+A_\mu(x+\epsilon\hat\nu))-\frac{\delta^2}{2}[A_\mu(x),A_\nu(x)]+O(\delta^3)},
+        &=e^{-i\epsilon A_\mu(x+\epsilon\hat\nu)}e^{-i\epsilon A_\nu(x)}\\
+        &=e^{-i\epsilon(A_\nu(x)+A_\mu(x+\epsilon\hat\nu))-\frac{\epsilon^2}{2}[A_\mu(x),A_\nu(x)]+O(\epsilon^3)},
     \end{align}
     $$
     and finally
     $$
     \begin{align}
         U_{\mu\nu}(x)&=
-        e^{i\delta(A_\mu(x)+A_\nu(x+\epsilon\hat\mu))-\frac{\delta^2}{2}[A_\mu(x),A_\nu(x)]+O(\delta^3)}
-        e^{-i\delta(A_\nu(x)+A_\mu(x+\epsilon\hat\nu))-\frac{\delta^2}{2}[A_\mu(x),A_\nu(x)]+O(\delta^3)}\\
+        e^{i\epsilon(A_\mu(x)+A_\nu(x+\epsilon\hat\mu))-\frac{\epsilon^2}{2}[A_\mu(x),A_\nu(x)]+O(\epsilon^3)}
+        e^{-i\epsilon(A_\nu(x)+A_\mu(x+\epsilon\hat\nu))-\frac{\epsilon^2}{2}[A_\mu(x),A_\nu(x)]+O(\epsilon^3)}\\
         &=
         e^{
-            i\delta(A_\mu(x)+A_\nu(x+\epsilon\hat\mu)-A_\nu(x)-A_\mu(x+\epsilon\hat\nu))
-            -\delta^2[A_\mu(x),A_\nu(x)]
-            +O(\delta^3)
+            i\epsilon(A_\mu(x)+A_\nu(x+\epsilon\hat\mu)-A_\nu(x)-A_\mu(x+\epsilon\hat\nu))
+            -\epsilon^2[A_\mu(x),A_\nu(x)]
+            +O(\epsilon^3)
         }\\
         &=e^{
-            -ig\epsilon^2(\partial_\mu A_\nu(x)-\partial_\nu A_\mu(x))
-            -g^2\epsilon^2[A_\mu(x),A_\nu(x)]+O(\epsilon^3).
+            i\epsilon^2(\partial_\mu A_\nu(x)-\partial_\nu A_\mu(x))
+            -\epsilon^2[A_\mu(x),A_\nu(x)]+O(\epsilon^3).
         }
     \end{align}
     $$
@@ -114,17 +114,17 @@
     $$
     F_{\mu\nu}(x) :=
     \partial_\mu A_\nu(x)-\partial_\nu A_\mu(x)
-    -ig[A_\mu(x),A_\nu(x)].
+    +i[A_\mu(x),A_\nu(x)].
     $$
     We can then finish up the plaquette as
     $$
-    U_{\mu\nu}(x)=e^{-ig\epsilon^2F_{\mu\nu}(x)}=1-ig\epsilon^2F_{\mu\nu}(x)-\frac{1}{2}g^2\epsilon^4F^2_{\mu\nu}(x)+O(\epsilon^3).
+    U_{\mu\nu}(x)=e^{i\epsilon^2F_{\mu\nu}(x)}=1+i\epsilon^2F_{\mu\nu}(x)-\frac{1}{2}\epsilon^4F^2_{\mu\nu}(x)+O(\epsilon^3).
     $$
     Using the plaquettes, we can build one gauge-invariant term that is quadratic in the gauge field, and that is our standard Yang-Mills Lagrangian&mdash;the kinetic term we have been looking for:
     $$
     \begin{align}
-    \mathcal{L}_g &= \frac{2}{g^2\epsilon^{4}}\sum_{\mu<\nu}s_\mu\text{Re}~\text{Tr}~(1-U_{\mu\nu}(x))\\
-    &=\sum_{\mu<\nu}\text{Tr}~F_{\mu\nu}(x)F^{\mu\nu}(x)
+    \mathcal{L}_g &= \frac{1}{g^2\epsilon^{4}}\sum_{\mu<\nu}s_\mu\text{Re}~\text{Tr}~(1-U_{\mu\nu}(x))\\
+    &=\frac{1}{2g^2}\sum_{\mu<\nu}\text{Tr}~F_{\mu\nu}(x)F^{\mu\nu}(x)
     \end{align}
     $$
     where $s_\mu$ is the signature of the metric.
@@ -134,8 +134,8 @@
     Another term that can be constructed in 1+1 dimensions is the topological charge density
     $$
     \begin{align}
-    \rho_\text{2D} &= \frac{1}{2\pi i\epsilon^2}\sum_{\mu<\nu}\varepsilon_{\mu\nu}\text{Tr}\log U_{\mu\nu}\\
-    & = -\frac{g}{2\pi}\sum_{\mu<\nu}\varepsilon_{\mu\nu}F_{\mu\nu}(x)
+    \rho_\text{2D} &= \frac{i}{2\pi\epsilon^2}\sum_{\mu<\nu}\varepsilon_{\mu\nu}\text{Tr}\log U_{\mu\nu}\\
+    & = \frac{1}{2\pi}\sum_{\mu<\nu}\varepsilon_{\mu\nu}F_{\mu\nu}(x)
     \end{align}
     $$
     where $\varepsilon_{\mu\nu}$ is the two-dimensional Levi-Civita symbol.
@@ -166,41 +166,44 @@
     </div>
     One of the most exciting things you can study in the finite-temperature gauge theory is the deconfinement property of the gauge field. You might have heard that, in QCD, you cannot observe an isolated quark because a quark has 'color'. It takes an infinite amount of energy to separate quarks from each other, which is why the force is called the strong force. Such a peculiar property indicates that QCD is in the confined phase. At sufficiently high temperatures, QCD undergoes a phase transition and enters the deconfined phase, which is what we expect to happen at the beginning of the Universe.
     <br><br>
-    To measure this difference, we can look at the probability amplitude of an isolated non-dynamical quark. <a href="gauge_symmetry.html#two-point%20function">In other words</a>, a Wilson loop wrapped around the imaginary-time direction. This object is so important that it has it's own name: a <b>Polyakov loop</b>. When a gauge theory is confined, Polyakov loop must vanish because a quark cannot exist on its own. In the deconfined phase, the Polyakov loop takes some non-zero phase whose value depends on the topological defect of the gauge field, not unlike the Aharonov-Bohm effect. 
+    To measure this difference, we can look at the probability amplitude of an isolated non-dynamical quark. <a href="gauge_symmetry.html#two-point%20function">In other words</a>, a Wilson loop wrapped around the imaginary-time direction:
+    $$
+    L(x) = \text{Tr}~U(x; x+T\hat\tau)
+    $$
+    $T$ here is the extent of the imaginary-time direction, not the temperature&mdash;sorry for butchering the notation &#128517;. This object is so important that it has it's own name: a <b>Polyakov loop</b>. When a gauge theory is confined, Polyakov loop must vanish because a quark cannot exist on its own. In the deconfined phase, the Polyakov loop takes some non-zero phase whose value depends on the topological defect of the gauge field, not unlike the Aharonov-Bohm effect. 
     <br><br>
     Let's us explore a bit more about this topological defect. Consider a gauge trasformation that is not strictly periodic, but periodic up to a constant matrix $h$, around the imaginary-time direction:
     $$
-    V(x+T\hat \tau) = h V(x)
+    V(x+T\hat \tau) = h V(x).
     $$
-    where $T$ is the extent of the imaginary-time direction (not the temperature&mdash;sorry for butchering the notation).
     This makes the gauge field at $x+T\hat \tau$ transforms as
 
     $$
     \begin{align}
-    A(x+T\hat \tau)\longrightarrow &V(x+T\hat \tau)A(x+T\hat \tau)V^{\dagger}(x+T\hat \tau)+\frac{i}{g}\left\{\partial_xV(x+T\hat \tau)\right\}V^{\dagger}(x+T\hat \tau)\\
-    &=V(x+T\hat \tau)\left\{A(x+T\hat \tau)-\frac{i}{g}\partial_x\right\}V^{\dagger}(x+T\hat \tau)\\
-    &=hV(x)\left\{A(x)-\frac{i}{g}\partial_x\right\}V^{\dagger}(x)h^\dagger\\
+    A(x+T\hat \tau)\longrightarrow &V(x+T\hat \tau)A(x+T\hat \tau)V^{\dagger}(x+T\hat \tau)+i\left\{\partial_xV(x+T\hat \tau)\right\}V^{\dagger}(x+T\hat \tau)\\
+    &=V(x+T\hat \tau)\left\{A(x+T\hat \tau)-i\partial_x\right\}V^{\dagger}(x+T\hat \tau)\\
+    &=hV(x)\left\{A(x)-i\partial_x\right\}V^{\dagger}(x)h^\dagger\\
     &=hA'(x)h^\dagger,
     \end{align}
     $$
-    where $A'(x)=V(x)\left\{A(x)-\frac{i}{g}\partial_x\right\}V^{\dagger}(x)$ is the gauge transformation of $A(x)$. In order for $A(x)$ to be strictly periodic, $h$ must be unitary and commute with every elements in the group algebra (remember: we only want the gauge transformation to be periodic up to $h$, not the gauge field). In other words, $h$ must belong to the center of the gauge group (typically $Z_N$). Since we can always pick the basis where $h$ is proportional to the identity, we will deliberately write
+    where $A'(x)=V(x)\left\{A(x)-i\partial_x\right\}V^{\dagger}(x)$ is the gauge transformation of $A(x)$. In order for $A(x)$ to be strictly periodic, $h$ must be unitary and commute with every elements in the group algebra (remember: we only want the gauge transformation to be periodic up to $h$, not the gauge field). In other words, $h$ must belong to the center of the gauge group (typically $Z_N$). Since we can always pick the basis where $h$ is proportional to the identity, we will deliberately write
     $$
     h = e^{i\phi} \in \text{center}(G).
     $$
     The corresponding gauge transformation for the Polyakov loop is
 
     $$
-    \text{Tr}~U(x+T\hat\tau; x)\longrightarrow
-    e^{i\phi}\text{Tr}\left\{V(x+T\hat\tau)U(x+T\hat\tau; x)V^\dagger(x)\right\}
-    =e^{i\phi}\text{Tr}~U(x+T\hat\tau; x)
+    L(x)\longrightarrow
+    e^{i\phi}\text{Tr}\left\{V(x)\text{Tr}~U(x; x+T\hat\tau)V^\dagger(x+T\hat\tau)\right\}
+    =e^{i\phi}L(x)
     .
     $$
-    There are several problems with this. First of all, since the Polyakov loop is supposed to be a gauge-invariant quantity, if it has nonzero expectation value, it should not pick up a phase $\phi$ after the gauge transformation. Secondly, once we perform the path integral, the Haar measure $\int dU$ will average out all center elements of the gauge group, making the expectation value of $e^{i\phi}\text{Tr}~U(x+T\hat\tau; x)$ vanish. This is contradicting with our earlier observation that a Polyakov loop can take non-zero expectation value in the deconfined phase.
+    There are several problems with this. First of all, since the Polyakov loop is supposed to be a gauge-invariant quantity, if it has nonzero expectation value, it should not pick up a phase $\phi$ after the gauge transformation. Secondly, once we perform the path integral, the Haar measure $\int dU$ will average out all center elements of the gauge group, making the expectation value of $e^{i\phi}L(x)$ vanish. This is contradicting with our earlier observation that a Polyakov loop can take non-zero expectation value in the deconfined phase.
     <br><br>
     This can be resolved with the Elitzur's theorem <cite src="https://inspirehep.net/literature/104915"></cite>:
     <ul>
-        <li> In the confined phase, where $\text{Tr}~U(x+T\hat\tau; x)=0$, there is no problem.
-        <li> In the deconfined phase, where $\text{Tr}~U(x+T\hat\tau; x)\ne0$, the center of the gauge group is spontaneously broken.
+        <li> In the confined phase, where $L(x)=0$, there is no problem.
+        <li> In the deconfined phase, where $L(x)\ne0$, the center of the gauge group is spontaneously broken.
     </ul>
     To be more specific, the configuration space of the gauge field is partitioned into $N$ sectors, where $N$ is the size of the group center. In the confined phase, the transition amplitude between sectors are non-zero. The ensemble therefore includes all of these $N$ sectors in the partition function. On the other hand, the fact that the center is spontaneously broken in the deconfined phase means that the transition amplitude between sectors are now zero. Additionally, gauge transformation that change the sector of the configuration is no longer accepted as a true gauge transformation in the deconfined phase.
     If our universe already fell into one of the sectors, it must remain in this sector forever unless we reduce the temperature into the confined phase again. 
@@ -214,25 +217,7 @@
 
     <section anchor="theta-vacuum">$\theta$ vacuum</section>
 
-    In general, gauge field can have a non-trivial topological structure in a compact space. This can be measured with a <b>topological charge</b>:
-    $$
-    Q = \alpha_d\sum_{\mu_1,\cdots,\mu_d}\int d^dx \epsilon^{\mu_1\cdots\mu_d}\text{Tr}~
-        F_{\mu_1\mu_2}\cdots F_{\mu_{d-1}\mu_d}
-    $$
-    for some constant $\alpha_d$. This is an integral over the space-time manifold, symmetric over all space-time directions, gauge and Lorentz covariant, and has no dependence on the metric tensor. All of these properties indicate that the topological charge measures a topological invariant of the gauge field configuration.
-    <br>
-    <br>
-    I will now show that the topological charge is indeed topological. Let us consider a small deviation of the gauge field $A\rightarrow A+h$. The perturbed topological charge becomes
-    $$
-    \begin{align}
-    \delta Q &= \alpha_d\sum_{\mu_1,\cdots,\mu_d}\sum_{i=2,4,..,d}\int d^dx \epsilon^{\mu_1\cdots\mu_d}\text{Tr}~
-        F_{\mu_1\mu_2}\cdots\delta F_{\mu_{i-1}\mu_i}\cdots F_{\mu_{d-1}\mu_d}\\
-        &= \frac{d}{2}\alpha_d\sum_{\mu_1,\cdots,\mu_d}\int d^dx \epsilon^{\mu_1\cdots\mu_d}\text{Tr}~
-        \delta F_{\mu_1\mu_2} F_{\mu_3\mu_4}\cdots F_{\mu_{d-1}\mu_d}\\
-        &= \frac{d}{2}\alpha_d\sum_{\mu_1,\cdots,\mu_d}\int d^dx \epsilon^{\mu_1\cdots\mu_d}\text{Tr}~
-        (D_{\mu_1}h_{\mu_2}) F_{\mu_3\mu_4}\cdots F_{\mu_{d-1}\mu_d}
-    \end{align}
-    $$
+    [Still writing...]
 </div>
 <hr>
 <div id="link2">
