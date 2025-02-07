@@ -1,0 +1,11 @@
+
+.text-box {
+    width: 500px; /* Fixed width */
+    padding: 20px;
+    border: 1px solid #ccc;
+    background-color: #f9f9f9;
+    margin: 20px auto;
+    text-align: left;
+}
+a::before { content: attr(data-text); }
+a { text-decoration: none; }

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="script.js">
+    </script>
+    <title>Learning Lattice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<p id="webheader">
+</p>
+<hr>
+<div id="link1">
+</div>
+<hr>
+<div id="content">
+    <h2>Gauge symmetry</h2>
+
+    <div id="anchors"></div>
+
+    <div class="text-box">
+    ... the orientation of the isotopic spin is of no physical significance. The differentiation between a neutron and a proton is then a purely arbitrary process. As usually conceived, however, this arbitrariness is subject to the following limitation: once one chooses what to call a proton, what a neutron, at one space-time point, one is then not free to make any choices at other space-time points.
+    <br><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It seems that this is not consistent with the localized field concept that underlies the usual physical theories. In the present paper we wish to explore the possibility of requiring all interactions to be invariant under rotations of the isotopic spin at all spacetime points, so that the relative orientation of the isotopic spin at two space-time points becomes a physically meaningless quantity...
+    <br><br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    &mdash;&mdash; C. N. Yang and R. L. Mills; 
+    <i>
+        Conservation of Isotopic Spin and Isotopic Gauge Invariance
+    </i>
+    <cite src="https://inspirehep.net/literature/12285">
+    </div>
+
+    <section anchor="preface">Basic story</section>
+
+    Consider a matter field with a wave function $\psi(x)$. Let's consider it to be a wave function with $N$ components apart from the space-time index $x$. As a wave function, we learned that we can use it to compute a probability density with a bilinear
+    $$
+    \psi^\dagger(x) \psi(x)
+    $$
+    where $\psi^\dagger(x)$ is a Hermitian conjugate.
+    Note here that the probability density is invariant under the transformation
+    $$
+    \begin{align}
+    \psi(x)&\longrightarrow e^{i\Phi}\psi(x),\\
+    \psi^\dagger(x)&\longrightarrow \psi^\dagger(x)e^{-i\Phi},
+    \end{align}
+    $$
+    for some constant Hermitian matrix $\Phi$. This transformation is called a global SU($N$) symmetry since it acts globally (acts in the same way for all space-time point).
+    <br><br>
+    We would like to promote this symmetry to be local since local observer should be able to choose their own basis independently from other observers (it's relativity!):
+    $$
+    \begin{align}
+    \psi(x)&\longrightarrow e^{i\Phi(x)}\psi(x),\\
+    \psi^\dagger(x)&\longrightarrow \psi^\dagger(x)e^{-i\Phi(x)},
+    \end{align}
+    $$
+    But you immediately encounter a problem if you try to measure the momentum:
+    $$
+    \begin{align}
+    \psi^\dagger(x)\hat p\psi(x) &= -i\psi^\dagger(x)\partial_x\psi(x)\\
+    &\!\!\!\!\longrightarrow -i\psi^\dagger(x)e^{-i\Phi(x)}\partial_x\left\{e^{i\Phi(x)}\psi(x)\right\}\\
+    &=\psi^\dagger(x)\partial_x\Phi(x)\psi(x)-i\psi^\dagger(x)\partial_x\psi(x)\\
+    &=\psi^\dagger(x)(\partial_x\Phi(x)+\hat p)\psi(x).
+    \end{align}
+    $$
+    The momentum is shifted by $\partial_x\Phi(x)$ under this transformation!
+    <br><br>
+    This unphysical artifact can be removed if we replace the derivative by a <i>covariant</i> derivative
+    $$
+    D_x:=\partial_x+igA(x)
+    $$
+    where $A(x)$ is a new field we introduce with the property that it is a Hermitian matrix which transforms under the local transformation as
+    $$
+    A(x)\longrightarrow A(x)-\frac{1}{g}\partial_x\Phi(x).
+    $$
+    Let's redefine the momentum operator as $\hat p:=-iD_x$, then the transformation above becomes
+    $$
+    \begin{align}
+    \psi^\dagger(x)\hat p\psi(x) &=
+    -i\psi^\dagger(x)\partial_x\psi(x)
+    +g\psi^\dagger(x)A(x)\psi(x)
+    \\
+    &\!\!\!\!\longrightarrow -i\psi^\dagger(x)e^{-i\Phi(x)}\partial_x\left\{e^{i\Phi(x)}\psi(x)\right\}\\
+    &\qquad\qquad
+    +g\psi^\dagger(x)e^{-i\Phi(x)}\left\{A(x)-\frac{1}{g}\partial_x\Phi(x)\right\}e^{i\Phi(x)}\psi(x)
+    \\
+    &=\psi^\dagger(x)\partial_x\Phi(x)\psi(x)-i\psi^\dagger(x)\partial_x\psi(x)\\
+    &\qquad\qquad
+    +g\psi^\dagger(x)A(x)\psi(x)
+    -\psi^\dagger(x)\partial_x\Phi(x)\psi(x)\\
+    &=\psi^\dagger(x)\hat p\psi(x).
+    \end{align}
+    $$
+    The momentum is now invariant under this local transformation! In the literature, we call this kind of local symmetry the <i>gauge symmetry</i> and the field $A(x)$ the <i>gauge field</i>.
+
+
+
+
+    <section anchor="group-algebra-irrep">Groups, algebras, and representations</section>
+
+    So far it seems arbitrary that we impose the locality of some global transformation and all of a sudden we have a new gauge field. To make the statement more precise, let me formulate the result above in a different way.
+    <br><br>
+    We first state that the field $\psi(x)$ transforms under a <i>gauge group</i> $G$ under an irreducible representation $\rho$ (assumed to be a unitary representation):
+    $$
+    \begin{align}
+    \psi(x)&\rightarrow D^\rho[V(x)]\psi(x),\\
+    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)D^\rho[V^{-1}(x)],\\
+    \end{align}
+    $$
+    for some $V(x)\in G$. Note that, in the notation presented previously, we have $V(x)=e^{i\Phi(x)}$ for some $\Phi(x)\in\mathfrak{g}$ (the Lie algebra). From here, we will use the short-hand notation $V^{\rho}(x):=D^\rho[V(x)]$. Namely,
+    $$
+    \begin{align}
+    \psi(x)&\rightarrow V^\rho(x)\psi(x),\\
+    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)V^{\rho\dagger}(x).\\
+    \end{align}
+    $$
+    We colloqially say that $\psi(x)$ transforms like a vector and $\psi^\dagger(x)$ transforms like a covector.
+    <br><br>
+    We can define a covariant derivative as
+    $$
+    D_x := \partial_x + igA^\rho(x)
+    $$
+    where $A^\rho(x)$ is a gauge field which transforms as
+    $$
+    A^\rho(x)\longrightarrow V^\rho(x)A^\rho(x)V^{\rho\dagger}(x)+\frac{i}{g}\left\{\partial_xV^\rho(x)\right\}V^{\rho\dagger}(x).
+    $$
+    The gauge field $A(x)$ belongs to the algebra $\mathfrak{g}$ rather than the group $G$.
+    <br><br>
+    The reasoning behind this definition is that we want the covariant derivative to also transform like a vector:
+    $$
+    \begin{align}
+    D_x\psi(x)&=\partial_x\psi(x)+igA^\rho(x)\psi(x)
+    \\
+    &\!\!\!\!\longrightarrow
+    \left\{\partial_xV^\rho(x)\right\}\psi(x)+V^\rho(x)\partial_x\psi_x+igV^\rho(x)A^\rho(x)\psi(x)
+    -\left\{\partial_xV^\rho(x)\right\}\psi(x)\\
+    &= V^\rho(x)\left\{\partial_x\psi(x)+igA^\rho(x)\psi(x)\right\}\\
+    &= V^\rho(x)D_x\psi(x).
+    \end{align}
+    $$
+    Only then can we be sure that $\psi^\dagger(x)D_x\psi(x)$ is gauge invariant in the same way that $\psi^\dagger(x)\psi(x)$ is.
+    <br><br>
+    Here comes the punch line: a global transformation can be seen as a gauge transformation under a reducible representation whose decomposed components are all trivial! In other words, the gauge field is always there. We have to specify which representation the matter field is transforming under!
+    <br><br>
+    To give a realistic example, a quark has a lot of symmetries. It transforms under the charge-$q$ representation of U(1)<sub>EM</sub> and the fundamental representation of SU(3)<sub>color</sub> and SU(2)<sub>flavor</sub> gauge symmetries. It transforms trivially under the SU(3)<sub>family</sub> symmetry, though.
+    <br><br>
+    Typically, we assume that the matter field transforms under the fundamental representation, but be mindful that this is not always the case!
+
+
+
+    <section anchor="parallel-transport">Parallel transport</section>
+    Gauge fields can be used to construct a parallel transport. Some would even say that that is the real definition of a gauge field!
+    <br><br>
+    Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{-ig\epsilon A(x)}$ for some infinitesimal $\epsilon$?
+    $$
+    \begin{align}
+    U_\epsilon(x)&=1-ig\epsilon A(x)+O(\epsilon^2)\\
+    &\!\!\!\!\longrightarrow
+    1-ig\epsilon V(x)A(x)V^{\dagger}(x)+\epsilon\left\{\partial_xV(x)\right\}V^{\dagger}(x)+O(\epsilon^2)\\
+    &=
+    1-ig\epsilon V(x+\epsilon)A(x)V^{\dagger}(x)
+    +\left\{V(x+\epsilon)-V(x)\right\}V^{\dagger}(x)+O(\epsilon^2)
+    \\
+    &=
+    V(x+\epsilon)\left\{-ig\epsilon A(x)
+    +1+O(\epsilon^2)\right\}V^{\dagger}(x)\\
+    &=
+    V(x+\epsilon)e^{-ig\epsilon A(x)+O(\epsilon^2)}V^{\dagger}(x)\\
+    &=
+    V(x+\epsilon)U_\epsilon(x)V^{\dagger}(x).
+    \end{align}
+    $$
+    In other words, if we multiply $U_\epsilon(x)$ to some field at $x$, the result will transform like it is a field at $x+\epsilon$!
+    $$
+    U_\epsilon(x)\psi(x)\longrightarrow
+    V(x+\epsilon)U_\epsilon(x)\psi(x).
+    $$
+    We can keep multiplying the infinitesimal transport along a certain path to form a finite parallel transport. In general, we can construct a general parallel transport, also known as a Wilson line, along a path $\Gamma:x_1\rightarrow x_2$ with
+    $$
+    U_\Gamma(x_2;x_1)=\mathcal{P}\exp\left\{-ig\int_\Gamma dx A(x)\right\}
+    $$
+    where $\mathcal{P}$ is the path-ordering operator.
+
+
+    <section anchor="two-point function">Wilson line is a quark two-point function!</section>
+
+    Kind of. It is a kernel of the covariant derivative with respect to the endpoints:
+    $$
+    \begin{align}
+    D_{x'}U_\Gamma(x';x)
+    &=(\partial_{x'}+igA(x'))\mathcal{P}\exp\left\{-ig\int_x^{x'} ds A(s)\right\}\\
+    &=(-igA(x')+igA(x'))\mathcal{P}\exp\left\{-ig\int_x^{x'} ds A(s)\right\}\\
+    &=0.
+    \end{align}
+    $$
+    The implication is that we can construct various Green's function of the operator $D_x$ by multiplying $U_\Gamma$ to a combination of step functions:
+    $$
+    [D_x^{-1}](x';x) = U_\Gamma(x';x)\times(\text{step functions})
+    $$
+    As it turns out, Green's function can be rewritten as a two-point function of a fermion moving along the path $\Gamma$:
+    $$
+    [D_x^{-1}](x';x) = \int D\bar\psi D\psi ~\bar\psi(x')\psi(x) \exp\left\{i\int_\Gamma \bar\psi D_x \psi\right\}.
+    $$
+    We note here that this fermion is not dynamical since its trajectory is given by $\Gamma$. In other words, Wilson line is exactly what you get when integrating out a probe fermion moving along a certain path. We will use this fact to discuss the dynamics of the gauge field in the next section.
+</div>
+<hr>
+<div id="link2">
+</div>
+<hr>
+<script>
+    updatepage(`
+    <b>Next:</b>
+    <a href="gauge_theory.html">gauge theory</a>
+
+
+    <br>
+    <b>Prev:</b>
+    <a href="home.html">home</a>
+    `);
+</script>
+</body>
+</html>
