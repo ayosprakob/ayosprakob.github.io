@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="script.js">
+    </script>
+    <title>Learning Lattice</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<p id="webheader">
+</p>
+<hr>
+<div id="link1">
+</div>
+<hr>
+<div id="content">
+    <h2>About topological charge</h2>
+
+    <div id="anchors"></div>
+
+    <section anchor="preface">Functional derivatives</section>
+
+    Consider functional derivative of various quantities with respect to the gauge field $A^\mu_{ij}$ where $i$ and $j$ are the matrix indices and $\mu$ is the space-time component. Also let $B$ be some operator in the same Lie algebra as $A$.
+    $$
+    \begin{align}
+    \mathfrak{D}_{ij}^\mu(x)&:=\delta/\delta A_{ij}^\mu(x)\\
+    \mathfrak{D}_{ij}^\mu(x) A^\nu_{kl}(y)&:=\delta^{\mu\nu}\delta_{il}\delta_{jk}\delta(x-y)\\
+    \mathfrak{D}^\mu_{ij}(x)\text{Tr}\{A^\nu(y) B(y)\}&=\delta^{\mu\nu}B_{ij}(y)\delta(x-y).
+    \end{align}
+    $$
+    From now we will suppress the matrix indices and the position indices; the matrix indices of the results are the same as those of $\mathfrak{D}^\mu$ and we will always have the position of the differentiated matrix at $y$ and the derivative is with respect to $x$. The Dirac delta $\delta(x-y)$ will be shortened to $\delta_{xy}$ for simplicity.
+    $$
+    \begin{align}
+    \mathfrak{D}^\mu\text{Tr}\{A^\nu B\}&=\delta^{\mu\nu}B\delta_{xy},\\
+    \mathfrak{D}^\mu\text{Tr}\{\partial^\sigma A^\rho B\}&=
+    \delta^{\mu\rho} B\partial^\sigma \delta_{xy},\\
+    \mathfrak{D}^\mu\text{Tr}\{[A^\sigma,A^\rho] B\}&=
+    \delta^{\mu[\sigma,}[A^{\rho]},B] \delta_{xy},\\
+    \mathfrak{D}^\mu\text{Tr}\{F^{\sigma\rho} B\}&=
+    i\delta^{\mu[\sigma,}[A^{\rho]},B] \delta_{xy}
+    -B\delta^{\mu[\sigma,}\partial^{\rho]} \delta_{xy}
+    \end{align}
+    $$
+    We will now consider an operator of the form
+    $$
+    Q=\alpha\int d^dx \text{Tr}\{F^{\mu\nu}G_{\mu\nu}\}
+    $$
+    where
+    $$
+    G_{\mu_1\mu_2} = \epsilon_{\mu_1\mu_2\mu_3\mu_4\cdots\mu_{d-1}\mu_{d}}F^{\mu_2\mu_3}\cdots F^{\mu_{d-1}\mu_d}.
+    $$
+    Obviously, we are considering $d$ being even. Then we can perform the derivative on $Q$:
+    $$
+    \begin{align}
+    \mathfrak{D}^\rho Q&=\frac{1}{2}\alpha d\int d^dx \text{Tr} \{\mathfrak{D}^\rho F^{\mu\nu}G_{\mu\nu}\}\\
+    &=\frac{1}{2}\alpha d\int d^dx \{
+    i\delta^{\rho[\mu,}[A^{\nu]},G_{\mu\nu}] \delta_{xy}
+    -G_{\mu\nu}\delta^{\rho[\mu,}\partial^{\nu]} \delta_{xy}\}\\
+    &=\alpha d\int d^dx \{
+        \partial^\mu G_{\rho\mu}+i[A^\mu,G_{\rho\mu}]
+        \}\delta_{xy}\\
+    &=\alpha d D^\mu G_{\rho\mu}
+    \end{align}
+    where $D^\mu$ is the covariant derivative.
+
+
+</div>
+<hr>
+<div id="link2">
+</div>
+<hr>
+<script>
+    updatepage(`
+    <b>Next:</b>
+
+
+    <br>
+    <b>Prev:</b>
+    <a href="gauge_theory.html">gauge theory</a>,
+    <a href="home.html">home</a>
+    `);
+</script>
+</body>
+</html>
