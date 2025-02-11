@@ -34,3 +34,30 @@ a { text-decoration: none; }
             display: block;
             margin: 20px auto;
         }
+
+note {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+note:hover {
+    font-weight: bold;
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+}
+
+note:hover::before {
+    font-weight: normal;
+    content: attr(value);
+    position: absolute;
+    top: -25px;
+    left: 0;
+    background-color: #444;
+    color: #EEE;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 14px;
+    white-space: nowrap;
+}
