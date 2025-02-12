@@ -50,7 +50,7 @@
     $$
     It follows that the topological charge is a total derivative
     \begin{align}
-    Q &= \alpha_{2n}\int \text{d}\omega_{2n-1};\\
+    Q &= \alpha_{2n}\int_{\mathcal{M}} \text{d}\omega_{2n-1};\\
     \omega_{2n-1}&=\sum_{k=1}^n\frac{f_k}{2k-1}\text{Tr}\{A^{2k-1}\wedge (\text{d}A)^{n-k}\}.
     \end{align}
     The object $\omega_p$ is known as the Chern-Simon $p$-form.
@@ -59,28 +59,28 @@
     $$
     Q = \alpha_{2n}\int_{\partial\mathcal{M}} \omega_{2n-1}.
     $$
-    In field theories, this usually falls into one of the two catagories
+    In field theories, this usually falls into one of the two categories
     <ul>
       <li> Compact manifold
       <li> Infinite manifold with all fields vanishing at the infinity
     </ul>
-    You can consider the second case to be an $S^d$ where all fields vanish at one pole (identifed as infinity). In any case, typically, a surface integral on a closed manifold usually ends up being zero because there is no boundary (or the boundary shrinks to zero, if you take the limit). But there is an exception when the integrand is a multivalued function, then the integral becomes quantized.
+    You can consider the second case to be an $S^d$ where all fields vanish at one pole (identified as infinity). In any case, typically, a surface integral on a closed manifold usually ends up being zero because there is no boundary (or the boundary shrinks to zero, if you take the limit). But there is an exception when the integrand is a multivalued function, then the integral becomes quantized.
     <br><br>
     Consider a very simple example
     $$
     I=\int_0^1 dx \partial_x f(x);\qquad f(x)\equiv f(x+1)~(\text{mod}~\lambda).
     $$
-    The periodicity condition implies that it is acceptable as long as the difference $f(x+1)-f(x)$ is an integer multiple of $\lambda$. Then the integral can be evaluated as
+    The periodicity condition implies that it is acceptable if the difference $f(x+1)-f(x)$ is an integer multiple of $\lambda$. Then the integral can be evaluated as
     $$
     I = f(1)-f(0) = q\lambda;\quad q\in\mathbb{Z}
     $$
-    Here, $q$ is the winding number, indicating how many times the function $f(x)$ winds around each branch in the interval $x\in[0,1)$.
+    Here, $q$ is the winding number, indicating how often the function $f(x)$ winds around each branch in the interval $x\in[0,1)$.
     <br><br>
-    Similarly for our case, since the Chern-Simon form belongs to the algebra of the gauge group, and we also know that, in some situation, the gauge field is multivalued, then we have
+    Similarly for our case, since the Chern-Simon form belongs to the algebra of the gauge group, and we also know that, in some situations, the gauge field is multivalued, then we have
     $$
     Q = q;\quad q\in\mathbb{Z},
     $$
-    where we have chosen the coefficient $\alpha_{2n}=1/\lambda$ so that $Q$ is integer-valued. Whether it is possible for the gauge field to have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
+    where we have chosen the coefficient $\alpha_{2n}=1/\lambda$ so that $Q$ is integer-valued. Whether the gauge field can have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
 
     <section anchor="homotopy">Homotopy groups</section>
 
