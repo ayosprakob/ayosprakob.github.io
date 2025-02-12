@@ -31,27 +31,60 @@
 
     <div id="anchors"></div>
 
-    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use index-less notation<cite src="https://en.wikipedia.org/wiki/Exterior_algebra#Algebraic_properties"></cite> for simplicity, then I will switch to the usual indexed notation when we discuss specific cases.
-    <br><br>
+    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
+
+    <section anchor="quantization">Quantization</section>
+
     In $d=2n$ dimensions, the topological charge is given by
     $$
-    Q = \alpha_n\int \text{Tr}F^n.
+    Q = \alpha_{2n}\int_\mathcal{M} \text{Tr}F^n.
     $$
-    Here, $F=\text{d}A+iA\wedge A$ is the curvature form, $F^{ n}$ means the $n$-th power with respect to the exterior product, $\int$ is the volume integral, and $\alpha_n$ is some coefficient that we will fix later.
+    Here, $F=\text{d}A+iA\wedge A$ is the curvature form, $F^{n}$ means the $n$-th power with respect to the exterior product, $\int_\mathcal{M}$ is the volume integral over the manifold $\mathcal{M}$, and $\alpha_{2n}$ is some coefficient that we will fix later.
     The integrand can be expressed as a sum of $2n$-forms
     $$
-    \text{Tr}F^n=\sum_{k=0}^{n} f_k\text{Tr}\{A^{2k}\wedge (\text{d}A)^{n-k}\}
+    \text{Tr}F^n=\sum_{k=1}^{n} f_k\text{Tr}\{A^{2k-2}\wedge (\text{d}A)^{n-k+1}\}
     $$
-    for some coefficients $f_k$. <note value="I'm not sure if this argument is actually correct. Might come back to revise later.">Note that</note>
+    for some coefficients $f_k$. Also, remember that $\text{Tr}A^{2n}=0$ because the cyclic property of the trace is incompatible with the even exterior power, so there is no $k=n+1$ in the sum. <note value="I think my argument is correct. But I might have to come back to revise later.">Note that</note>
     $$
-    A^{2k}\wedge (\text{d}A)^{n-k}=\frac{1}{2k+1}\text{d}(A^{2k+1}\wedge (\text{d}A)^{n-k-1}).
+    A^{2k-2}\wedge (\text{d}A)^{n-k+1}=\frac{1}{2k-1}\text{d}(A^{2k-1}\wedge (\text{d}A)^{n-k}).
     $$
     It follows that the topological charge is a total derivative
     \begin{align}
-    Q &= \alpha_n\int \text{d}\omega_{2n-1};\\
+    Q &= \alpha_{2n}\int \text{d}\omega_{2n-1};\\
     \omega_{2n-1}&=\sum_{k=1}^n\frac{f_k}{2k-1}\text{Tr}\{A^{2k-1}\wedge (\text{d}A)^{n-k}\}.
     \end{align}
     The object $\omega_p$ is known as the Chern-Simon $p$-form.
+    <br><br>
+    The topological charge is now replaced by the surface integral
+    $$
+    Q = \alpha_{2n}\int_{\partial\mathcal{M}} \omega_{2n-1}.
+    $$
+    In field theories, this usually falls into one of the two catagories
+    <ul>
+      <li> Compact manifold
+      <li> Infinite manifold with all fields vanishing at the infinity
+    </ul>
+    You can consider the second case to be an $S^d$ where all fields vanish at one pole (identifed as infinity). In any case, typically, a surface integral on a closed manifold usually ends up being zero because there is no boundary (or the boundary shrinks to zero, if you take the limit). But there is an exception when the integrand is a multivalued function, then the integral becomes quantized.
+    <br><br>
+    Consider a very simple example
+    $$
+    I=\int_0^1 dx \partial_x f(x);\qquad f(x)\equiv f(x+1)~(\text{mod}~\lambda).
+    $$
+    The periodicity condition implies that it is acceptable as long as the difference $f(x+1)-f(x)$ is an integer multiple of $\lambda$. Then the integral can be evaluated as
+    $$
+    I = f(1)-f(0) = q\lambda;\quad q\in\mathbb{Z}
+    $$
+    Here, $q$ is the winding number, indicating how many times the function $f(x)$ winds around each branch in the interval $x\in[0,1)$.
+    <br><br>
+    Similarly for our case, since the Chern-Simon form belongs to the algebra of the gauge group, and we also know that, in some situation, the gauge field is multivalued, then we have
+    $$
+    Q = q;\quad q\in\mathbb{Z},
+    $$
+    where we have chosen the coefficient $\alpha_{2n}=1/\lambda$ so that $Q$ is integer-valued. Whether it is possible for the gauge field to have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
+
+    <section anchor="homotopy">Homotopy groups</section>
+
+    <section anchor="examples">Examples</section>
 
 </div>
 <hr>
