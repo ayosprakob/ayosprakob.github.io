@@ -63,3 +63,27 @@ function box_embed(){
                 return `<div class="equation">$$${content}$$</div>`;
             });
 }
+window.onload = function() {
+    document.querySelectorAll('note').forEach(note => {
+        note.addEventListener('mouseenter', function() {
+            const rect = note.getBoundingClientRect();
+            const screenWidth = window.innerWidth;
+            const noteCenter = rect.left + rect.width / 2;
+            
+            // Add a class or style to modify the tooltip
+            const tooltip = note.querySelector('::before');
+            
+            if (noteCenter < screenWidth / 2) {
+                // Position on the left half of the screen
+                note.style.setProperty('--tooltip-a', '0%');
+                note.style.setProperty('--tooltip-b', '0%');
+            } else {
+                // Position on the right half of the screen
+                note.style.setProperty('--tooltip-a', '-100%');
+                note.style.setProperty('--tooltip-b', '100%');
+            }
+        });
+    });
+
+};
+

@@ -49,15 +49,18 @@ note:hover {
 }
 
 note:hover::before {
-    font-weight: normal;
     content: attr(value);
     position: absolute;
     top: -25px;
-    left: 0;
     background-color: #444;
     color: #EEE;
     padding: 5px;
     border-radius: 3px;
     font-size: 14px;
     white-space: nowrap;
+    transform: translateX(var(--tooltip-a, 0%));
+    left: var(--tooltip-b, 0%);
+    /* L 0% -->  100% R */
 }
+
+
