@@ -31,6 +31,18 @@
 
     <div id="anchors"></div>
 
+    <div class="text-box">
+      <b><font color="#1469e0">Notice!</font></b>
+      <br>
+      <br>
+      There are a few things in this page that I made up:
+      <ul>
+        <li> Using a simple line integral of a multi-valued function as an analogy for Yang-Mills homotopy class.
+        <li> Considering $\partial\mathcal{M}_d\sim S^{d-1}$ because we will eventually consider instantons.
+      </ul>
+      I'm not sure if these are correct assumptions. I will remove this notice when I confirm the details later.
+    </div>
+
     In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
 
     <section anchor="quantization">Quantization</section>
@@ -78,25 +90,35 @@
     <br><br>
     Similarly for our case, if we allow the Chern-Simon form to be multivalued, then we have
     $$
-    Q = \alpha_{2n} (\omega_{2n-1}(\tau)-\omega_{2n-1}(0))= q;\quad q\in\mathbb{Z},
+    Q = q;\quad q\in\mathbb{Z},
     $$
-    where we take the difference between the Chern-Simon form between the two ends of the <a href="gauge_theory.html#finite-temperature">imaginary-time torus</a>, and we have chosen the coefficient $\alpha_{2n}$ so that $Q$ is integer-valued. Whether the gauge field can have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
+    where we have chosen the coefficient $\alpha_{2n}$ so that $Q$ is integer-valued. Whether the gauge field can have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
 
-    <section anchor="homotopy">Homotopy</section>
+    <section anchor="homotopy">Homotopy groups</section>
 
     Another way to understand how to count the wrapping number of a multivalued function on a manifold is to view of it as counting different ways we can map a manifold on another manifold. This sounds confusing, but let me go back to the previous example for clarity.
     <br><br>
-    When we have a function $f(x)$ that is periodic with period $1$ modulo $\lambda$, we are considering a mapping between two circles. <note value="Or more precisely, homotopically.">Topologically</note>, $f(x)$ is a map from $S^1$ with radius $1/2\pi$ to another  $S^1$ with radius $\lambda/2\pi$. If $f(x)$ crosses the branch $n$ times, we can be sure that $f(x)~\text{mod}~\lambda$ will pass a certain value $\lambda'\in[0,\lambda)$ $n$ times (crossing the opposite direction counts as negative). This can be translated to saying that $f(x)$ corresponds to the wrapping of a circle to another circle with $n$ wrapping. In general, counting the wrapping of a map from $\mathcal{M}_1$ to $\mathcal{M}_2$ is described by an object called a <i>homotopy group</i> $[\mathcal{M}_1,\mathcal{M}_2]$ (this is not a commutator). For homotopy groups between spheres, a more common symbol is $\pi_m(S^n):=[S^m,S^n]$. In this example, the homotopy group is
+    When we have a function $f(x)$ that is periodic with period $1$ modulo $\lambda$, we are considering a mapping between two circles. <note value="Or more precisely, homotopically.">Topologically</note>, $f(x)$ is a map from $S^1$ with radius $1/2\pi$ to another  $S^1$ with radius $\lambda/2\pi$. If $f(x)$ crosses the branch cut $n$ times for $x\in[0,1)$, we can be sure that $f(x)~\text{mod}~\lambda$ will pass a certain value $\lambda'\in[0,\lambda)$ $n$ times (crossing the opposite direction counts as negative). This can be translated to saying that $f(x)$ corresponds to the wrapping of a circle to another circle with $n$ wrapping. In general, counting the wrapping of a map from $\mathcal{M}_1$ to $\mathcal{M}_2$ is described by an object called a <i>homotopy group</i> $[\mathcal{M}_1,\mathcal{M}_2]$ (this is not a commutator). For homotopy groups between spheres, a more common symbol is $\pi_m(S^n):=[S^m,S^n]$. In this example, the homotopy group is
     $$\pi_1(S^1)=\mathbb{Z}$$
     which indicates that the number of times you can wrap one circle over another circle in a homotopically distinct way can be any integer.
     <br><br>
-    The followings are some of the useful cases:
+    The followings are some of the useful homotopy groups:
     <ul>
-      <li> $\pi_1(S^1)=\mathbb{Z}$
-      <li> $\pi_3(S^3)=\mathbb{Z}$
+      <li> $\pi_{n}(S^1)=\{0\};\quad n>1$
+      <li> $[S^n,S^n]=\pi_n(S^n)=\mathbb{Z}$
+      <li> $[T^n,S^n]\simeq\pi_n(S^n)=\mathbb{Z}$
+      <li> $[U(1),S^1]\simeq\pi_1(S^1)=\mathbb{Z}$
+      <li> $[SU(N),S^3]\simeq[SU(2),S^3]\simeq\pi_3(S^3)=\mathbb{Z}$
     </ul>
+    Note that, for $SU(N)$, it is sufficient to consider the $SU(2)$ subgroup&mdash;thus the last relation.
+    <br><br>
+    In 2 dimensions, the topological charge is a surface integral over $\partial \mathcal{M}_2$
+    for some closed manifold $\mathcal{M}_2$. As we will discuss later, we are particularly interested in the situation where the gauge field <note value="To be more specific, we are interested in certain local structures of gauge field.">'vanishes at the boundary'</note>. Then we can take $\partial\mathcal{M}_2\sim S^1$. The only unitary gauge group allowed to have non-trivial topological structure is therefore the $U(1)$ gauge theory since $[SU(N),S^1]\simeq[SU(2),S^1]\simeq\pi_2(S^1)=\{0\}$.
+    <br><br>
+    In 4 dimensions, we can take $\partial\mathcal{M}_4\sim S^3$, for which the only nontrivial homotopy group is $[SU(N),S^3]\simeq\pi_3(S^3)=\mathbb{Z}$. Unlike in 2 dimensions, $U(1)$ gauge theory does not have non-trivial topological structures.
 
-    <section anchor="examples">Examples</section>
+
+    <section anchor="examples">Explicit examples</section>
 
 </div>
 <hr>
