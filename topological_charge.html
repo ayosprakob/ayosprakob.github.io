@@ -31,19 +31,7 @@
 
     <div id="anchors"></div>
 
-    <div class="text-box">
-      <b><font color="#1469e0">Notice!</font></b>
-      <br>
-      <br>
-      There are a few things in this page that I made up:
-      <ul>
-        <li> Using a simple line integral of a multi-valued function as an analogy for Yang-Mills homotopy class.
-        <li> Considering $\partial\mathcal{M}_d\sim S^{d-1}$ because we will eventually consider instantons.
-      </ul>
-      I'm not sure if these are correct assumptions. I will remove this notice when I confirm the details later.
-    </div>
-
-    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
+    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form <cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for notational simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
 
     <section anchor="quantization">Quantization</section>
 
@@ -60,7 +48,7 @@
     $$
     A^{2k-2}\wedge (\text{d}A)^{n-k+1}=\frac{1}{2k-1}\text{d}(A^{2k-1}\wedge (\text{d}A)^{n-k}).
     $$
-    It follows that the topological charge is a total derivative
+    It follows that the topological charge is an integral of a total derivative
     \begin{align}
     Q &= \alpha_{2n}\int_{\mathcal{M}} \text{d}\omega_{2n-1};\\
     \omega_{2n-1}&=\sum_{k=1}^n\frac{f_k}{2k-1}\text{Tr}\{A^{2k-1}\wedge (\text{d}A)^{n-k}\}.
@@ -71,54 +59,83 @@
     $$
     Q = \alpha_{2n}\int_{\partial\mathcal{M}} \omega_{2n-1}.
     $$
-    In field theories, this usually falls into one of the two categories
+    We will now restrict ourselves to one of these two cases:
     <ul>
       <li> Compact manifold
       <li> Infinite manifold with all fields vanishing at the infinity
     </ul>
-    You can consider the second case to be an $S^d$ where all fields vanish at one pole (identified as infinity). In any case, typically, a surface integral on a closed manifold usually ends up being zero because there is no boundary (or the boundary shrinks to zero, if you take the limit). But there is an exception when the integrand is a multivalued function, then the integral becomes quantized.
+    Open manifolds have totally different topological physics, so we will leave the discussions for other sections. The second case can be considered as a sphere with the infinity identified as one of the poles; $\mathbb{R}^d\cup\{\infty\}\simeq S^d$. In any case, we will now argue that the boundary $\partial\mathcal{M}$ for both cases can always be chosen to be homotopic to a $(d-1)$-sphere that can be shrunk to zero volume.
     <br><br>
-    Consider a very simple example
-    $$
-    I=\int_0^1 dx \partial_x f(x);\qquad f(x)\equiv f(x+1)~(\text{mod}~\lambda).
-    $$
-    The periodicity condition implies that it is acceptable if the difference $f(x+1)-f(x)$ is an integer multiple of $\lambda$. Then the integral can be evaluated as
-    $$
-    I = f(1)-f(0) = q\lambda;\quad q\in\mathbb{Z}
-    $$
-    Here, $q$ is the winding number, indicating how often the function $f(x)$ winds around each branch in the interval $x\in[0,1)$.
+    The argument is rather simple. Instead of considering an integral over a closed manifold $\mathcal{M}$, we consider an integral over an open manifold $\mathcal{V}\subset\mathcal{M}$ such that $\mathcal{V}$ is $\mathcal{M}$ with a spherical puncture. As we take the limit where the puncture is shrunk to zero volume, we obtain the original integral over $\mathcal{M}$. Since the puncture is a $d$-ball, its boundary is a $(d-1)$-sphere <cite src="https://en.wikipedia.org/wiki/Ball_(mathematics)"></cite>. $Q.E.D.$
     <br><br>
-    Similarly for our case, if we allow the Chern-Simon form to be multivalued, then we have
-    $$
-    Q = q;\quad q\in\mathbb{Z},
-    $$
-    where we have chosen the coefficient $\alpha_{2n}$ so that $Q$ is integer-valued. Whether the gauge field can have nontrivial winding and with what value of $\lambda$ depends on the gauge group and the dimensionality of the space-time.
+    The remaining question now is: what happens to the surface integral over a shrinking $(d-1)$-sphere? Naively, you would think that the integral becomes zero. But as we will see, this may not be true when $\omega_{2n-1}$ is a multivalued function.
 
     <section anchor="homotopy">Homotopy groups</section>
 
-    Another way to understand how to count the wrapping number of a multivalued function on a manifold is to view of it as counting different ways we can map a manifold on another manifold. This sounds confusing, but let me go back to the previous example for clarity.
+    Consider an integral of a multivalued function $\omega(x)$ around a puncture $\gamma$
+    $$
+    I_\gamma = \oint_\gamma dx~\omega(x)
+    $$
+    Assuming that $\omega(x)$ is <note value="Example: logarithm is multivalued with period 2&pi;">multivalued with period $\Lambda$</note>:
+    $$\omega(x) = \text{pv}[\omega(x)] + \Lambda\times\text{integer}$$
+    where $\text{pv}[~\cdot~]$ is the principal value. Then the surface integral around the puncture is also multivalued:
+    $$
+    I_\gamma = \text{pv}\left[\oint_\gamma dx~\omega(x)\right]+q\Lambda;\quad q\in\mathbb{Z}.
+    $$
+    Shrinking the puncture to zero makes the principal value vanish, leaving only the quantized term $q\Lambda$
+    $$
+    I_0 = q\Lambda.
+    $$
+    Here comes the catch: we still need to prove that the remainder terms do not cancel out and leave $q=0$ at the end. For $\gamma$ being a circle and $\omega$ being a real function modulo $\Lambda$, this is rather easy to confirm. For example, if we consider $\gamma:x\in[0,a)$ and $\omega(x)=q\Lambda x/a$, then we have
+    $$
+    I_\gamma=\int_0^adx \frac{q\Lambda x}{a}= q\Lambda,$$
+    which remains to be this value even after taking $a\rightarrow0$. In this example, $\omega(x)$ crosses the branch cut $q$ times: at $x=\frac{a}{q},~2\frac{a}{q},~\cdots,~(q-1)\frac{a}{q},~a$. Another way to look at this example is to consider $\omega$ to be a map from one circle (with radius $a/2\pi$) to another circle (with radius $\Lambda/2\pi$). Then $q$ counts the number of times the first circle is wrapped around the other circle.
     <br><br>
-    When we have a function $f(x)$ that is periodic with period $1$ modulo $\lambda$, we are considering a mapping between two circles. <note value="Or more precisely, homotopically.">Topologically</note>, $f(x)$ is a map from $S^1$ with radius $1/2\pi$ to another  $S^1$ with radius $\lambda/2\pi$. If $f(x)$ crosses the branch cut $n$ times for $x\in[0,1)$, we can be sure that $f(x)~\text{mod}~\lambda$ will pass a certain value $\lambda'\in[0,\lambda)$ $n$ times (crossing the opposite direction counts as negative). This can be translated to saying that $f(x)$ corresponds to the wrapping of a circle to another circle with $n$ wrapping. In general, counting the wrapping of a map from $\mathcal{M}_1$ to $\mathcal{M}_2$ is described by an object called a <i>homotopy group</i> $[\mathcal{M}_1,\mathcal{M}_2]$ (this is not a commutator). For homotopy groups between spheres, a more common symbol is $\pi_m(S^n):=[S^m,S^n]$. In this example, the homotopy group is
-    $$\pi_1(S^1)=\mathbb{Z}$$
-    which indicates that the number of times you can wrap one circle over another circle in a homotopically distinct way can be any integer.
+    Let us try to generalize this statement. Let $\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$ <cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
     <br><br>
-    The followings are some of the useful homotopy groups:
-    <ul>
-      <li> $\pi_{n}(S^1)=\{0\};\quad n>1$
-      <li> $[S^n,S^n]=\pi_n(S^n)=\mathbb{Z}$
-      <li> $[T^n,S^n]\simeq\pi_n(S^n)=\mathbb{Z}$
-      <li> $[U(1),S^1]\simeq\pi_1(S^1)=\mathbb{Z}$
-      <li> $[SU(N),S^3]\simeq[SU(2),S^3]\simeq\pi_3(S^3)=\mathbb{Z}$
-    </ul>
-    Note that, for $SU(N)$, it is sufficient to consider the $SU(2)$ subgroup&mdash;thus the last relation.
-    <br><br>
-    In 2 dimensions, the topological charge is a surface integral over $\partial \mathcal{M}_2$
-    for some closed manifold $\mathcal{M}_2$. As we will discuss later, we are particularly interested in the situation where the gauge field <note value="To be more specific, we are interested in certain local structures of gauge field.">'vanishes at the boundary'</note>. Then we can take $\partial\mathcal{M}_2\sim S^1$. The only unitary gauge group allowed to have non-trivial topological structure is therefore the $U(1)$ gauge theory since $[SU(N),S^1]\simeq[SU(2),S^1]\simeq\pi_2(S^1)=\{0\}$.
-    <br><br>
-    In 4 dimensions, we can take $\partial\mathcal{M}_4\sim S^3$, for which the only nontrivial homotopy group is $[SU(N),S^3]\simeq\pi_3(S^3)=\mathbb{Z}$. Unlike in 2 dimensions, $U(1)$ gauge theory does not have non-trivial topological structures.
+    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is from Botts theorem <cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
+    <br>
+    <br>
+    <center>
+    <table>
+      <tr>
+        <th>Dimension $d$
+        <th>Gauge group
+        <th>Homotopy group
+        <th>Topological structure
+      </tr>
+      <tr>
+        <td>$2$
+        <td>$U(1)$
+        <td>$\pi_1(U(1))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+      </tr>
+      <tr>
+        <td>$2$
+        <td>$SU(N)$
+        <td>$\pi_1(SU(N))\sim\pi_1(SU(2))=0$
+        <td>trivial
+      </tr>
+      <tr>
+        <td>$d>2$
+        <td>$U(1)$
+        <td>$\pi_{d-1}(U(1))=0$
+        <td>trivial
+      </tr>
+      <tr>
+        <td>$4$
+        <td>$SU(N)$
+        <td>$\pi_3(SU(N))\sim\pi_3(SU(2))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+      </tr>
+    </table>
+    </center>
+    <br>
+    <a href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</a> for other homotopy groups.
 
+    <section anchor="homotopy">2d U(1) and 4d SU(N)</section>
 
-    <section anchor="examples">Explicit examples</section>
+    We will now turn our attention to the two non-trivial cases on the table.
 
 </div>
 <hr>

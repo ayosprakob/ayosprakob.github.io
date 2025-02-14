@@ -63,6 +63,7 @@ function box_embed(){
                 return `<div class="equation">$$${content}$$</div>`;
             });
 }
+
 window.onload = function() {
     document.querySelectorAll('note').forEach(note => {
         note.addEventListener('mouseenter', function() {
@@ -84,6 +85,6 @@ window.onload = function() {
             }
         });
     });
-
+    
 };
 
