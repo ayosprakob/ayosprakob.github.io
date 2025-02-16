@@ -40,21 +40,21 @@ document.addEventListener("DOMContentLoaded", function () {
   const anchorDiv = document.getElementById("anchors");
   const sections = document.querySelectorAll("section[anchor]");
 
-  let listHTML = "<ul>";
+  let listHTML = "<ol>";
 
-  sections.forEach((section) => {
+  sections.forEach((section,index) => {
     const anchorName = section.getAttribute("anchor");
     section.id = anchorName; // Set id to allow linking
 
     // Extract the original text content and clear the section
     const sectionName = section.textContent.trim();
-    section.innerHTML = `<h3>${sectionName}</h3>`;
+    section.innerHTML = `<h3>${index+1}. ${sectionName}</h3>`;
 
     // Create a list item with a link
     listHTML += `<li><a href="#${anchorName}">${sectionName}</a></li>`;
   });
 
-  listHTML += "</ul>";
+  listHTML += "</ol>";
   anchorDiv.innerHTML = listHTML;
 });
 
@@ -65,26 +65,44 @@ function box_embed(){
 }
 
 window.onload = function() {
+
+    function positionTooltip(note) {
+        const rect = note.getBoundingClientRect();
+        const screenWidth = window.innerWidth;
+        const noteCenter = rect.left + rect.width / 2;
+
+        if (noteCenter < screenWidth / 2) {
+            note.style.setProperty('--tooltip-a', '0%');
+            note.style.setProperty('--tooltip-b', '0%');
+        } else {
+            note.style.setProperty('--tooltip-a', '-100%');
+            note.style.setProperty('--tooltip-b', '100%');
+        }
+    }
+    
     document.querySelectorAll('note').forEach(note => {
         note.addEventListener('mouseenter', function() {
-            const rect = note.getBoundingClientRect();
-            const screenWidth = window.innerWidth;
-            const noteCenter = rect.left + rect.width / 2;
-            
-            // Add a class or style to modify the tooltip
-            const tooltip = note.querySelector('::before');
-            
-            if (noteCenter < screenWidth / 2) {
-                // Position on the left half of the screen
-                note.style.setProperty('--tooltip-a', '0%');
-                note.style.setProperty('--tooltip-b', '0%');
-            } else {
-                // Position on the right half of the screen
-                note.style.setProperty('--tooltip-a', '-100%');
-                note.style.setProperty('--tooltip-b', '100%');
-            }
+            positionTooltip(note);
         });
     });
+
+    // Close tooltips when clicking outside
+    document.addEventListener('click', function() {
+        document.querySelectorAll('.tooltip-visible').forEach(el => el.classList.remove('tooltip-visible'));
+    });
+
+    // Custom tags
+    var contentText = document.getElementById("content").innerHTML
+
+    // new paragraph
+    contentText = contentText.replaceAll("<nl>", "<br><br>");
+
+    // textbox
+    contentText = contentText.replaceAll("<box>", "<div class='text-box'>");
+    contentText = contentText.replaceAll("</box>", "</div>");
+    contentText = contentText.replaceAll("</note>", "<sup>[?]</sup></note>");
+
+    document.getElementById("content").innerHTML = contentText;
     
 };
 

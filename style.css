@@ -6,6 +6,13 @@ then
 [Ctrl + Shift + M]
 */
 
+#viewport{
+    width: 768px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 .text-box {
     width: 500px;
     padding: 20px;
@@ -20,6 +27,11 @@ then
         width: 90%;
         padding: 15px;
     }
+
+    #viewport{
+        width: 100%;
+    }
+
 }
 
 a::before { content: attr(data-text); }
@@ -30,6 +42,7 @@ a { text-decoration: none; }
             max-width: 600px; /* Adjust as needed */
             padding: 10px;
             overflow-x: auto; /* Enable horizontal scrolling */
+            overflow-y: hidden; /* Disable horizontal scrolling */
             white-space: nowrap; /* Prevent line breaks */
             display: block;
             margin: 20px auto;
@@ -39,11 +52,9 @@ note {
     position: relative;
     display: inline-block;
     cursor: pointer;
-    text-decoration: underline;
 }
 
 note:hover {
-    text-decoration: underline;
     text-decoration-thickness: 2px;
 }
 
@@ -56,9 +67,9 @@ note:hover::before {
     padding: 5px;
     border-radius: 3px;
     font-size: 14px;
-    white-space: nowrap;
     transform: translateX(var(--tooltip-a, 0%));
     left: var(--tooltip-b, 0%);
+    white-space: pre-line; /* Allows line breaks */
     /* L 0% -->  100% R */
 }
 

@@ -1,0 +1,82 @@
+gdg* = -X -Yg*
+dg = Xg+Y
+dg* = -Xg* -Y
+
+gdg*dgdg*
+= (X+Yg*)(Xg+Y)(Xg*+Y)
+= (YX+XY+YYg)(Xg*+Y)
+= (YYX+YXY+XYY+YYYg*)
+= XYY + YYYg*
+
+gdg*gdg*gdg*
+= -(X+Yg*)(X+Yg*)(X+Yg*)
+= -(YXg*+XYg*+YY)(X+Yg*)
+= -3XYY-YYYg*
+
+gdg*dgdg* + (2/3)(gdg*gdg*gdg*)
+= XYY + YYYg* -2XYY -(2/3)YYYg*
+= -(3XYY+YYYg*)/3
+
+σi σj     = δij + i ϵijk σk
+(σxn)i    = ϵijk σj nk
+          = σj (ϵijk nk)
+
+σi (σ.n)  = σi σj nj
+          = ni + i ϵijk nj σk
+          = n - i (σxn)
+
+(σ.n) σi  = σj σi nj
+          = ni - i ϵijk nj σk
+          = n + i (σxn)
+
+σi (σxn)a = σi σj (ϵajk nk)
+          = (δij + i ϵijl σl) (ϵajk nk)
+          = ϵaij nj + i ϵijl ϵajk  σl nk
+          = ϵaij nj + i (δia δlk-δik δla)  σl nk
+          = ϵaij nj + i (δia σ.n - σa ni )
+
+(σxn)a σi = σj σi (ϵajk nk)
+          = (δij - i ϵijl σl) (ϵajk nk)
+          = ϵaij nj - i ϵijl ϵajk  σl nk
+          = ϵaij nj - i (δia δlk-δik δla)  σl nk
+          = ϵaij nj - i (δia σ.n - σa ni )
+(σxn)j σk = ϵjkl nl - i (δjk σ.n - σj nk )
+
+(σxn)i (σ.n)  = (ϵijk nk - i (δij σ.n - σi nj )) nj
+              = (nxn)i - i (ni σ.n - σi )
+              = i (σi - ni σ.n )
+
+Xi ~ ni(σ.n)
+Yj ~ σj - nj(σ.n)
+
+Xi Yj = ni(σ.n)σj - ni nj
+      = ni(nj + i (σxn)j) - ni nj
+      = i ni(σxn)j
+
+Xi Yj Yk  = i ni(σxn)j (σk - nk(σ.n))
+          = i ni(σxn)j σk - i ni(σxn)j nk(σ.n)
+          = i ni (ϵajk na + i σj nk ) + ni nk (σj - nj σ.n ) + symmetric
+          = i ni ϵajk na + symmetric
+
+ϵijk Xi Yj Yk = i ni na ϵijk ϵajk
+              = 2i
+
+ϵijl (σxn)l   = ϵijl ϵabl σa nb
+              = (δia δjb - δib δja) σa nb
+              = σi nj - σj ni
+
+Yi Yj = (σi - ni(σ.n))(σj - nj(σ.n))
+      = [δij + i ϵijk σk] - ni [nj + i (σxn)j] - nj [ni - i (σxn)i] + (ni nj)
+      = i ϵijl σl - 2i ni (σxn)j + symmetric
+
+Yi Yj Yk  = (i ϵijl σl - 2i ni (σxn)j)(σk - nk (σ.n))
+          = i ϵijl σl σk - 2i ni (σxn)j σk - i ϵijl σl nk (σ.n)
+          = i ϵijl (δlk + i ϵlka σa) - 2i ni (σxn)j σk - i ϵijl σl nk (σ.n)
+          = i ϵijk - ϵijl ϵkal σa - 2i ni (σxn)j σk - i ϵijl σl nk (σ.n)
+          = i ϵijk - 2i ni (σxn)j σk - i ϵijl σl nk (σ.n)
+          = i ϵijk - 2i ni (ϵjkl nl + i σj nk ) - i ϵijl nk  (nl - i (σxn)l)
+          = i ϵijk - 2i ni (ϵjkl nl + i σj nk ) - ϵijl nk (σxn)l
+          = i ϵijk - 2i ni (ϵjkl nl + i σj nk ) - σi nk nj + σj nk ni
+          = i ϵijk - 2i ϵjkl ni nl
+ϵijk Yi Yj Yk   =  6i -4i n.n
+                =  2i

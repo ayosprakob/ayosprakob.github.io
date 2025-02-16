@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="viewport">
 <p id="webheader">
 </p>
 <hr>
@@ -31,7 +32,7 @@
 
     <div id="anchors"></div>
 
-    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form <cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for notational simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
+    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for notational simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
 
     <section anchor="quantization">Quantization</section>
 
@@ -54,7 +55,7 @@
     \omega_{2n-1}&=\sum_{k=1}^n\frac{f_k}{2k-1}\text{Tr}\{A^{2k-1}\wedge (\text{d}A)^{n-k}\}.
     \end{align}
     The object $\omega_p$ is known as the Chern-Simon $p$-form.
-    <br><br>
+    <nl>
     The topological charge is now replaced by the surface integral
     $$
     Q = \alpha_{2n}\int_{\partial\mathcal{M}} \omega_{2n-1}.
@@ -65,37 +66,39 @@
       <li> Infinite manifold with all fields vanishing at the infinity
     </ul>
     Open manifolds have totally different topological physics, so we will leave the discussions for other sections. The second case can be considered as a sphere with the infinity identified as one of the poles; $\mathbb{R}^d\cup\{\infty\}\simeq S^d$. In any case, we will now argue that the boundary $\partial\mathcal{M}$ for both cases can always be chosen to be homotopic to a $(d-1)$-sphere that can be shrunk to zero volume.
-    <br><br>
-    The argument is rather simple. Instead of considering an integral over a closed manifold $\mathcal{M}$, we consider an integral over an open manifold $\mathcal{V}\subset\mathcal{M}$ such that $\mathcal{V}$ is $\mathcal{M}$ with a spherical puncture. As we take the limit where the puncture is shrunk to zero volume, we obtain the original integral over $\mathcal{M}$. Since the puncture is a $d$-ball, its boundary is a $(d-1)$-sphere <cite src="https://en.wikipedia.org/wiki/Ball_(mathematics)"></cite>. $Q.E.D.$
-    <br><br>
-    The remaining question now is: what happens to the surface integral over a shrinking $(d-1)$-sphere? Naively, you would think that the integral becomes zero. But as we will see, this may not be true when $\omega_{2n-1}$ is a multivalued function.
+    <nl>
+    The argument is rather simple. Instead of considering an integral over a closed manifold $\mathcal{M}$, we consider an integral over an open manifold $\mathcal{V}\subset\mathcal{M}$ such that $\mathcal{V}$ is $\mathcal{M}$ with a spherical puncture. As we take the limit where the puncture is shrunk to zero volume, we obtain the original integral over $\mathcal{M}$. Since the puncture is a $d$-ball, its boundary is a $(d-1)$-sphere<cite src="https://en.wikipedia.org/wiki/Ball_(mathematics)"></cite>. $Q.E.D.$
+    <nl>
+    The remaining question now is: what happens to the surface integral over a shrinking $(d-1)$-sphere? Naively, you would think that the integral becomes zero. But as we will see, this may not be true when $\int\omega_{2n-1}$ is a multivalued function.
 
     <section anchor="homotopy">Homotopy groups</section>
 
-    Consider an integral of a multivalued function $\omega(x)$ around a puncture $\gamma$
+    Consider an integral of a function $\omega(x)$ around a puncture $\partial\mathcal{M}=\gamma$
     $$
     I_\gamma = \oint_\gamma dx~\omega(x)
     $$
-    Assuming that $\omega(x)$ is <note value="Example: logarithm is multivalued with period 2&pi;">multivalued with period $\Lambda$</note>:
-    $$\omega(x) = \text{pv}[\omega(x)] + \Lambda\times\text{integer}$$
-    where $\text{pv}[~\cdot~]$ is the principal value. Then the surface integral around the puncture is also multivalued:
+    We now assume that $I_\gamma$ is <note value="Example: logarithm is multivalued with period 2&pi;">multivalued with period $\Lambda$</note>:
     $$
-    I_\gamma = \text{pv}\left[\oint_\gamma dx~\omega(x)\right]+q\Lambda;\quad q\in\mathbb{Z}.
+    I_\gamma = \text{pv}\left[\oint_\gamma dx~\omega(x)\right]+q\Lambda;\quad q\in\mathbb{Z},
     $$
-    Shrinking the puncture to zero makes the principal value vanish, leaving only the quantized term $q\Lambda$
+    where $\text{pv}[~\cdot~]$ is the principal value. Shrinking the puncture to zero makes the principal value vanish, leaving only the quantized term $q\Lambda$
     $$
     I_0 = q\Lambda.
     $$
-    Here comes the catch: we still need to prove that the remainder terms do not cancel out and leave $q=0$ at the end. For $\gamma$ being a circle and $\omega$ being a real function modulo $\Lambda$, this is rather easy to confirm. For example, if we consider $\gamma:x\in[0,a)$ and $\omega(x)=q\Lambda x/a$, then we have
+    What kind of $\omega(x)$ gives the integral with this property? The simplest example is when $\omega(x)$ is a total derivative of a multivalued function with period $\Lambda$:
     $$
-    I_\gamma=\int_0^adx \frac{q\Lambda x}{a}= q\Lambda,$$
-    which remains to be this value even after taking $a\rightarrow0$. In this example, $\omega(x)$ crosses the branch cut $q$ times: at $x=\frac{a}{q},~2\frac{a}{q},~\cdots,~(q-1)\frac{a}{q},~a$. Another way to look at this example is to consider $\omega$ to be a map from one circle (with radius $a/2\pi$) to another circle (with radius $\Lambda/2\pi$). Then $q$ counts the number of times the first circle is wrapped around the other circle.
-    <br><br>
-    Let us try to generalize this statement. Let $\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$ <cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
-    <br><br>
-    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is from Botts theorem <cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
-    <br>
-    <br>
+    \omega(x) = \partial_x f(x)
+    $$
+    If we take $\gamma$ to be a circle $x\in[0,2\pi)$ and $f(x)$ to be periodic on $\gamma$ modulo $\Lambda$; $f(x+2\pi)\equiv f(x)~(\text{mod}~\Lambda)$, then we have
+    $$
+    I_\gamma=\int_0^{2\pi}dx \partial_xf(x)=f(2\pi)-f(0)=q\Lambda.
+    $$
+    Here, the integer $q$ counts the number of times $f(x)$ crosses the branch cuts in the interval $x\in[0,2\pi)$. Another way to imagine this is to consider $f(x)$ as a map from $\gamma$ (a circle with radius $1$) onto another circle (with radius $\Lambda/2\pi$). Then $q$ counts the number of times the first circle wraps around the second circle.
+    <nl>
+    Let us try to generalize this statement. Let $\int\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$<cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
+    <nl>
+    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is from Botts theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
+    <nl>
     <center>
     <table>
       <tr>
@@ -132,16 +135,59 @@
     </center>
     <br>
     <a href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</a> for other homotopy groups.
+    <nl>
+    We will now turn our attention to the two non-trivial cases on the table: 2d $U(1)$ and 4d $SU(N)$ gauge theories.
 
-    <section anchor="homotopy">2d U(1) and 4d SU(N)</section>
+    <section anchor="2du1">2d $U(1)$</section>
+    The $U(1)$ topological charge in 2 dimensions reads
+    \begin{align}
+    Q&=\alpha_2\int_\mathcal{M}d^2x~\epsilon^{\mu\nu}F_{\mu\nu}
+    &(\text{volume form})\\
+    &=\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\epsilon^{\mu\nu}n_\mu A_\nu
+    &(\text{surface form})
+    \end{align}
+    where $n_\mu$ is the normal vector perpendicular to the surface $\partial\mathcal{M}\simeq S^1$. The measure $\int_{-\pi}^\pi d\theta$ is the surface integration measure for $S^1$. And finally, the limit $r\rightarrow0$ corresponds to taking the zero puncture limit.
+    <nl>
+    We will consider the gauge field around the puncture to take the form
+    $$
+    A_\mu = A^\text{avr}_\mu - ig\partial_\mu g^{-1}
+    $$
+    where $A^\text{avr}_\mu$ is the average part of the gauge field along $\partial\mathcal{M}$, which will cancel out in the integral. As for the gauge transformation part, we need $g\in U(1)$ to be periodic along $\partial\mathcal{M}$, so we consider
+    $$g(r,\theta) = \exp(-i q\theta ),$$
+    giving
+    \begin{align}
+    Q &= -i\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\frac{1}{r}\frac{\partial}{\partial\theta}\log g\\
+    &= \alpha_2 \lim_{r\rightarrow0}\int_{-\pi}^\pi d\theta~q\\
+    &=2\pi q\alpha_2.
+    \end{align}
+    From this result, we set $\alpha_2=1/{2\pi}$ so that $Q$ is integer-valued.
+    <box>
+      <b>Summary for 2d $U(1)$:</b>
+      \begin{align}
+      Q&=\frac{1}{2\pi}\int_\mathcal{M} d^2x \epsilon^{\mu\nu}F_{\mu\nu},\\
+      \omega^\mu&=\epsilon^{\mu\nu}A_\nu
+      \end{align}
+    </box>
 
-    We will now turn our attention to the two non-trivial cases on the table.
+    <section anchor="4dsu2">4d $SU(2)$</section>
+
+    The $SU(2)$ topological charge in 4 dimensions reads
+    \begin{align}
+    Q&=\alpha_4\int_\mathcal{M}d^4x~\epsilon^{\mu\nu\rho\sigma}\text{Tr}F_{\mu\nu}F_{\rho\sigma}
+    &(\text{volume form})\\
+    &=\alpha_4 \lim_{r\rightarrow0}r\int_{S^3} d\Omega_3~\epsilon^{\mu\nu\rho\sigma}
+    n_\mu
+    \text{Tr}\left(A_\nu \partial_\rho A_\sigma+\frac{2i}{3} A_\nu A_\rho A_\sigma\right).
+    &(\text{surface form})
+    \end{align}
+    <font color="#AA00AA">Still have no clue how to integrate this and get an integer from David Tong's ansatz<cite src="https://www.damtp.cam.ac.uk/user/tong/gaugetheory/2ym.pdf#page=20"></cite>...</font>
 
 </div>
 <hr>
 <div id="link2">
 </div>
 <hr>
+</div>
 <script>
     updatepage(`
     <b>Next:</b>

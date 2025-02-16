@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="viewport">
 <p id="webheader">
 </p>
 <hr>
@@ -33,31 +34,31 @@
 
     <section anchor="preface">Before we start</section>
     Typically, textbooks usually introduces gauge theories from the history of electromagnetism, then move on to its quantization, the path integral, then the non-Abelian cases, and so on. I am not going to do that here since I don't want to repeat what many others already did. Instead, I will start with a generic, not phenomenologically motivated, framework. Then I will explore the possibilities. And match the result with what's happening in the standard model.
-    <br><br>
+    <nl>
     Now with that out of the way, let's move on with the topic.
 
 
     <section anchor="actions">Gauge-invariant actions</section>
     <a href="gauge_symmetry.html">So far</a>, I have been treating the gauge field as if it's a mathematical object invented to fix some mathematical inconsistency. In a sense, that is correct. But interesting things can happen if we allow the gauge field to be dynamical. So how do we start?
-    <br><br>
+    <nl>
     In order for the gauge field to be dynamical, it needs a kinetic term. And this kinetic term needs to be gauge invariant. (Remember: gauge transformation is not physical and should not be allowed to be observed directly.)
-    <br><br>
+    <nl>
     Here is the claim:
-    <div class="text-box">
-    <b>Giles' reconstruction theorem</b> <cite src="https://inspirehep.net/literature/166195"></cite>: any pure gauge-invariant quantity can always be written as a linear combination of Wilson loops.    
-    </div>
+    <box>
+    <b>Giles' reconstruction theorem</b><cite src="https://inspirehep.net/literature/166195"></cite>: any pure gauge-invariant quantity can always be written as a linear combination of Wilson loops.    
+    </box>
     I sneaked the word "pure" in there to remove matter fields from the consideration. Also, the Wilson loop is defined as a Wilson line along a closed loop $C$
     $$
     W_C = \text{Tr}~\mathcal{P}\exp\left\{i\oint_C dx A(x)\right\}.
     $$
     Note here that we need to take the trace to 'join' both ends.
-    <br><br>
+    <nl>
     To understand what this claim is saying, let us first note that we want to build a gauge-invariant quantity purely out of gauge field $A(x)$ for its kinetic term. Be reminded that $A(x)$ can be written in terms of infinitesimal Wilson lines:
     $$
     A(x) = \frac{1}{2i\epsilon}\left\{U_\epsilon(x)-U^{\dagger}_\epsilon(x)\right\}
     $$
     where $U_\epsilon(x)=e^{i\epsilon A(x)}$. So let us build everything out of $U_\epsilon(x)$ instead of $A(x)$ because the gauge transformation of $U_\epsilon(x)$ (which belongs to a group) is more easily understandable than $A(x)$ (which belongs to an algebra). See the <a href="gauge_symmetry.html">previous section</a> if you forget how the two objects transform under the gauge transformation.
-    <br><br>
+    <nl>
     Of course, Wilson lines by themselves are not gauge invariant. Say, consider a Wilson line from $x_1$ to $x_2$; $U(x_1; x_2)$. Its gauge transformation is given by
     $$
     U(x_1; x_2)\longrightarrow V(x_1)U(x_1; x_2)V^\dagger(x_2).
@@ -72,16 +73,16 @@
     $$
 
     It is gauge invariant! Actually, you can convince yourself that there is no other way to make a Wilson line gauge invariant other than closing it into a Wilson loop.
-    <br><br>
+    <nl>
     Therefore, we have proven (atleast in a hand-weavy way) that Wilson loops are the building blocks of any pure gauge-invariant quantity.
-    <br><br>
+    <nl>
     Let us define a link variable $U_\mu(x)$ to be an infinitesimal Wilson line along the direction $\hat\mu$. Also note that $U_{-\mu}(x)=U^\dagger_\mu(x-\epsilon\hat\mu)$ (an excercise for readers). We then define a plaquette on the $\mu\nu$-plane as
     $$
     U_{\mu\nu}(x):=U_\mu(x)U_\nu(x+\epsilon\hat\mu)U^\dagger_\mu(x+\epsilon\hat\nu)U^\dagger_\nu(x).
     $$
     This is a Wilson line along a tiny square on the $\mu\nu$-plane at $x$. It is the simplest loop one can construct. We would like to rewrite this in terms of gauge fields.
-    <br><br>
-    The easiest way is to use the Baker–Campbell–Hausdorff formula <cite src="https://en.wikipedia.org/wiki/Baker%E2%80%93Campbell%E2%80%93Hausdorff_formula"></cite>:
+    <nl>
+    The easiest way is to use the Baker–Campbell–Hausdorff formula<cite src="https://en.wikipedia.org/wiki/Baker%E2%80%93Campbell%E2%80%93Hausdorff_formula"></cite>:
     $$
     \begin{align}
         U_\mu(x)U_\nu(x+\epsilon\hat\mu)
@@ -129,7 +130,7 @@
     $$
     where $s_\mu$ is the signature of the metric.
 
-    <br><br>
+    <nl>
 
     Another term that can be constructed in 1+1 dimensions is the topological charge density
     $$
@@ -139,7 +140,7 @@
     \end{align}
     $$
     where $\varepsilon_{\mu\nu}$ is the two-dimensional Levi-Civita symbol.
-    <br><br>
+    <nl>
     If you consider more complicate configurations of Wilson loop, in principle, you can come up with any pure gauge-invariant operator.
 
 
@@ -159,19 +160,18 @@
     \langle\Psi|\otimes|\Psi\rangle=\hat S_\Psi|\Psi\rangle\otimes\langle\Psi|.
     $$
     You could say that $\hat S_\Psi$ is like the anti-periodic boundary condition operator for fermionic degrees of freedom. This partition function is nothing but an imaginary-time evolution of a state, which is then projected back onto the initial state. That is why you see most lattice systems being defined on a Euclidean lattice. (I incorrectly believed for a very long time that lattice people were sloppy and used 'Wick rotation' like it's a panacea for all problem.)
-    <br>
-    <br>
-    <div class="text-box">
+    <nl>
+    <box>
     To summarize, in the finite-temperature $d$-dimensional system, the partition function is given by a $(d+1)$-dimensional Euclidean path integral whose imaginary-time direction is periodic for bosonic d.o.f. and anti-periodic for fermionic d.o.f. and the inverse temperature is given by the extent of the imaginary-time direction.
-    </div>
+    </box>
     One of the most exciting things you can study in the finite-temperature gauge theory is the deconfinement property of the gauge field. You might have heard that, in QCD, you cannot observe an isolated quark because a quark has 'color'. It takes an infinite amount of energy to separate quarks from each other, which is why the force is called the strong force. Such a peculiar property indicates that QCD is in the confined phase. At sufficiently high temperatures, QCD undergoes a phase transition and enters the deconfined phase, which is what we expect to happen at the beginning of the Universe.
-    <br><br>
+    <nl>
     To measure this difference, we can look at the probability amplitude of an isolated non-dynamical quark. <a href="gauge_symmetry.html#two-point%20function">In other words</a>, a Wilson loop wrapped around the imaginary-time direction:
     $$
     L(x) = \text{Tr}~U(x; x+T\hat\tau)
     $$
     $T$ here is the extent of the imaginary-time direction, not the temperature&mdash;sorry for butchering the notation &#128517;. This object is so important that it has it's own name: a <b>Polyakov loop</b>. When a gauge theory is confined, Polyakov loop must vanish because a quark cannot exist on its own. In the deconfined phase, the Polyakov loop takes some non-zero phase whose value depends on the topological defect of the gauge field, not unlike the Aharonov-Bohm effect. 
-    <br><br>
+    <nl>
     Let's us explore a bit more about this topological defect. Consider a gauge trasformation that is not strictly periodic, but periodic up to a constant matrix $h$, around the imaginary-time direction:
     $$
     V(x+T\hat \tau) = h V(x).
@@ -199,15 +199,15 @@
     .
     $$
     There are several problems with this. First of all, since the Polyakov loop is supposed to be a gauge-invariant quantity, if it has nonzero expectation value, it should not pick up a phase $\phi$ after the gauge transformation. Secondly, once we perform the path integral, the Haar measure $\int dU$ will average out all center elements of the gauge group, making the expectation value of $e^{i\phi}L(x)$ vanish. This is contradicting with our earlier observation that a Polyakov loop can take non-zero expectation value in the deconfined phase.
-    <br><br>
-    This can be resolved with the Elitzur's theorem <cite src="https://inspirehep.net/literature/104915"></cite>:
+    <nl>
+    This can be resolved with the Elitzur's theorem<cite src="https://inspirehep.net/literature/104915"></cite>:
     <ul>
         <li> In the confined phase, where $L(x)=0$, there is no problem.
         <li> In the deconfined phase, where $L(x)\ne0$, the center of the gauge group is spontaneously broken.
     </ul>
     To be more specific, the configuration space of the gauge field is partitioned into $N$ sectors, where $N$ is the size of the group center. In the confined phase, the transition amplitude between sectors are non-zero. The ensemble therefore includes all of these $N$ sectors in the partition function. On the other hand, the fact that the center is spontaneously broken in the deconfined phase means that the transition amplitude between sectors are now zero. Additionally, gauge transformation that change the sector of the configuration is no longer accepted as a true gauge transformation in the deconfined phase.
     If our universe already fell into one of the sectors, it must remain in this sector forever unless we reduce the temperature into the confined phase again. 
-    <br><br>
+    <nl>
     This sounds strange, doesn't it? It's as if...
     <div class="text-box">
     For gauge theory, the confined phase is disordered while the deconfined phase is ordered.
@@ -223,6 +223,7 @@
 <div id="link2">
 </div>
 <hr>
+</div>
 <script>
     updatepage(`
     <b>Next:</b>

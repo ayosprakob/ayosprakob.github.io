@@ -20,6 +20,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
+<div id="viewport">
 <p id="webheader">
 </p>
 <hr>
@@ -31,18 +32,18 @@
 
     <div id="anchors"></div>
 
-    <div class="text-box">
+    <box>
     ... the orientation of the isotopic spin is of no physical significance. The differentiation between a neutron and a proton is then a purely arbitrary process. As usually conceived, however, this arbitrariness is subject to the following limitation: once one chooses what to call a proton, what a neutron, at one space-time point, one is then not free to make any choices at other space-time points.
-    <br><br>
+    <nl>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;It seems that this is not consistent with the localized field concept that underlies the usual physical theories. In the present paper we wish to explore the possibility of requiring all interactions to be invariant under rotations of the isotopic spin at all spacetime points, so that the relative orientation of the isotopic spin at two space-time points becomes a physically meaningless quantity...
-    <br><br>
+    <nl>
     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     &mdash;&mdash; C. N. Yang and R. L. Mills; 
     <i>
         Conservation of Isotopic Spin and Isotopic Gauge Invariance
     </i>
-    <cite src="https://inspirehep.net/literature/12285">
-    </div>
+    <cite src="https://inspirehep.net/literature/12285"></cite>
+    </box>
 
     <section anchor="preface">Basic story</section>
 
@@ -59,7 +60,7 @@
     \end{align}
     $$
     for some constant Hermitian matrix $\Phi$. This transformation is called a global SU($N$) symmetry since it acts globally (acts in the same way for all space-time point).
-    <br><br>
+    <nl>
     We would like to promote this symmetry to be local since local observer should be able to choose their own basis independently from other observers (it's relativity!):
     $$
     \begin{align}
@@ -77,7 +78,7 @@
     \end{align}
     $$
     The momentum is shifted by $\partial_x\Phi(x)$ under this transformation!
-    <br><br>
+    <nl>
     This unphysical artifact can be removed if we replace the derivative by a <i>covariant</i> derivative
     $$
     D_x:=\partial_x+iA(x)
@@ -112,7 +113,7 @@
     <section anchor="group-algebra-irrep">Groups, algebras, and representations</section>
 
     So far it seems arbitrary that we impose the locality of some global transformation and all of a sudden we have a new gauge field. To make the statement more precise, let me formulate the result above in a different way.
-    <br><br>
+    <nl>
     We first state that the field $\psi(x)$ transforms under a <i>gauge group</i> $G$ under an irreducible representation $\rho$ (assumed to be a unitary representation):
     $$
     \begin{align}
@@ -128,7 +129,7 @@
     \end{align}
     $$
     We colloqially say that $\psi(x)$ transforms like a vector and $\psi^\dagger(x)$ transforms like a covector.
-    <br><br>
+    <nl>
     We can define a covariant derivative as
     $$
     D_x := \partial_x + iA^\rho(x)
@@ -138,7 +139,7 @@
     A^\rho(x)\longrightarrow V^\rho(x)A^\rho(x)V^{\rho\dagger}(x)+i\left\{\partial_xV^\rho(x)\right\}V^{\rho\dagger}(x).
     $$
     The gauge field $A(x)$ belongs to the algebra $\mathfrak{g}$ rather than the group $G$.
-    <br><br>
+    <nl>
     The reasoning behind this definition is that we want the covariant derivative to also transform like a vector:
     $$
     \begin{align}
@@ -152,18 +153,18 @@
     \end{align}
     $$
     Only then can we be sure that $\psi^\dagger(x)D_x\psi(x)$ is gauge invariant in the same way that $\psi^\dagger(x)\psi(x)$ is.
-    <br><br>
+    <nl>
     Here comes the punch line: a global transformation can be seen as a gauge transformation under a reducible representation whose decomposed components are all trivial! In other words, the gauge field is always there. We have to specify which representation the matter field is transforming under!
-    <br><br>
+    <nl>
     To give a realistic example, a quark has a lot of symmetries. It transforms under the charge-$q$ representation of U(1)<sub>EM</sub> and the fundamental representation of SU(3)<sub>color</sub> and SU(2)<sub>flavor</sub> gauge symmetries. It transforms trivially under the SU(3)<sub>family</sub> symmetry, though.
-    <br><br>
+    <nl>
     Typically, we assume that the matter field transforms under the fundamental representation, but be mindful that this is not always the case!
 
 
 
     <section anchor="parallel-transport">Parallel transport</section>
     Gauge fields can be used to construct a parallel transport. Some would even say that that is the real definition of a gauge field!
-    <br><br>
+    <nl>
     Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{i\epsilon A(x)}$ for some infinitesimal $\epsilon$?
     $$
     \begin{align}
@@ -220,6 +221,7 @@
 <div id="link2">
 </div>
 <hr>
+</div>
 <script>
     updatepage(`
     <b>Next:</b>
