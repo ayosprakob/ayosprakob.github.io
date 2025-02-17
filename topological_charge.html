@@ -150,13 +150,13 @@
     <nl>
     We will consider the gauge field around the puncture to take the form
     $$
-    A_\mu = A^\text{avr}_\mu - ig\partial_\mu g^{-1}
+    A_\mu = A^\text{avr}_\mu - ig^{-1}\partial_\mu g
     $$
     where $A^\text{avr}_\mu$ is the average part of the gauge field along $\partial\mathcal{M}$, which will cancel out in the integral. As for the gauge transformation part, we need $g\in U(1)$ to be periodic along $\partial\mathcal{M}$, so we consider
-    $$g(r,\theta) = \exp(-i q\theta ),$$
+    $$g(r,\theta) = \exp(i q\theta ),$$
     giving
     \begin{align}
-    Q &= -i\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\frac{1}{r}\frac{\partial}{\partial\theta}\log g\\
+    Q &= i\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\frac{1}{r}\frac{\partial}{\partial\theta}\log g\\
     &= \alpha_2 \lim_{r\rightarrow0}\int_{-\pi}^\pi d\theta~q\\
     &=2\pi q\alpha_2.
     \end{align}
@@ -165,7 +165,7 @@
       <b>Summary for 2d $U(1)$:</b>
       \begin{align}
       Q&=\frac{1}{2\pi}\int_\mathcal{M} d^2x \epsilon^{\mu\nu}F_{\mu\nu},\\
-      \omega^\mu&=\epsilon^{\mu\nu}A_\nu
+      \omega^\mu_1&=\epsilon^{\mu\nu}A_\nu
       \end{align}
     </box>
 
@@ -180,6 +180,47 @@
     \text{Tr}\left(A_\nu \partial_\rho A_\sigma+\frac{2i}{3} A_\nu A_\rho A_\sigma\right).
     &(\text{surface form})
     \end{align}
+
+    We will consider the pure gauge $A_\mu = -ig^{-1}\partial_\mu g$ for simplicity. It this gauge, the field strength vanishes
+    \begin{align}
+    F &= \text{d}A + iA\wedge A\\
+    &= \text{d}(-ig^{-1}\text{d}g)+i(-ig^{-1}\text{d}g)\wedge(-ig^{-1}\text{d}g)\\
+    &= -i\text{d}g^{-1}\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)\\
+    &= -i(-g^{-1}\text{d}gg^{-1})\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)=0,
+    \end{align}
+    where we have used the fact that $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$).
+    <nl>
+    One consequence of this is that we are considering the local minima of the kinetic action $\int F\wedge\star F$, a.k.a. the classical solutions. Adding small $A^\text{avr}$ to the gauge field will slightly increase the action, but will not change the topological charge since, from our earlier discussion, the charge is quantized. In any case, since $F=0$ in this case, we have a nice relation
+    $$
+    dA = -iA\wedge A\quad\text{(pure gauge).}
+    $$
+    Plugging this into the Chern-Simon term gives
+    \begin{align}
+    \omega^\mu_3 &= -\frac{i}{3}\epsilon^{\mu\nu\rho\sigma}
+    \text{Tr}\left(A_\nu A_\rho A_\sigma\right)\\
+    &=\frac{1}{3}\epsilon^{\mu\nu\rho\sigma}
+    \text{Tr}\left(
+    g^{-1}\partial_\nu g
+    g^{-1}\partial_\rho g
+    g^{-1}\partial_\sigma g
+    \right)
+    \end{align}
+    Since we will take $n_\mu$ to be orthonormal to the surface $\partial\mathcal{M}=S^3$, we can simply consider only the 3d components of the Chern-Simon form:
+    $$
+    \omega_3 = \frac{1}{3}\epsilon^{ijk}
+    \text{Tr}\left(
+    g^{-1}\partial_i g
+    g^{-1}\partial_j g
+    g^{-1}\partial_k g
+    \right)
+    $$
+    so that
+    $$
+    Q = \alpha_4 \int_{S^3} d\Omega_3~\omega_3.
+    $$
+    (now what...)
+    <nl>
+
     <font color="#AA00AA">Still have no clue how to integrate this and get an integer from David Tong's ansatz<cite src="https://www.damtp.cam.ac.uk/user/tong/gaugetheory/2ym.pdf#page=20"></cite>...</font>
 
 </div>
