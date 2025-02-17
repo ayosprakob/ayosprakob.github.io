@@ -32,6 +32,13 @@
 
     <div id="anchors"></div>
 
+    <box>
+      THIS PAGE IS ALL WRONG!
+      <nl>
+      $A$ and $dA$ don't have a nice commutativity, so you can't just arrange them neatly like $A^p(dA)^q$.
+      Now you have to prove again that $F$ is exact!
+    </box>
+
     In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for notational simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
 
     <section anchor="quantization">Quantization</section>
@@ -45,7 +52,7 @@
     $$
     \text{Tr}F^n=\sum_{k=1}^{n} f_k\text{Tr}\{A^{2k-2}\wedge (\text{d}A)^{n-k+1}\}
     $$
-    for some coefficients $f_k$. Also, remember that $\text{Tr}A^{2n}=0$ because the cyclic property of the trace is incompatible with the even exterior power, so there is no $k=n+1$ in the sum. Note that
+    for some coefficients $f_k$ which I don't know the general form but it can be easily worked out by hand. Also, remember that $\text{Tr}A^{2n}=0$ because the cyclic property of the trace is incompatible with the even exterior power, so there is no $k=n+1$ in the sum. Note that
     $$
     A^{2k-2}\wedge (\text{d}A)^{n-k+1}=\frac{1}{2k-1}\text{d}(A^{2k-1}\wedge (\text{d}A)^{n-k}).
     $$
@@ -134,7 +141,7 @@
     </table>
     </center>
     <br>
-    <a href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</a> for other homotopy groups.
+    <ref href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</ref> for other homotopy groups.
     <nl>
     /*
     We will now turn our attention to the two non-trivial cases on the table: 2d $U(1)$ and 4d $SU(N)$ gauge theories.
@@ -152,114 +159,50 @@
     &= -i\text{d}g^{-1}\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)\\
     &= -i(-g^{-1}\text{d}gg^{-1})\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)=0,
     \end{align}
-    where we have used the fact that $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$). Physically, the fact that the field strength, and thus the kinetic action, vanish means that we are considering the classical solution to the Yang-Mills equation. As we discussed above, the topological charge is quantized. This means that even if we introduce a <note value="Small in the sense that it is not separated from the pure gauge by some infinite barrier.">small</note> quantum fluctuation, the topological charge should remains the same.
+    where we have used $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$). Physically, the fact that the field strength, and thus the kinetic action, vanish means that we are considering the classical solution to the Yang-Mills equation. As we discussed above, the topological charge is quantized. This means that even if we introduce a <note value="Small in the sense that it is not separated from the pure gauge by some infinite barrier in the action.">small</note> quantum fluctuation, the topological charge should remains the same.
     <nl>
     The fact that $F=0$ also means that
     $$
-    \text{d}A = -iA\wedge A,
+    A\wedge A = i\text{d}A.
     $$
-    which in turn implies that every term in the Chern-Simon form with $n>1$ can be rewritten as
+    This identity is weird, since it implies that
     $$
-    A^{2k-1}\wedge(\text{d}A)^{n-k} = (-i)^{n-k-1} A^{2n-3}\wedge \text{d}A = (-i)^{n-k-1}\text{d}A^{2n-2}.
+    A^{p+1} = \frac{i^p}{p!}\text{d}^pA.
     $$
-    In other words, not only is $F$ an exact form, but $\omega_{2n-1}$ is also an exact form for the pure gauge!
+    You can prove this starting from $A^2=i\text{d}A$, then moving to $A^3=iA\text{d}A=\frac{i}{2}\text{d}A^2=\frac{i^2}{2}\text{d}^2A$, etc. Another thing is, you can also easily show that
     $$
-    \omega_{2n-1}\propto\text{Tr} \text{d}A^{2n-2}.
+    \omega_{d-1}=\beta_{d-1} \text{Tr}~A^{d-1}
     $$
-    For $n=1$, you have
+    for some coefficient $\beta_{d-1}$ which I don't knowthe general form but can be computed by hand. Consequently, you have
     $$
-    \omega_1\propto \text{Tr} A=\text{Tr} g^{-1}\text{d}g = \text{Tr} \text{d}\log g,
+    Q = \alpha_d\beta_{d-1}\frac{i^{d-2}}{(d-2)!}\times\int_{S^{d-1}}\text{d}^{d-2}\text{Tr}A.
     $$
-    which is also an exact form.
+    We will now use the same argument as before: the integral of an exact form $\text{d}f$ over $S^p$ can be rewritten as an integration of $f$ over a shrinking $S^{p-1}$. Keep repeating this, and we finaly will arrive at an integral of $A$ over a shrinking $S^1$. Each layer of the transition $S^{p}\rightarrow S^{p-1}$, we gain some geometric factor. We will use this fact to find the coefficient $\alpha_d$.
+    
+    <section anchor="coeff">Determining the coefficients</section>
 
-
-
-
-    /*
-    <section anchor="2du1">2d $U(1)$</section>
-    The $U(1)$ topological charge in 2 dimensions reads
+    For now, let's focus on the integral
+    $$
+    I_d:=\int_{S^{d-1}}\text{d}^{d-2}\text{Tr}A.
+    $$
+    We can use the <ref href="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates">hyper-spherical coordinates</ref> to compute the integral
     \begin{align}
-    Q&=\alpha_2\int_\mathcal{M}d^2x~\epsilon^{\mu\nu}F_{\mu\nu}
-    &(\text{volume form})\\
-    &=\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\epsilon^{\mu\nu}n_\mu A_\nu
-    &(\text{surface form})
+    I_d &= \int_0^\pi d\phi (\sin\phi)^{d-2} I_{d-1};\quad\text{for}~d>2,\\
+    I_2 &= \int_{-\pi}^\pi d\theta \text{Tr}A_\theta
+    =-i\int_{-\pi}^\pi d\theta\partial_\theta\text{Tr}\log g(\theta)
+    =-i\text{Tr}\log(g(\pi)g^{-1}(-\pi)).
     \end{align}
-    where $n_\mu$ is the normal vector perpendicular to the surface $\partial\mathcal{M}\simeq S^1$. The measure $\int_{-\pi}^\pi d\theta$ is the surface integration measure for $S^1$. And finally, the limit $r\rightarrow0$ corresponds to taking the zero puncture limit.
-    <nl>
-    We will consider the gauge field around the puncture to take the form
+    In the last line, we use the fact that $A_\theta=-ig^{-1}\partial_\theta g=-i\partial_\theta\log g$. For $d=2n$, you can integrate two layers at a time and obtain
     $$
-    A_\mu = A^\text{avr}_\mu - ig^{-1}\partial_\mu g
+    I_d=\frac{\pi}{(d/2)}I_{d-2}=\frac{\pi^{(d/2)-1}}{(d/2)!}I_2=-i\frac{\pi^{(d/2)-1}}{(d/2)!}\text{Tr}\log(g(\pi)g^{-1}(-\pi)).
     $$
-    where $A^\text{avr}_\mu$ is the average part of the gauge field along $\partial\mathcal{M}$, which will cancel out in the integral. As for the gauge transformation part, we need $g\in U(1)$ to be periodic along $\partial\mathcal{M}$, so we consider
-    $$g(r,\theta) = \exp(i q\theta ),$$
-    giving
-    \begin{align}
-    Q &= i\alpha_2 \lim_{r\rightarrow0}r\int_{-\pi}^\pi d\theta~\frac{1}{r}\frac{\partial}{\partial\theta}\log g\\
-    &= \alpha_2 \lim_{r\rightarrow0}\int_{-\pi}^\pi d\theta~q\\
-    &=2\pi q\alpha_2.
-    \end{align}
-    From this result, we set $\alpha_2=1/{2\pi}$ so that $Q$ is integer-valued.
-    <box>
-      <b>Summary for 2d $U(1)$:</b>
-      \begin{align}
-      Q&=\frac{1}{2\pi}\int_\mathcal{M} d^2x \epsilon^{\mu\nu}F_{\mu\nu},\\
-      \omega^\mu_1&=\epsilon^{\mu\nu}A_\nu
-      \end{align}
-    </box>
+    We will now consider a gauge transformation $g$ that is periodic in $\theta$ but wrapped around the gauge manifold $q$ times:
+    $$
+    g(\theta) = \exp(iq\theta\sigma)
+    $$
+    where $\sigma=1$ for U(1) and $\sigma=t_1$ (the first generator) for $SU(N)$.
 
-    <section anchor="4dsu2">4d $SU(2)$</section>
 
-    The $SU(2)$ topological charge in 4 dimensions reads
-    \begin{align}
-    Q&=\alpha_4\int_\mathcal{M}d^4x~\epsilon^{\mu\nu\rho\sigma}\text{Tr}F_{\mu\nu}F_{\rho\sigma}
-    &(\text{volume form})\\
-    &=\alpha_4 \lim_{r\rightarrow0}r\int_{S^3} d\Omega_3~\epsilon^{\mu\nu\rho\sigma}
-    n_\mu
-    \text{Tr}\left(A_\nu \partial_\rho A_\sigma+\frac{2i}{3} A_\nu A_\rho A_\sigma\right).
-    &(\text{surface form})
-    \end{align}
-
-    We will consider the pure gauge $A_\mu = -ig^{-1}\partial_\mu g$ for simplicity. It this gauge, the field strength vanishes
-    \begin{align}
-    F &= \text{d}A + iA\wedge A\\
-    &= \text{d}(-ig^{-1}\text{d}g)+i(-ig^{-1}\text{d}g)\wedge(-ig^{-1}\text{d}g)\\
-    &= -i\text{d}g^{-1}\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)\\
-    &= -i(-g^{-1}\text{d}gg^{-1})\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)=0,
-    \end{align}
-    where we have used the fact that $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$).
-    <nl>
-    One consequence of this is that we are considering the local minima of the kinetic action $\int F\wedge\star F$, a.k.a. the classical solutions. Adding small $A^\text{avr}$ to the gauge field will slightly increase the action, but will not change the topological charge since, from our earlier discussion, the charge is quantized. In any case, since $F=0$ in this case, we have a nice relation
-    $$
-    dA = -iA\wedge A\quad\text{(pure gauge).}
-    $$
-    Plugging this into the Chern-Simon term gives
-    \begin{align}
-    \omega^\mu_3 &= -\frac{i}{3}\epsilon^{\mu\nu\rho\sigma}
-    \text{Tr}\left(A_\nu A_\rho A_\sigma\right)\\
-    &=\frac{1}{3}\epsilon^{\mu\nu\rho\sigma}
-    \text{Tr}\left(
-    g^{-1}\partial_\nu g
-    g^{-1}\partial_\rho g
-    g^{-1}\partial_\sigma g
-    \right)
-    \end{align}
-    Since we will take $n_\mu$ to be orthonormal to the surface $\partial\mathcal{M}=S^3$, we can simply consider only the 3d components of the Chern-Simon form:
-    $$
-    \omega_3 = \frac{1}{3}\epsilon^{ijk}
-    \text{Tr}\left(
-    g^{-1}\partial_i g
-    g^{-1}\partial_j g
-    g^{-1}\partial_k g
-    \right)
-    $$
-    so that
-    $$
-    Q = \alpha_4 \int_{S^3} d\Omega_3~\omega_3.
-    $$
-
-    <nl>
-    <font color="#AA00AA">Still have no clue how to integrate this and get an integer from David Tong's ansatz<cite src="https://www.damtp.cam.ac.uk/user/tong/gaugetheory/2ym.pdf#page=20"></cite>...</font>
-    */
 </div>
 <hr>
 <div id="link2">

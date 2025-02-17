@@ -20,8 +20,44 @@ function updatepage(linkdetails) {
     box_embed()
 }
 
-//Citations
+function box_embed(){
+    document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
+                return `<div class="equation">$$${content}$$</div>`;
+            });
+}
+
 document.addEventListener("DOMContentLoaded", function() {
+
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Manually revise some contents ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+    // Custom tags
+    var contentText = document.getElementById("content").innerHTML
+
+    // new paragraph
+    contentText = contentText.replaceAll("<nl>", "<br><br>");
+
+    // textbox
+    contentText = contentText.replaceAll("<box>", "<div class='text-box'>");
+    contentText = contentText.replaceAll("</box>", "</div>");
+
+    contentText = contentText.replaceAll("</note>", "<sup>[?]</sup></note>");
+
+    //comment
+    contentText = contentText.replaceAll("/*", "<!--");
+    contentText = contentText.replaceAll("*/", "-->");
+
+    //ref to other page
+    contentText = contentText.replaceAll("<ref ", "<a target='_blank' ");
+    contentText = contentText.replaceAll("</ref", "</a");
+
+    document.getElementById("content").innerHTML = contentText;
+
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Citation :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
     document.querySelectorAll("cite[src]").forEach(cite => {
         let sup = document.createElement("sup");
         let link = document.createElement("a");
@@ -33,16 +69,17 @@ document.addEventListener("DOMContentLoaded", function() {
         sup.appendChild(link);
         cite.replaceWith(sup);
     });
-});
 
-//Section symbols
-document.addEventListener("DOMContentLoaded", function () {
-  const anchorDiv = document.getElementById("anchors");
-  const sections = document.querySelectorAll("section[anchor]");
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Section symbols ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-  let listHTML = "<ol>";
+    const anchorDiv = document.getElementById("anchors");
+    const sections = document.querySelectorAll("section[anchor]");
 
-  sections.forEach((section,index) => {
+    let listHTML = "<ol>";
+
+    sections.forEach((section,index) => {
     const anchorName = section.getAttribute("anchor");
     section.id = anchorName; // Set id to allow linking
 
@@ -52,20 +89,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Create a list item with a link
     listHTML += `<li><a href="#${anchorName}">${sectionName}</a></li>`;
-  });
+    });
 
-  listHTML += "</ol>";
-  anchorDiv.innerHTML = listHTML;
-});
+    listHTML += "</ol>";
+    anchorDiv.innerHTML = listHTML;
+    
 
-function box_embed(){
-    document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
-                return `<div class="equation">$$${content}$$</div>`;
-            });
-}
-
-window.onload = function() {
-
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Repositioning tooltips :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    
     function positionTooltip(note) {
         const rect = note.getBoundingClientRect();
         const screenWidth = window.innerWidth;
@@ -81,9 +114,7 @@ window.onload = function() {
     }
     
     document.querySelectorAll('note').forEach(note => {
-        note.addEventListener('mouseenter', function() {
-            positionTooltip(note);
-        });
+        note.addEventListener('mouseenter', function() {positionTooltip(note);});
     });
 
     // Close tooltips when clicking outside
@@ -91,26 +122,5 @@ window.onload = function() {
         document.querySelectorAll('.tooltip-visible').forEach(el => el.classList.remove('tooltip-visible'));
     });
 
-    // Custom tags
-    var contentText = document.getElementById("content").innerHTML
-
-    // new paragraph
-    contentText = contentText.replaceAll("<nl>", "<br><br>");
-
-    // textbox
-    contentText = contentText.replaceAll("<box>", "<div class='text-box'>");
-    contentText = contentText.replaceAll("</box>", "</div>");
-    contentText = contentText.replaceAll("</note>", "<sup>[?]</sup></note>");
-
-    //comment
-    contentText = contentText.replaceAll("/*", "<!--");
-    contentText = contentText.replaceAll("*/", "-->");
-
-    //ref to other page
-    contentText = contentText.replaceAll("<ref ", "<a target='_blank' ");
-    contentText = contentText.replaceAll("</ref", "</a");
-
-    document.getElementById("content").innerHTML = contentText;
-    
-};
+});
 
