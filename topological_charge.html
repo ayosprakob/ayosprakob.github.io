@@ -97,7 +97,7 @@
     <nl>
     Let us try to generalize this statement. Let $\int\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$<cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
     <nl>
-    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is from Botts theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
+    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is a result from Bott periodicity theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
     <nl>
     <center>
     <table>
@@ -136,8 +136,21 @@
     <br>
     <a href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</a> for other homotopy groups.
     <nl>
+    /*
     We will now turn our attention to the two non-trivial cases on the table: 2d $U(1)$ and 4d $SU(N)$ gauge theories.
+    */
 
+    <section anchor="pure_gauge">Pure gauge</section>
+    So far, we have shown that the topological charge must be a multiple of integers if the base manifold and the gauge group are compatible. But we still have to determine the coefficient $\alpha_d$ that makes $Q\in\mathbb{Z}$. For simplicity of the calculation, we will consider the so called 'pure' gauge
+    $$
+    A_\mu = -ig^{-1}\partial_\mu g.
+    $$
+    Namely, the gauge transformation of $A_\mu=0$ with $V=g^{-1}$. See <ref href="gauge_symmetry.html#group-algebra-irrep">here</ref> if you forgot.
+
+
+
+
+    /*
     <section anchor="2du1">2d $U(1)$</section>
     The $U(1)$ topological charge in 2 dimensions reads
     \begin{align}
@@ -218,11 +231,10 @@
     $$
     Q = \alpha_4 \int_{S^3} d\Omega_3~\omega_3.
     $$
-    (now what...)
+
     <nl>
-
     <font color="#AA00AA">Still have no clue how to integrate this and get an integer from David Tong's ansatz<cite src="https://www.damtp.cam.ac.uk/user/tong/gaugetheory/2ym.pdf#page=20"></cite>...</font>
-
+    */
 </div>
 <hr>
 <div id="link2">

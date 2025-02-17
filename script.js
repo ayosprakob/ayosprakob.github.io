@@ -102,6 +102,14 @@ window.onload = function() {
     contentText = contentText.replaceAll("</box>", "</div>");
     contentText = contentText.replaceAll("</note>", "<sup>[?]</sup></note>");
 
+    //comment
+    contentText = contentText.replaceAll("/*", "<!--");
+    contentText = contentText.replaceAll("*/", "-->");
+
+    //ref to other page
+    contentText = contentText.replaceAll("<ref ", "<a target='_blank' ");
+    contentText = contentText.replaceAll("</ref", "</a");
+
     document.getElementById("content").innerHTML = contentText;
     
 };

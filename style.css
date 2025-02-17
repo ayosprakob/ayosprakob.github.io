@@ -69,7 +69,7 @@ note:hover::before {
     font-size: 14px;
     transform: translateX(var(--tooltip-a, 0%));
     left: var(--tooltip-b, 0%);
-    white-space: normal;
+    white-space: pre;
     /*white-space: pre-line;*/ /* Allows line breaks */
     /* L 0% -->  100% R */
 }
