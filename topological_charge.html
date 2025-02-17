@@ -141,11 +141,36 @@
     */
 
     <section anchor="pure_gauge">Pure gauge</section>
-    So far, we have shown that the topological charge must be a multiple of integers if the base manifold and the gauge group are compatible. But we still have to determine the coefficient $\alpha_d$ that makes $Q\in\mathbb{Z}$. For simplicity of the calculation, we will consider the so called 'pure' gauge
+    So far, we have shown that the topological charge must be a multiple of integer if the base manifold and the gauge group are compatible. But we still have to determine the coefficient $\alpha_d$ that makes $Q\in\mathbb{Z}$. For simplicity of the calculation, we will consider the so called 'pure' gauge
     $$
     A_\mu = -ig^{-1}\partial_\mu g.
     $$
-    Namely, the gauge transformation of $A_\mu=0$ with $V=g^{-1}$. See <ref href="gauge_symmetry.html#group-algebra-irrep">here</ref> if you forgot.
+    Namely, it is the gauge transformation of $A_\mu=0$ with $V=g^{-1}$. See <ref href="gauge_symmetry.html#group-algebra-irrep">here</ref> if you forgot. Since $F=\text{d}A+iA\wedge A$ is gauge invariant, it follows that $F=0$. Or you can also show explicitly:
+    \begin{align}
+    F &= \text{d}A + iA\wedge A\\
+    &= \text{d}(-ig^{-1}\text{d}g)+i(-ig^{-1}\text{d}g)\wedge(-ig^{-1}\text{d}g)\\
+    &= -i\text{d}g^{-1}\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)\\
+    &= -i(-g^{-1}\text{d}gg^{-1})\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)=0,
+    \end{align}
+    where we have used the fact that $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$). Physically, the fact that the field strength, and thus the kinetic action, vanish means that we are considering the classical solution to the Yang-Mills equation. As we discussed above, the topological charge is quantized. This means that even if we introduce a <note value="Small in the sense that it is not separated from the pure gauge by some infinite barrier.">small</note> quantum fluctuation, the topological charge should remains the same.
+    <nl>
+    The fact that $F=0$ also means that
+    $$
+    \text{d}A = -iA\wedge A,
+    $$
+    which in turn implies that every term in the Chern-Simon form with $n>1$ can be rewritten as
+    $$
+    A^{2k-1}\wedge(\text{d}A)^{n-k} = (-i)^{n-k-1} A^{2n-3}\wedge \text{d}A = (-i)^{n-k-1}\text{d}A^{2n-2}.
+    $$
+    In other words, not only is $F$ an exact form, but $\omega_{2n-1}$ is also an exact form for the pure gauge!
+    $$
+    \omega_{2n-1}\propto\text{Tr} \text{d}A^{2n-2}.
+    $$
+    For $n=1$, you have
+    $$
+    \omega_1\propto \text{Tr} A=\text{Tr} g^{-1}\text{d}g = \text{Tr} \text{d}\log g,
+    $$
+    which is also an exact form.
 
 
 
