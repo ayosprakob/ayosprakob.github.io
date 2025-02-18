@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js">
+    </script>
+    <title>Learning Lattice</title>
+    <link rel="stylesheet" href="../src/style.css">
+</head>
+<body>
+<div id="viewport">
+<p id="webheader">
+</p>
+<hr>
+<div id="link1">
+</div>
+<hr>
+<div id="content">
+    <h2>About topological charge</h2>
+
+    <div id="anchors"></div>
+
+    <section anchor="summary">Summary</section>
+
+    In $d=2n$ dimensions, the topological charge is given by
+    $$
+    Q = \alpha_{2n}\int_\mathcal{M} \text{Tr}F^n.
+    $$
+    Here, $F=\text{d}A+iA\wedge A$ is the curvature form, $F^{n}$ means the $n$-th power with respect to the exterior product, $\int_\mathcal{M}$ is the volume integral over the manifold $\mathcal{M}$, and $\alpha_{2n}$ is some coefficient that we will fix later.
+    The integrand can be expressed as a sum of $2n$-forms
+    $$
+    \text{Tr}F^n=\sum_{k=1}^{n} f_k\text{Tr}\{A^{2k-2}\wedge (\text{d}A)^{n-k+1}\}
+    $$
+    <box>
+      <b>Proof:</b>
+      <nl>
+      We first write
+      $$
+      F^n = \sum_{k=0}^n i^{k}~\text{Sf}(
+      \underset{k}{\underbrace{A^2,\cdots,A^2}},
+      \underset{n-k}{\underbrace{\text{d}A,\cdots,\text{d}A}})
+      $$
+      where $\text{Sf}(~\cdot~)$ is the sum of all possible symmetric permutation of its arguments. 
+    </box>
+
+</div>
+<hr>
+<div id="link2">
+</div>
+<hr>
+</div>
+<script>
+    updatepage(`
+    <b>Next:</b>
+
+
+    <br>
+    <b>Prev:</b>
+    <a href="gauge_theory.html">gauge theory</a>,
+    <a href="home.html">home</a>
+    `);
+</script>
+</body>
+</html>

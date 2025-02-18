@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js">
+    </script>
+    <title>Learning Lattice</title>
+    <link rel="stylesheet" href="../src/style.css">
+</head>
+<body>
+<div id="viewport">
+<p id="webheader">
+</p>
+<hr>
+<div id="link1">
+</div>
+<hr>
+<div id="content">
+    <h2>About topological charge</h2>
+
+    <div id="anchors"></div>
+
+    <box>
+      THIS PAGE IS ALL WRONG!
+      <nl>
+      $A$ and $dA$ don't have a nice commutativity, so you can't just arrange them neatly like $A^p(dA)^q$.
+      Now you have to prove again that $F$ is exact!
+    </box>
+
+    In this section, we will derive some known properties of the topological charge in even dimensions. At the beginning, I will use the differential form<cite src="https://en.wikipedia.org/wiki/Differential_form"></cite> for notational simplicity, then I will switch to the usual coefficient notation when we discuss specific cases.
+
+    <section anchor="quantization">Quantization</section>
+
+    In $d=2n$ dimensions, the topological charge is given by
+    $$
+    Q = \alpha_{2n}\int_\mathcal{M} \text{Tr}F^n.
+    $$
+    Here, $F=\text{d}A+iA\wedge A$ is the curvature form, $F^{n}$ means the $n$-th power with respect to the exterior product, $\int_\mathcal{M}$ is the volume integral over the manifold $\mathcal{M}$, and $\alpha_{2n}$ is some coefficient that we will fix later.
+    The integrand can be expressed as a sum of $2n$-forms
+    $$
+    \text{Tr}F^n=\sum_{k=1}^{n} f_k\text{Tr}\{A^{2k-2}\wedge (\text{d}A)^{n-k+1}\}
+    $$
+    for some coefficients $f_k$ which I don't know the general form but it can be easily worked out by hand. Also, remember that $\text{Tr}A^{2n}=0$ because the cyclic property of the trace is incompatible with the even exterior power, so there is no $k=n+1$ in the sum. Note that
+    $$
+    A^{2k-2}\wedge (\text{d}A)^{n-k+1}=\frac{1}{2k-1}\text{d}(A^{2k-1}\wedge (\text{d}A)^{n-k}).
+    $$
+    It follows that the topological charge is an integral of a total derivative
+    \begin{align}
+    Q &= \alpha_{2n}\int_{\mathcal{M}} \text{d}\omega_{2n-1};\\
+    \omega_{2n-1}&=\sum_{k=1}^n\frac{f_k}{2k-1}\text{Tr}\{A^{2k-1}\wedge (\text{d}A)^{n-k}\}.
+    \end{align}
+    The object $\omega_p$ is known as the Chern-Simon $p$-form.
+    <nl>
+    The topological charge is now replaced by the surface integral
+    $$
+    Q = \alpha_{2n}\int_{\partial\mathcal{M}} \omega_{2n-1}.
+    $$
+    We will now restrict ourselves to one of these two cases:
+    <ul>
+      <li> Compact manifold
+      <li> Infinite manifold with all fields vanishing at the infinity
+    </ul>
+    Open manifolds have totally different topological physics, so we will leave the discussions for other sections. The second case can be considered as a sphere with the infinity identified as one of the poles; $\mathbb{R}^d\cup\{\infty\}\simeq S^d$. In any case, we will now argue that the boundary $\partial\mathcal{M}$ for both cases can always be chosen to be homotopic to a $(d-1)$-sphere that can be shrunk to zero volume.
+    <nl>
+    The argument is rather simple. Instead of considering an integral over a closed manifold $\mathcal{M}$, we consider an integral over an open manifold $\mathcal{V}\subset\mathcal{M}$ such that $\mathcal{V}$ is $\mathcal{M}$ with a spherical puncture. As we take the limit where the puncture is shrunk to zero volume, we obtain the original integral over $\mathcal{M}$. Since the puncture is a $d$-ball, its boundary is a $(d-1)$-sphere<cite src="https://en.wikipedia.org/wiki/Ball_(mathematics)"></cite>. $Q.E.D.$
+    <nl>
+    The remaining question now is: what happens to the surface integral over a shrinking $(d-1)$-sphere? Naively, you would think that the integral becomes zero. But as we will see, this may not be true when $\int\omega_{2n-1}$ is a multivalued function.
+
+    <section anchor="homotopy">Homotopy groups</section>
+
+    Consider an integral of a function $\omega(x)$ around a puncture $\partial\mathcal{M}=\gamma$
+    $$
+    I_\gamma = \oint_\gamma dx~\omega(x)
+    $$
+    We now assume that $I_\gamma$ is <note value="Example: logarithm is multivalued with period 2&pi;">multivalued with period $\Lambda$</note>:
+    $$
+    I_\gamma = \text{pv}\left[\oint_\gamma dx~\omega(x)\right]+q\Lambda;\quad q\in\mathbb{Z},
+    $$
+    where $\text{pv}[~\cdot~]$ is the principal value. Shrinking the puncture to zero makes the principal value vanish, leaving only the quantized term $q\Lambda$
+    $$
+    I_0 = q\Lambda.
+    $$
+    What kind of $\omega(x)$ gives the integral with this property? The simplest example is when $\omega(x)$ is a total derivative of a multivalued function with period $\Lambda$:
+    $$
+    \omega(x) = \partial_x f(x)
+    $$
+    If we take $\gamma$ to be a circle $x\in[0,2\pi)$ and $f(x)$ to be periodic on $\gamma$ modulo $\Lambda$; $f(x+2\pi)\equiv f(x)~(\text{mod}~\Lambda)$, then we have
+    $$
+    I_\gamma=\int_0^{2\pi}dx \partial_xf(x)=f(2\pi)-f(0)=q\Lambda.
+    $$
+    Here, the integer $q$ counts the number of times $f(x)$ crosses the branch cuts in the interval $x\in[0,2\pi)$. Another way to imagine this is to consider $f(x)$ as a map from $\gamma$ (a circle with radius $1$) onto another circle (with radius $\Lambda/2\pi$). Then $q$ counts the number of times the first circle wraps around the second circle.
+    <nl>
+    Let us try to generalize this statement. Let $\int\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$<cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
+    <nl>
+    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is a result from Bott periodicity theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
+    <nl>
+    <center>
+    <table>
+      <tr>
+        <th>Dimension $d$
+        <th>Gauge group
+        <th>Homotopy group
+        <th>Topological structure
+      </tr>
+      <tr>
+        <td>$2$
+        <td>$U(1)$
+        <td>$\pi_1(U(1))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+      </tr>
+      <tr>
+        <td>$2$
+        <td>$SU(N)$
+        <td>$\pi_1(SU(N))\sim\pi_1(SU(2))=0$
+        <td>trivial
+      </tr>
+      <tr>
+        <td>$d>2$
+        <td>$U(1)$
+        <td>$\pi_{d-1}(U(1))=0$
+        <td>trivial
+      </tr>
+      <tr>
+        <td>$4$
+        <td>$SU(N)$
+        <td>$\pi_3(SU(N))\sim\pi_3(SU(2))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+      </tr>
+    </table>
+    </center>
+    <br>
+    <ref href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</ref> for other homotopy groups.
+    <nl>
+    /*
+    We will now turn our attention to the two non-trivial cases on the table: 2d $U(1)$ and 4d $SU(N)$ gauge theories.
+    */
+
+    <section anchor="pure_gauge">Pure gauge</section>
+    So far, we have shown that the topological charge must be a multiple of integer if the base manifold and the gauge group are compatible. But we still have to determine the coefficient $\alpha_d$ that makes $Q\in\mathbb{Z}$. For simplicity of the calculation, we will consider the so called 'pure' gauge
+    $$
+    A_\mu = -ig^{-1}\partial_\mu g.
+    $$
+    Namely, it is the gauge transformation of $A_\mu=0$ with $V=g^{-1}$. See <ref href="gauge_symmetry.html#group-algebra-irrep">here</ref> if you forgot. Since $F=\text{d}A+iA\wedge A$ is gauge invariant, it follows that $F=0$. Or you can also show explicitly:
+    \begin{align}
+    F &= \text{d}A + iA\wedge A\\
+    &= \text{d}(-ig^{-1}\text{d}g)+i(-ig^{-1}\text{d}g)\wedge(-ig^{-1}\text{d}g)\\
+    &= -i\text{d}g^{-1}\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)\\
+    &= -i(-g^{-1}\text{d}gg^{-1})\wedge \text{d}g-i(g^{-1}\text{d}g)\wedge(g^{-1}\text{d}g)=0,
+    \end{align}
+    where we have used $\text{d}g^{-1}=-g^{-1}\text{d}gg^{-1}$ (which comes from $\text{d}(gg^{-1})=0$). Physically, the fact that the field strength, and thus the kinetic action, vanish means that we are considering the classical solution to the Yang-Mills equation. As we discussed above, the topological charge is quantized. This means that even if we introduce a <note value="Small in the sense that it is not separated from the pure gauge by some infinite barrier in the action.">small</note> quantum fluctuation, the topological charge should remains the same.
+    <nl>
+    The fact that $F=0$ also means that
+    $$
+    A\wedge A = i\text{d}A.
+    $$
+    This identity is weird, since it implies that
+    $$
+    A^{p+1} = \frac{i^p}{p!}\text{d}^pA.
+    $$
+    You can prove this starting from $A^2=i\text{d}A$, then moving to $A^3=iA\text{d}A=\frac{i}{2}\text{d}A^2=\frac{i^2}{2}\text{d}^2A$, etc. Another thing is, you can also easily show that
+    $$
+    \omega_{d-1}=\beta_{d-1} \text{Tr}~A^{d-1}
+    $$
+    for some coefficient $\beta_{d-1}$ which I don't knowthe general form but can be computed by hand. Consequently, you have
+    $$
+    Q = \alpha_d\beta_{d-1}\frac{i^{d-2}}{(d-2)!}\times\int_{S^{d-1}}\text{d}^{d-2}\text{Tr}A.
+    $$
+    We will now use the same argument as before: the integral of an exact form $\text{d}f$ over $S^p$ can be rewritten as an integration of $f$ over a shrinking $S^{p-1}$. Keep repeating this, and we finaly will arrive at an integral of $A$ over a shrinking $S^1$. Each layer of the transition $S^{p}\rightarrow S^{p-1}$, we gain some geometric factor. We will use this fact to find the coefficient $\alpha_d$.
+    
+    <section anchor="coeff">Determining the coefficients</section>
+
+    For now, let's focus on the integral
+    $$
+    I_d:=\int_{S^{d-1}}\text{d}^{d-2}\text{Tr}A.
+    $$
+    We can use the <ref href="https://en.wikipedia.org/wiki/N-sphere#Spherical_coordinates">hyper-spherical coordinates</ref> to compute the integral
+    \begin{align}
+    I_d &= \int_0^\pi d\phi (\sin\phi)^{d-2} I_{d-1};\quad\text{for}~d>2,\\
+    I_2 &= \int_{-\pi}^\pi d\theta \text{Tr}A_\theta
+    =-i\int_{-\pi}^\pi d\theta\partial_\theta\text{Tr}\log g(\theta)
+    =-i\text{Tr}\log(g(\pi)g^{-1}(-\pi)).
+    \end{align}
+    In the last line, we use the fact that $A_\theta=-ig^{-1}\partial_\theta g=-i\partial_\theta\log g$. For $d=2n$, you can integrate two layers at a time and obtain
+    $$
+    I_d=\frac{\pi}{(d/2)}I_{d-2}=\frac{\pi^{(d/2)-1}}{(d/2)!}I_2=-i\frac{\pi^{(d/2)-1}}{(d/2)!}\text{Tr}\log(g(\pi)g^{-1}(-\pi)).
+    $$
+    We will now consider a gauge transformation $g$ that is periodic in $\theta$ but wrapped around the gauge manifold $q$ times:
+    $$
+    g(\theta) = \exp(iq\theta\sigma)
+    $$
+    where $\sigma=1$ for U(1) and $\sigma=t_1$ (the first generator) for $SU(N)$.
+
+
+</div>
+<hr>
+<div id="link2">
+</div>
+<hr>
+</div>
+<script>
+    updatepage(`
+    <b>Next:</b>
+
+
+    <br>
+    <b>Prev:</b>
+    <a href="gauge_theory.html">gauge theory</a>,
+    <a href="home.html">home</a>
+    `);
+</script>
+</body>
+</html>
