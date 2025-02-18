@@ -34,27 +34,20 @@
 
     <section anchor="summary">Summary</section>
 
-    In $d=2n$ dimensions, the topological charge is given by
+    Topological charge is an observable that measures non-perturbative property of the gauge field configuration. In even dimensions $d=2n$, the topological charge is given by
     $$
-    Q = \alpha_{2n}\int_\mathcal{M} \text{Tr}F^n.
+    Q = \alpha_{2n}\int_\mathcal{M}d^{2n}x~\epsilon^{\mu_1\cdots\mu_d}~\text{Tr}~F_{\mu_1\mu_2}\cdots F_{\mu_{d-1}\mu_d}
     $$
-    Here, $F=\text{d}A+iA\wedge A$ is the curvature form, $F^{n}$ means the $n$-th power with respect to the exterior product, $\int_\mathcal{M}$ is the volume integral over the manifold $\mathcal{M}$, and $\alpha_{2n}$ is some coefficient that we will fix later.
-    The integrand can be expressed as a sum of $2n$-forms
+    where $\alpha_{2n}$ is some coefficient and $\mathcal{M}$ is the base manifold. It can be written more conveniently as a differential form as
     $$
-    \text{Tr}F^n=\sum_{k=1}^{n} f_k\text{Tr}\{A^{2k-2}\wedge (\text{d}A)^{n-k+1}\}
+    Q=\alpha_{2n}\int_{\mathcal{M}}\text{Tr}~F^n.
     $$
-    <box>
-      <b>Proof:</b>
-      <nl>
-      We first write
-      $$
-      F^n = \sum_{k=0}^n i^{k}~\text{Sf}(
-      \underset{k}{\underbrace{A^2,\cdots,A^2}},
-      \underset{n-k}{\underbrace{\text{d}A,\cdots,\text{d}A}})
-      $$
-      where $\text{Sf}(~\cdot~)$ is the sum of all possible symmetric permutation of its arguments. 
-    </box>
-
+    The topological charge is quantized. In 2 dimensions, only $U(1)$ gauge theory has a non-trivial topological structure, while in 4 dimensions, only $SU(N)$ is allowed.
+    <nl>
+    Specifically, the topological charge for 2d $U(1)$ and 4d $SU(N)$ take the form
+    $$
+    Q=
+    $$
 </div>
 <hr>
 <div id="link2">
