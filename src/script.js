@@ -17,13 +17,6 @@ function updatepage(linkdetails) {
     if(link2){
         link2.innerHTML = linkdetails
     }
-    box_embed()
-}
-
-function box_embed(){
-    document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
-                return `<div class="equation">$$${content}$$</div>`;
-            });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
@@ -34,6 +27,10 @@ document.addEventListener("DOMContentLoaded", function() {
 
     // Custom tags
     var contentText = document.getElementById("content").innerHTML
+
+    //equations
+    let count = 0;
+    contentText = contentText.replace(/\$\$/g, () => (++count % 2 === 1) ? "<div class=\"equation\">\\begin{align}" : "\\end{align}</div>");
 
     // new paragraph
     contentText = contentText.replaceAll("<nl>", "<br><br>");
