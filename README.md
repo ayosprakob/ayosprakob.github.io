@@ -21,3 +21,25 @@ Use `/* Comment. */` comment out a block. Can be multi-line.
 
 ### Link to other page
 Use `<ref href="target.html">text</ref>` for the link. Similar to `<ref href="target.html" target="_blank" >text</ref>`
+
+### Table
+Use the following format
+```
+    <mytable>
+      <trow>
+        <hcol>header1
+        <hcol>header2
+        <hcol>header3
+        <hcol>header4
+      <trow>
+        <tcol>This
+        <tcol>is
+        <tcol>the
+        <tcol>test.
+      <trow>
+        <tcol>Here
+        <tcol>is
+        <tcol>another
+        <tcol>row.
+    </mytable>
+```

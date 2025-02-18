@@ -29,26 +29,120 @@
 </div>
 <hr>
 <div id="content">
-    <h2>About topological charge</h2>
+    <h2>About the topological charge</h2>
 
     <div id="anchors"></div>
 
     <section anchor="summary">Summary</section>
 
-    Topological charge is an observable that measures non-perturbative property of the gauge field configuration. In even dimensions $d=2n$, the topological charge is given by
+    Topological charge is an observable that measures non-perturbative properties of the gauge field configuration. In even dimensions $d$, the topological charge is given by
     $$
-    Q = \alpha_{2n}\int_\mathcal{M}d^{2n}x~\epsilon^{\mu_1\cdots\mu_d}~\text{Tr}~F_{\mu_1\mu_2}\cdots F_{\mu_{d-1}\mu_d}
+    Q = \alpha_{d}\int_\mathcal{M}d^{2n}x~\epsilon^{\mu_1\cdots\mu_d}~\text{Tr}~F_{\mu_1\mu_2}\cdots F_{\mu_{d-1}\mu_d}
     $$
     where $\alpha_{2n}$ is some coefficient and $\mathcal{M}$ is the base manifold. It can be written more conveniently as a differential form as
     $$
-    Q=\alpha_{2n}\int_{\mathcal{M}}\text{Tr}~F^n.
+    Q=\alpha_{d}\int_{\mathcal{M}}\text{Tr}~F^{d/2}.
     $$
-    The topological charge is quantized. In 2 dimensions, only $U(1)$ gauge theory has a non-trivial topological structure, while in 4 dimensions, only $SU(N)$ is allowed.
+    The topological charge is quantized. In 2 dimensions, only $U(1)$ gauge theory has a non-trivial topological structure, while in 4 dimensions, only $SU(N)$ has.
     <nl>
     Specifically, the topological charge for 2d $U(1)$ and 4d $SU(N)$ take the form
     $$
-    Q=
+    Q=\left\{
+      \begin{array}{l}
+      \displaystyle
+      \frac{1}{4\pi}\epsilon^{\mu\nu}~\int d^2xF_{\mu\nu}&;\;\text{2d},\\
+      \displaystyle
+      \frac{1}{32\pi^2}\epsilon^{\mu\nu\rho\sigma}~\int d^4x\text{Tr}~F_{\mu\nu}F_{\rho\sigma}&;\;\text{4d}.
+      \end{array}
+      \right.
     $$
+    In the following sections, I will spend some time discussing why the topological charge only exists in some combination of dimensions and gauge groups. I will also determine the coefficient $\alpha_{d}$ at least for $d=2$ and $4$.
+
+    <section anchor="chern-simon">Chern-Simon form</section>
+
+    First of all, it is known that the topological charge can be written as a surface integral of a Chern-Simon form
+    $$
+    Q = \alpha_d\int_{\partial\mathcal{M}}\omega_{d-1}.
+    $$
+    I don't know how to nicely prove this in arbitrary dimensions, but you can easily confirmed this for up to $d=6$:
+    $$
+    \text{d}\omega_{d-1} &= \text{Tr}~F^{d/2};\\
+    \omega_1&=\text{Tr}A,\\
+    \omega_3&=\text{Tr}\left(A\text{d}A+\frac{2i}{3}A^3\right),\\
+    \omega_5&=\text{Tr}\left(A(\text{d}A)^2+\frac{3i}{2} A^3\text{d}A -\frac{3}{5}A^5\right),
+    $$
+    where $F=dA+iA^2$. Note that some terms such as $\text{Tr}(A\text{d}A A\text{d}A)$ or $\text{Tr}A^2$ vanish because of the antisymmetricity of the exterior products.
+
+    <nl>
+
+    Typically, we are actually interested in <note value="Open boundaries do not have a proper topological structure, so we will ignore it.">either of the following</note>: a closed base manifold or an infinitely extended base manifold with the condition that all fields vanish at the infinity. The second case can also be considered as a $d$-sphere $S^d$ with the infinity identified as one of the poles.
+
+    We will now argue that the boundary $\partial\mathcal{M}$ for both cases can always be chosen to be homotopic to a $(d-1)$-sphere that can be shrunk to zero volume.
+    <box>
+    <b>Proof</b><br>
+    The argument is rather simple. Instead of considering an integral over a closed manifold $\mathcal{M}$, we consider an integral over an open manifold $\mathcal{V}\subset\mathcal{M}$ such that $\mathcal{V}$ is $\mathcal{M}$ with a spherical puncture. As we take the limit where the puncture is shrunk to zero volume, we obtain the original integral over $\mathcal{M}$. Since the puncture is a $d$-ball, its boundary is a $(d-1)$-sphere<cite src="https://en.wikipedia.org/wiki/Ball_(mathematics)"></cite>. $Q.E.D.$
+    </box>
+
+    So the boundary $\partial\mathcal{M}$ actually should vanish in both cases. Naively, we therefore also expect $Q$ to also vanish. But actually, there is an exception to this when the integrand involves a multivalued function. Let's investigate this more carefully next.
+
+    <section anchor="homotopy">Homotopy group</section>
+
+    Consider an integral of a function $\omega(x)$ around a puncture $\partial\mathcal{M}=\gamma$
+    $$
+    I_\gamma = \oint_\gamma dx~\omega(x)
+    $$
+    We now assume that $I_\gamma$ is <note value="Example: logarithm is multivalued with period 2&pi;">multivalued with period $\Lambda$</note>:
+    $$
+    I_\gamma = \text{pv}\left[\oint_\gamma dx~\omega(x)\right]+q\Lambda;\quad q\in\mathbb{Z},
+    $$
+    where $\text{pv}[~\cdot~]$ is the principal value. Shrinking the puncture to zero makes the principal value vanish, leaving only the quantized term $q\Lambda$
+    $$
+    I_0 = q\Lambda.
+    $$
+    What kind of $\omega(x)$ gives the integral with this property? The simplest example is when $\omega(x)$ is a total derivative of a multivalued function with period $\Lambda$:
+    $$
+    \omega(x) = \partial_x f(x)
+    $$
+    If we take $\gamma$ to be a circle $x\in[-\pi,\pi)$ and $f(x)$ to be periodic on $\gamma$ modulo $\Lambda$; $f(x+2\pi)\equiv f(x)~(\text{mod}~\Lambda)$, then we have
+    $$
+    I_\gamma=\int_{-\pi}^{\pi}dx \partial_xf(x)=f(\pi)-f(-\pi)=q\Lambda.
+    $$
+    Here, the integer $q$ counts the number of times $f(x)$ crosses the branch cuts in the interval $x\in[-\pi,\pi)$. Another way to imagine this is to consider $f(x)$ as a map from $\gamma$ (a circle with radius $1$) onto another circle (with radius $\Lambda/2\pi$). Then $q$ counts the number of times the first circle wraps around the second circle.
+    <nl>
+    Let us try to generalize this statement. Let $\int\omega$ be a map from a space-time manifold $\partial\mathcal{M}$ onto the group manifold $\mathcal{G}$, then the existence of nonzero topological charge depends on wheter or not we can wrap $\partial\mathcal{M}$ around $\mathcal{G}$ in a non-trivial way. This problem can be catagorized by an object called the <i>homotopy group</i> $[\partial\mathcal{M},\mathcal{G}]$<cite src="https://en.wikipedia.org/wiki/Homotopy_group"></cite>. In the previous example, it is known that the homotopy group of a map between two 1-spheres is $[S^1,S^1]=\mathbb{Z}$. This means that all possible distinct ways to wrap the circles can be parametrized by an integer $q$. For a map from $S^m$ to $S^n$, the homotopy group is typically denoted by $\pi_m(S^n):=[S^m,S^n]$.
+    <nl>
+    Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is a result from Bott periodicity theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
+    <nl>
+    <mytable>
+      <trow>
+        <hcol>Dimension $d$
+        <hcol>Gauge group
+        <hcol>Homotopy group
+        <hcol>Topological structure
+      <trow>
+        <tcol>$2$
+        <tcol>$U(1)$
+        <tcol>$\pi_1(U(1))=\mathbb{Z}$
+        <tcol>$\mathbb{Z}$
+      <trow>
+        <tcol>$2$
+        <tcol>$SU(N)$
+        <tcol>$\pi_1(SU(N))\sim\pi_1(SU(2))=0$
+        <tcol>trivial
+      <trow>
+        <tcol>$d>2$
+        <tcol>$U(1)$
+        <tcol>$\pi_{d-1}(U(1))=0$
+        <tcol>trivial
+      <trow>
+        <tcol>$4$
+        <tcol>$SU(N)$
+        <tcol>$\pi_3(SU(N))\sim\pi_3(SU(2))=\mathbb{Z}$
+        <tcol>$\mathbb{Z}$
+    </mytable>
+    <br>
+    <ref href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</ref> for other homotopy groups.
+
 </div>
 <hr>
 <div id="link2">

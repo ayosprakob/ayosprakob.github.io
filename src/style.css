@@ -17,7 +17,7 @@ then
     width: 500px;
     padding: 20px;
     border: 1px solid #ccc;
-    background-color: #f9f9f9;
+    background-color: #ebf2ff;
     margin: 20px auto;
     text-align: left;
 }
@@ -35,11 +35,11 @@ then
 }
 
 a::before { content: attr(data-text); }
-a { text-decoration: none; }
+a { color: #1049b0; text-decoration: none; }
 
 .equation {
-            width: 90%;
-            max-width: 600px; /* Adjust as needed */
+            width: 95%;
+            /*max-width: 600px;*/
             padding: 10px;
             overflow-x: auto; /* Enable horizontal scrolling */
             overflow-y: hidden; /* Disable horizontal scrolling */
@@ -52,10 +52,13 @@ note {
     position: relative;
     display: inline-block;
     cursor: pointer;
+    text-decoration: underline dotted #1E90FF;
 }
 
 note:hover {
     text-decoration-thickness: 2px;
+    text-decoration: none;
+
 }
 
 note:hover::before {
@@ -70,23 +73,29 @@ note:hover::before {
     transform: translateX(var(--tooltip-a, 0%));
     left: var(--tooltip-b, 0%);
     white-space: preserve nowrap;
-    /*white-space: pre-line;*/ /* Allows line breaks */
     /* L 0% -->  100% R */
 }
 
 
 
 table {
-  font-family: arial, sans-serif;
   border-collapse: collapse;
 }
 
 td, th {
-  border: 1px solid #dddddd;
+  border: 1px solid #ccc;
   text-align: left;
   padding: 8px;
 }
 
+th {
+  background-color: #c7dbff;
+}
+
+tr:nth-child(odd) {
+  background-color: #ebf2ff;
+}
+
 tr:nth-child(even) {
-  background-color: #dddddd;
+  background-color: white;
 }

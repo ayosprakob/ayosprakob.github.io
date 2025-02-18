@@ -17,6 +17,7 @@ function updatepage(linkdetails) {
     if(link2){
         link2.innerHTML = linkdetails
     }
+
     box_embed()
 }
 
@@ -42,15 +43,23 @@ document.addEventListener("DOMContentLoaded", function() {
     contentText = contentText.replaceAll("<box>", "<div class='text-box'>");
     contentText = contentText.replaceAll("</box>", "</div>");
 
-    contentText = contentText.replaceAll("</note>", "<sup>[?]</sup></note>");
+    contentText = contentText.replaceAll("</note>", "$^\\textbf{[?]}$</note>");
 
     //comment
     contentText = contentText.replaceAll("/*", "<!--");
     contentText = contentText.replaceAll("*/", "-->");
 
+    
     //ref to other page
     contentText = contentText.replaceAll("<ref ", "<a target='_blank' ");
     contentText = contentText.replaceAll("</ref", "</a");
+
+    //tables
+    contentText = contentText.replaceAll("<mytable>", "<center><div class=\"equation\"><table>");
+    contentText = contentText.replaceAll("</mytable>", "</table></div></center>");
+    contentText = contentText.replaceAll("<hcol>", "<th>");
+    contentText = contentText.replaceAll("<tcol>", "<td>");
+    contentText = contentText.replaceAll("<trow>", "<tr>");
 
     document.getElementById("content").innerHTML = contentText;
 
@@ -121,6 +130,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener('click', function() {
         document.querySelectorAll('.tooltip-visible').forEach(el => el.classList.remove('tooltip-visible'));
     });
-    
+
+    MathJax.typesetPromise()
 });
 
