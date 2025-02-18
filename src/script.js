@@ -121,6 +121,6 @@ document.addEventListener("DOMContentLoaded", function() {
     document.addEventListener('click', function() {
         document.querySelectorAll('.tooltip-visible').forEach(el => el.classList.remove('tooltip-visible'));
     });
-
+    
 });
 
