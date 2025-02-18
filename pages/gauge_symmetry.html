@@ -6,7 +6,8 @@
     <script>
     MathJax = {
       tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
+        inlineMath: [['$', '$']],
+        displayMath: [['\\[', '\\]']] 
       },
       svg: {
         fontCache: 'global'
@@ -54,28 +55,22 @@
     where $\psi^\dagger(x)$ is a Hermitian conjugate.
     Note here that the probability density is invariant under the transformation
     $$
-    \begin{align}
     \psi(x)&\longrightarrow e^{i\Phi}\psi(x),\\
     \psi^\dagger(x)&\longrightarrow \psi^\dagger(x)e^{-i\Phi},
-    \end{align}
     $$
     for some constant Hermitian matrix $\Phi$. This transformation is called a global SU($N$) symmetry since it acts globally (acts in the same way for all space-time point).
     <nl>
     We would like to promote this symmetry to be local since local observer should be able to choose their own basis independently from other observers (it's relativity!):
     $$
-    \begin{align}
     \psi(x)&\longrightarrow e^{i\Phi(x)}\psi(x),\\
     \psi^\dagger(x)&\longrightarrow \psi^\dagger(x)e^{-i\Phi(x)},
-    \end{align}
     $$
     But you immediately encounter a problem if you try to measure the momentum:
     $$
-    \begin{align}
     \psi^\dagger(x)\hat p\psi(x) &= -i\psi^\dagger(x)\partial_x\psi(x)\\
     &\!\!\!\!\longrightarrow -i\psi^\dagger(x)e^{-i\Phi(x)}\partial_x\left\{e^{i\Phi(x)}\psi(x)\right\}\\
     &=\psi^\dagger(x)\partial_x\Phi(x)\psi(x)-i\psi^\dagger(x)\partial_x\psi(x)\\
     &=\psi^\dagger(x)(\partial_x\Phi(x)+\hat p)\psi(x).
-    \end{align}
     $$
     The momentum is shifted by $\partial_x\Phi(x)$ under this transformation!
     <nl>
@@ -89,7 +84,6 @@
     $$
     Let's redefine the momentum operator as $\hat p:=-iD_x$, then the transformation above becomes
     $$
-    \begin{align}
     \psi^\dagger(x)\hat p\psi(x) &=
     -i\psi^\dagger(x)\partial_x\psi(x)
     +\psi^\dagger(x)A(x)\psi(x)
@@ -103,7 +97,6 @@
     +\psi^\dagger(x)A(x)\psi(x)
     -\psi^\dagger(x)\partial_x\Phi(x)\psi(x)\\
     &=\psi^\dagger(x)\hat p\psi(x).
-    \end{align}
     $$
     The momentum is now invariant under this local transformation! In the literature, we call this kind of local symmetry the <i>gauge symmetry</i> and the field $A(x)$ the <i>gauge field</i>.
 
@@ -116,17 +109,13 @@
     <nl>
     We first state that the field $\psi(x)$ transforms under a <i>gauge group</i> $G$ under an irreducible representation $\rho$ (assumed to be a unitary representation):
     $$
-    \begin{align}
     \psi(x)&\rightarrow D^\rho[V(x)]\psi(x),\\
-    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)D^\rho[V^{-1}(x)],\\
-    \end{align}
+    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)D^\rho[V^{-1}(x)],
     $$
     for some $V(x)\in G$. Note that, in the notation presented previously, we have $V(x)=e^{i\Phi(x)}$ for some $\Phi(x)\in\mathfrak{g}$ (the Lie algebra). From here, we will use the short-hand notation $V^{\rho}(x):=D^\rho[V(x)]$. Namely,
     $$
-    \begin{align}
     \psi(x)&\rightarrow V^\rho(x)\psi(x),\\
-    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)V^{\rho\dagger}(x).\\
-    \end{align}
+    \psi^\dagger(x)&\rightarrow \psi^\dagger(x)V^{\rho\dagger}(x).
     $$
     We colloqially say that $\psi(x)$ transforms like a vector and $\psi^\dagger(x)$ transforms like a covector.
     <nl>
@@ -142,7 +131,6 @@
     <nl>
     The reasoning behind this definition is that we want the covariant derivative to also transform like a vector:
     $$
-    \begin{align}
     D_x\psi(x)&=\partial_x\psi(x)+iA^\rho(x)\psi(x)
     \\
     &\!\!\!\!\longrightarrow
@@ -150,7 +138,6 @@
     -\left\{\partial_xV^\rho(x)\right\}\psi(x)\\
     &= V^\rho(x)\left\{\partial_x\psi(x)+iA^\rho(x)\psi(x)\right\}\\
     &= V^\rho(x)D_x\psi(x).
-    \end{align}
     $$
     Only then can we be sure that $\psi^\dagger(x)D_x\psi(x)$ is gauge invariant in the same way that $\psi^\dagger(x)\psi(x)$ is.
     <nl>
@@ -167,7 +154,6 @@
     <nl>
     Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{i\epsilon A(x)}$ for some infinitesimal $\epsilon$?
     $$
-    \begin{align}
     U_\epsilon(x)&=1+i\epsilon A(x)+O(\epsilon^2)\\
     &\!\!\!\!\longrightarrow
     1+i\epsilon V(x)A(x)V^{\dagger}(x)+\epsilon V(x) \partial_xV^{\dagger}(x)+O(\epsilon^2)\\
@@ -182,7 +168,6 @@
     V(x)e^{i\epsilon A(x)+O(\epsilon^2)}V^{\dagger}(x+\epsilon)\\
     &=
     V(x)U_\epsilon(x)V^{\dagger}(x+\epsilon).
-    \end{align}
     $$
     In other words, if we multiply $U_\epsilon(x)$ to some field at $x+\epsilon$, the result will transform like it is a field at $x$!
     $$
@@ -200,12 +185,10 @@
 
     Kind of. It is a kernel of the covariant derivative with respect to the endpoints:
     $$
-    \begin{align}
     D_{x'}U_\Gamma(x';x)
     &=(\partial_{x'}+iA(x'))\mathcal{P}\exp\left\{i\int^x_{x'} ds A(s)\right\}\\
     &=(-iA(x')+iA(x'))\mathcal{P}\exp\left\{i\int^x_{x'} ds A(s)\right\}\\
     &=0.
-    \end{align}
     $$
     The implication is that we can construct various Green's function of the operator $D_x$ by multiplying $U_\Gamma$ to a combination of step functions:
     $$
