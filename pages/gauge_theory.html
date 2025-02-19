@@ -4,42 +4,31 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['\\[', '\\]']] 
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
     <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
-    <script src="../src/script.js">
-    </script>
+    <script src="../src/script.js"></script>
     <title>Learning Lattice</title>
     <link rel="stylesheet" href="../src/style.css">
 </head>
 <body>
 <div id="viewport">
-<p id="webheader">
-</p>
+<p id="webheader"></p>
 <hr>
-<div id="link1">
-</div>
+<div id="nav1"></div>
 <hr>
 <div id="content">
     <h2>Gauge theory</h2>
     
     <div id="anchors"></div>
 
-    <section anchor="preface">Before we start</section>
+    <section label="preface">Before we start</section>
     Typically, textbooks usually introduces gauge theories from the history of electromagnetism, then move on to its quantization, the path integral, then the non-Abelian cases, and so on. I am not going to do that here since I don't want to repeat what many others already did. Instead, I will start with a generic, not phenomenologically motivated, framework. Then I will explore the possibilities. And match the result with what's happening in the standard model.
     <nl>
     Now with that out of the way, let's move on with the topic.
 
 
-    <section anchor="actions">Gauge-invariant actions</section>
+    <section label="actions">Gauge-invariant actions</section>
     <ref href="gauge_symmetry.html">So far</ref>, I have been treating the gauge field as if it's a mathematical object invented to fix some mathematical inconsistency. In a sense, that is correct. But interesting things can happen if we allow the gauge field to be dynamical. So how do we start?
     <nl>
     In order for the gauge field to be dynamical, it needs a kinetic term. And this kinetic term needs to be gauge invariant. (Remember: gauge transformation is not physical and should not be allowed to be observed directly.)
@@ -143,7 +132,7 @@
 
 
 
-    <section anchor="finite-temperature">Finite temperature gauge theory</section>
+    <section label="finite-temperature">Finite temperature gauge theory</section>
     Lattice theorists are particularly interested in finite-temperature field theory because its path integral behaves very well. In general, we can study a quantum system at finite temperature with the quantum statistical mechanics, whose partition function is given by
     $$
     Z = \sum_\Psi\langle\Psi|\exp(-\tau \hat H)|\Psi\rangle = \text{Tr}\left(\exp(-\tau \hat H)\hat S_\Psi\right)
@@ -206,14 +195,15 @@
     In fact, this interesting fact is kind of obvious when we discuss the dynamics of Polyakov loops in the spin-dual model. But we will leave it for another time.
 
 
-    <section anchor="theta-vacuum">$\theta$ vacuum</section>
+    <section label="theta-vacuum">$\theta$ vacuum</section>
 
     [Still writing...]
 </div>
 <hr>
-<div id="link2">
+<div id="nav2">
 </div>
 <hr>
+<p id="webfooter"></p>
 </div>
 <script>
     updatepage(`

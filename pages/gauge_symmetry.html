@@ -4,29 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['\\[', '\\]']] 
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
     <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
-    <script src="../src/script.js">
-    </script>
+    <script src="../src/script.js"></script>
     <title>Learning Lattice</title>
     <link rel="stylesheet" href="../src/style.css">
 </head>
 <body>
 <div id="viewport">
-<p id="webheader">
-</p>
+<p id="webheader"></p>
 <hr>
-<div id="link1">
-</div>
+<div id="nav1"></div>
 <hr>
 <div id="content">
     <h2>Gauge symmetry</h2>
@@ -46,7 +35,7 @@
     <cite src="https://inspirehep.net/literature/12285"></cite>
     </box>
 
-    <section anchor="preface">Basic story</section>
+    <section label="preface">Basic story</section>
 
     Consider a matter field with a wave function $\psi(x)$. Let's consider it to be a wave function with $N$ components apart from the space-time index $x$. As a wave function, we learned that we can use it to compute a probability density with a bilinear
     $$
@@ -103,7 +92,7 @@
 
 
 
-    <section anchor="group-algebra-irrep">Groups, algebras, and representations</section>
+    <section label="group-algebra-irrep">Groups, algebras, and representations</section>
 
     So far it seems arbitrary that we impose the locality of some global transformation and all of a sudden we have a new gauge field. To make the statement more precise, let me formulate the result above in a different way.
     <nl>
@@ -149,7 +138,7 @@
 
 
 
-    <section anchor="parallel-transport">Parallel transport</section>
+    <section label="parallel-transport">Parallel transport</section>
     Gauge fields can be used to construct a parallel transport. Some would even say that that is the real definition of a gauge field!
     <nl>
     Riddle me this. What is the transformation property of a quantity $U_\epsilon(x)=e^{i\epsilon A(x)}$ for some infinitesimal $\epsilon$?
@@ -181,7 +170,7 @@
     where $\mathcal{P}$ is the path-ordering operator.
 
 
-    <section anchor="two-point function">Wilson line is a quark two-point function!</section>
+    <section label="two-point function">Wilson line is a quark two-point function!</section>
 
     Kind of. It is a kernel of the covariant derivative with respect to the endpoints:
     $$
@@ -201,9 +190,10 @@
     We note here that this fermion is not dynamical since its trajectory is given by $\Gamma$. In other words, Wilson line is exactly what you get when integrating out a probe fermion moving along a certain path. We will use this fact to discuss the dynamics of the gauge field in the next chapter.
 </div>
 <hr>
-<div id="link2">
+<div id="nav2">
 </div>
 <hr>
+<p id="webfooter"></p>
 </div>
 <script>
     updatepage(`

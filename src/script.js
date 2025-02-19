@@ -1,6 +1,7 @@
 
 function updatepage(linkdetails) {
     const webHeader = document.getElementById("webheader");
+    const webFooter = document.getElementById("webfooter");
     webHeader.innerHTML = `
         <h1>Learning Lattice</h1>
         <i>A compendium of lattice models, gauge theory, and computational physics.</i>
@@ -9,8 +10,18 @@ function updatepage(linkdetails) {
         <br>
         <br>
     `;
-    const link1 = document.getElementById("link1");
-    const link2 = document.getElementById("link2");
+    webFooter.innerHTML = `
+        <center>
+        <font color="#aaa">
+        Web template created by Atis Yosprakob.
+        <br>
+        Copyright 2025, Atis Yosprakob &copy; All rights reserved.
+        <!--give credits where credit is due-->
+        </font>
+        </center>
+    `;
+    const link1 = document.getElementById("nav1");
+    const link2 = document.getElementById("nav2");
     if(link1){
         link1.innerHTML = linkdetails   
     }
@@ -23,14 +34,14 @@ function updatepage(linkdetails) {
 
 function box_embed(){
     document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
-                return `<div class="equation">\\begin{align}${content}\\end{align}</div>`;
+                return `<div class="wrap">\\begin{align}${content}\\end{align}</div>`;
             });
 }
 
 document.addEventListener("DOMContentLoaded", function() {
 
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // Manually revise some contents ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Macros :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     // Custom tags
@@ -39,29 +50,39 @@ document.addEventListener("DOMContentLoaded", function() {
     // new paragraph
     contentText = contentText.replaceAll("<nl>", "<br><br>");
 
+    // verbatic equations
+    contentText = contentText.replaceAll("\\$\\$", "$$$");
+
     // textbox
     contentText = contentText.replaceAll("<box>", "<div class='text-box'>");
     contentText = contentText.replaceAll("</box>", "</div>");
 
+    // footnotes
     contentText = contentText.replaceAll("</note>", "$^\\textbf{[?]}$</note>");
 
-    //comment
+    // comment
+    contentText = contentText.replaceAll("//*", "[halt-");
+    contentText = contentText.replaceAll("*//", "-halt]");
     contentText = contentText.replaceAll("/*", "<!--");
     contentText = contentText.replaceAll("*/", "-->");
+    contentText = contentText.replaceAll("[halt-","/*");
+    contentText = contentText.replaceAll("-halt]","*/");
 
     
-    //ref to other page
+    // ref to other page
     contentText = contentText.replaceAll("<ref ", "<a target='_blank' ");
     contentText = contentText.replaceAll("</ref", "</a");
 
-    //tables
-    contentText = contentText.replaceAll("<mytable>", "<center><div class=\"equation\"><table>");
-    contentText = contentText.replaceAll("</mytable>", "</table></div></center>");
-    contentText = contentText.replaceAll("<hcol>", "<th>");
-    contentText = contentText.replaceAll("<tcol>", "<td>");
-    contentText = contentText.replaceAll("<trow>", "<tr>");
+    // wrappers
+    contentText = contentText.replaceAll("<wrap>", "<center><div class=\"wrap\">");
+    contentText = contentText.replaceAll("</wrap>", "</div></center>");
+
+    // quotation
+    contentText = contentText.replaceAll("<quote>", "<div class=\"quote\">");
+    contentText = contentText.replaceAll("</quote>", "</div>");
 
     document.getElementById("content").innerHTML = contentText;
+
 
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // Citation :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -84,12 +105,12 @@ document.addEventListener("DOMContentLoaded", function() {
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
     const anchorDiv = document.getElementById("anchors");
-    const sections = document.querySelectorAll("section[anchor]");
+    const sections = document.querySelectorAll("section[label]");
 
     let listHTML = "<ol>";
 
     sections.forEach((section,index) => {
-    const anchorName = section.getAttribute("anchor");
+    const anchorName = section.getAttribute("label");
     section.id = anchorName; // Set id to allow linking
 
     // Extract the original text content and clear the section
@@ -105,7 +126,7 @@ document.addEventListener("DOMContentLoaded", function() {
     
 
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-    // Repositioning tooltips :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+    // Footnotes ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
     
     function positionTooltip(note) {

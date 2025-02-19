@@ -4,36 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['\\[', '\\]']] 
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
     <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
-    <script src="../src/script.js">
-    </script>
+    <script src="../src/script.js"></script>
     <title>Learning Lattice</title>
     <link rel="stylesheet" href="../src/style.css">
 </head>
 <body>
 <div id="viewport">
-<p id="webheader">
-</p>
+<p id="webheader"></p>
 <hr>
-<div id="link1">
-</div>
+<div id="nav1"></div>
 <hr>
 <div id="content">
     <h2>About the topological charge</h2>
 
     <div id="anchors"></div>
 
-    <section anchor="summary">Summary</section>
+    <section label="summary">Summary</section>
 
     Topological charge is an observable that measures non-perturbative properties of the gauge field configuration. In even dimensions $d$, the topological charge is given by
     $$
@@ -58,7 +47,7 @@
     $$
     In the following sections, I will spend some time discussing why the topological charge only exists in some combination of dimensions and gauge groups. I will also determine the coefficient $\alpha_{d}$ at least for $d=2$ and $4$.
 
-    <section anchor="chern-simon">Chern-Simon form</section>
+    <section label="chern-simon">Chern-Simon form</section>
 
     First of all, it is known that the topological charge can be written as a surface integral of a Chern-Simon form
     $$
@@ -85,7 +74,7 @@
 
     So the boundary $\partial\mathcal{M}$ actually should vanish in both cases. Naively, we therefore also expect $Q$ to also vanish. But actually, there is an exception to this when the integrand involves a multivalued function. Let's investigate this more carefully next.
 
-    <section anchor="homotopy">Homotopy group</section>
+    <section label="homotopy">Homotopy group</section>
 
     Consider an integral of a function $\omega(x)$ around a puncture $\partial\mathcal{M}=\gamma$
     $$
@@ -113,43 +102,46 @@
     <nl>
     Before we summarize, let us state again that, in $d$-dimensions, we consider $\partial\mathcal{M}\simeq S^{d-1}$. We also note that $U(1)\simeq S^1$ and $SU(2)\simeq S^3$. Mapping onto other non-Abelian groups can be shown to be homotopic to a mapping onto one of their $SU(2)$ subgroups. This is a result from Bott periodicity theorem<cite src="https://inspirehep.net/literature/37141"></cite>. Here is a summarized table of important homotopy groups and their implications:
     <nl>
-    <mytable>
-      <trow>
-        <hcol>Dimension $d$
-        <hcol>Gauge group
-        <hcol>Homotopy group
-        <hcol>Topological structure
-      <trow>
-        <tcol>$2$
-        <tcol>$U(1)$
-        <tcol>$\pi_1(U(1))=\mathbb{Z}$
-        <tcol>$\mathbb{Z}$
-      <trow>
-        <tcol>$2$
-        <tcol>$SU(N)$
-        <tcol>$\pi_1(SU(N))\sim\pi_1(SU(2))=0$
-        <tcol>trivial
-      <trow>
-        <tcol>$d>2$
-        <tcol>$U(1)$
-        <tcol>$\pi_{d-1}(U(1))=0$
-        <tcol>trivial
-      <trow>
-        <tcol>$4$
-        <tcol>$SU(N)$
-        <tcol>$\pi_3(SU(N))\sim\pi_3(SU(2))=\mathbb{Z}$
-        <tcol>$\mathbb{Z}$
-    </mytable>
+    <wrap>
+    <table>
+      <tr>
+        <th>Dimension $d$
+        <th>Gauge group
+        <th>Homotopy group
+        <th>Topological structure
+      <tr>
+        <td>$2$
+        <td>$U(1)$
+        <td>$\pi_1(U(1))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+      <tr>
+        <td>$2$
+        <td>$SU(N)$
+        <td>$\pi_1(SU(N))\sim\pi_1(SU(2))=0$
+        <td>trivial
+      <tr>
+        <td>$d>2$
+        <td>$U(1)$
+        <td>$\pi_{d-1}(U(1))=0$
+        <td>trivial
+      <tr>
+        <td>$4$
+        <td>$SU(N)$
+        <td>$\pi_3(SU(N))\sim\pi_3(SU(2))=\mathbb{Z}$
+        <td>$\mathbb{Z}$
+    </table>
+    </wrap>
     <br>
     <ref href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</ref> for other homotopy groups.
 
-    <section anchor="pure_gauge">Pure gauge configuration</section>
+    <section label="pure_gauge">Pure gauge configuration</section>
 
 </div>
 <hr>
-<div id="link2">
+<div id="nav2">
 </div>
 <hr>
+<p id="webfooter"></p>
 </div>
 <script>
     updatepage(`

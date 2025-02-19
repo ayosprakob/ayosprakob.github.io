@@ -4,26 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$']],
-        displayMath: [['\\[', '\\]']] 
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
     <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
-    <script src="../src/script.js">
-    </script>
+    <script src="../src/script.js"></script>
     <title>Learning Lattice</title>
     <link rel="stylesheet" href="../src/style.css">
 </head>
 <body>
 <div id="viewport">
-<p id="webheader">
-</p>
+<p id="webheader"></p>
+<hr>
+<div id="nav1"></div>
 <hr>
 <div id="content">
     Hi! This is my personal page made to organize my knowledge involving gauge theory, lattice field theory, and numerical computations. It's by no means intended to be an official educational source but feel free to use it. It's not going to be comprehensive since my knowledge is limited but I hope it is informative for some readers.
@@ -33,6 +25,7 @@
     <ul>
         <li>First I discuss <a href="gauge_symmetry.html">gauge symmetry</a> and introduce Wilson lines
         <li>I then discuss the <a href="gauge_theory.html">dynamics of the gauge fields</a> as a dynamic of Wilson loops. I will also discuss gauge theory at finite temperature and the $\theta$ vacuum.
+        <li>As a side note, I also discuss mathematical properties of the <a href="topological_charge.html">topological charge</a>.
     </ul>
     <h3>Lattice fermions</h3>
     <ul>
@@ -42,11 +35,16 @@
     <ul>
         <li>?
     </ul>
+    <h3>About the web template</h3>
+    <ul>
+        <li><ref href="template.html">This page</ref> discusses how to make your own web system using my template.
+    </ul>
 </div>
 <hr>
-<div id="link2">
+<div id="nav2">
 </div>
 <hr>
+<p id="webfooter"></p>
 </div>
 <script>
     updatepage(`

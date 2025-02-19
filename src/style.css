@@ -37,10 +37,10 @@ then
 a::before { content: attr(data-text); }
 a { color: #1049b0; text-decoration: none; }
 
-.equation {
+.wrap {
             width: 95%;
             /*max-width: 600px;*/
-            padding: 10px;
+            padding: 0px;
             overflow-x: auto; /* Enable horizontal scrolling */
             overflow-y: hidden; /* Disable horizontal scrolling */
             white-space: nowrap; /* Prevent line breaks */
@@ -98,4 +98,38 @@ tr:nth-child(odd) {
 
 tr:nth-child(even) {
   background-color: white;
+}
+
+verb {
+    font-family: "Courier New", monospace;
+    font-size: 14px;
+}
+
+pre {
+    background-color: #fff;
+    color: #000;
+    border-radius: 0px;
+    overflow-x: auto;
+    font-family: "Courier New", monospace;
+    border-left: 4px solid #a8edab;
+    padding: 15px;
+    max-width: 90%;
+    margin: auto;
+    text-align: left;
+}
+code {
+    display: block;
+    white-space: pre;
+}
+
+.quote {
+    background-color: #fff;
+    color: #000;
+    border-radius: 0px;
+    overflow-x: auto;
+    border-left: 4px solid #c7dbff;
+    padding: 15px;
+    max-width: 90%;
+    margin: auto;
+    text-align: left;
 }

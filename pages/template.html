@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+    </script>
+    <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js"></script>
+    <title>Learning Lattice</title>
+    <link rel="stylesheet" href="../src/style.css">
+</head>
+<body>
+<div id="viewport">
+<p id="webheader"></p>
+<hr>
+<div id="nav1"></div>
+<hr>
+<div id="content">
+    <h2>Template</h2>
+    
+    <div id="anchors"></div>
+
+    <section label="intro">Installation</section>
+    Download the files from <ref href="https://github.com/ayosprakob/ayosprakob.github.io/tree/main">here</ref>. Or use <verb>git clone</verb> in the terminal:
+    <pre><code>
+    git clone https://github.com/ayosprakob/ayosprakob.github.io
+    </code></pre>
+
+
+
+
+    <section label="page">Page components</section>
+    The webpage has several components that can be edited manually.
+    <quote>
+    <h4> $\odot$ Viewport </h4>
+    This is the main column that displays everything. You can adjust the style of the viewport in <verb>style.css</verb>
+    <h4> $\odot$ Header </h4>
+    This is located at the top of the viewport. You can edit its content in the function <verb>updatepage()</verb> in <verb>script.js</verb>
+    <h4> $\odot$ Nevigation panels </h4>
+    Usually this shows the link to related pages. You can modify this at the end of each html file. It's the argument of the function <verb>updatepage()</verb>. If you want to remove the navigation panels, just delete the tag <verb>&lt;div id="nav1"&gt;&lt;/div&gt;</verb> and <verb>&lt;div id="nav2"&gt;&lt;/div&gt;</verb>.
+    <h4> $\odot$ Main content </h4>
+    The content of the page. It's what between the tag <verb>&lt;div id="content"&gt;...&lt;/div&gt;</verb>
+    <h4> $\odot$ Content table </h4>
+    This shows a quick link to each section of the page. It's the tag <verb>&lt;div id="anchors"&gt;&lt;/div&gt;</verb>. You don't have to edit it by hand. The script automatically update it.
+    </quote>
+
+    <section label="sections">Sections</section>
+    You can add numbered sections with the tag "section"
+    <pre><code>
+    &lt;section label="anchor_name"&gt;Section name&lt;/section&gt;
+    </code></pre>
+    This will appear in the content table automatically. You can modify this in the "Section symbols" section of <verb>script.js</verb>
+
+    <section label="citation">Citations</section>
+    You can give a linked source with the tag "cite":
+    <pre><code>
+    &lt;cite src="source.html"&gt;&lt;/cite&gt;
+    </code></pre>
+    This is what it looks like<cite src="https://github.com/ayosprakob/ayosprakob.github.io"></cite>. You can use the usual hyperlink tag, but I already modify it so it will pop up a new tab. I also make its appearance unified with a simple tag. You can modify its appearance in the "Citation" section of <verb>script.js</verb>
+
+    <section label="wrapper">Wrappers</section>
+
+    Sometimes, an object can be too large for the webpage. You can put your object inside the tag "wrap":
+    <pre><code>
+    &lt;wrap&gt;
+        //*your object here*//
+    &lt;/wrap&gt;
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    <wrap>
+    <table>
+        <tr>
+            <th>$\text{Column A}$</th>
+            <th>$\text{Column B}$</th>
+            <th>$\text{Column C}$</th>
+            <th>$\text{Column D}$</th>
+            <th>$\text{Column E}$</th>
+            <th>$\text{Column F}$</th>
+            <th>$\text{Column G}$</th>
+            <th>$\text{Column H}$</th>
+        </tr>
+        <tr>
+            <td>This</td>
+            <td>is</td>
+            <td>a</td>
+            <td>very</td>
+            <td>long</td>
+            <td>table.</td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr>
+            <td>This</td>
+            <td>table</td>
+            <td>is</td>
+            <td>very</td>
+            <td>long</td>
+            <td>indeed.</td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </wrap>
+    </quote>
+
+
+    <section label="equation">Equations</section>
+    Just like LaTeX, you can use the dollars symbol to display equations. Use \$ for in-line equations and \$\$ for DisplayMath mode. Note that you can also use \$\$ for aligned equations (I modified it myself).
+    <nl>
+    <b>Code</b>
+    <pre><code>
+    This is an in-line equation $E=mc^2$.
+    This is a DisplayMath mode equation:
+    \$\$
+    x=\frac{-b\pm\sqrt{b^2-4ac}}{c^2}.
+    \$\$
+    And this is the aligned equations:
+    \$\$
+    f&=\frac{d}{dx}x^2\\
+    &=2x.
+    \$\$
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    This is an in-line equation $E=mc^2$.
+    This is a DisplayMath mode equation:
+    $$
+    x=\frac{-b\pm\sqrt{b^2-4ac}}{c^2}.
+    $$
+    And this is the aligned equations:
+    $$
+    f&=\frac{d}{dx}x^2\\
+    &=2x.
+    $$
+    </quote>
+    <nl>
+    All of the DisplayMath equations are already inside the wrapper tag:
+    <nl>
+    <b>Code</b>
+    <pre><code>
+    \$\$
+    \text{This is a very long equation:}
+    ~\int d^3x\left\{x+x^2+x^3+\sin(x)+2\sin(x)\cos(y)\right\}
+    + \prod_i k_i\times\left[\exp(2i\pi y)+\cos(\tanh(5x))\right]
+    \$\$
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    $$
+    \text{This is a very long equation:}
+    ~\int d^3x\left\{x+x^2+x^3+\sin(x)+2\sin(x)\cos(y)\right\}
+    + \prod_i k_i\times\left[\exp(2i\pi y)+\cos(\tanh(5x))\right]
+    $$
+    </quote>
+
+
+    <section label="box">Text boxes</section>
+    You can add a text box with the "box" tag. This is good for drawing the reader's attention.
+    <nl>
+    <b>Code</b>
+    <pre><code>
+    &lt;box&gt;
+    A cat in a box.
+    &lt;/box&gt;
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    <box>
+    A cat in a box.
+    </box>
+    </quote>
+    You can adjust the style of the text box in <verb>style.css</verb>
+
+    <section label="footnote">Footnotes</section>
+    If you want to add a small footnote over some sentence, use "note":
+    <nl>
+    <b>Code</b>
+    <pre><code>
+    Some text here.&lt;br&gt;
+    &lt;note value="This is the footnote."&gt;Some text&lt;/note&gt; More text here.
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    Some text here.<br>
+    <note value="This is the footnote.">Some text</note> More text here.
+    </quote>
+    <br>
+    On mobile, the footnote can be seen if you tap on the text. The footnote disappears if you tap somewhere else.
+    <nl>
+    You can adjust the style of the footnote in <verb>style.css</verb>. You can replace the footnote symbol $\textbf{[?]}$ in the "footnote" part of the "Macros" section in <verb>script.js</verb>.
+
+    <section label="listing">Quotes and code listing</section>
+    You can list the code with the usual pre-code combo. Quoting normal text can be done with "quote":
+    <nl>
+    <b>Code</b>
+    <pre><code>
+    &lt;pre&gt;&lt;code&gt;
+    Some code here.
+    &lt;/code&gt;&lt;/pre&gt;
+    &lt;br&gt;
+    &lt;quote&gt;
+    Some text here.
+    &lt;/quote&gt;
+    </code></pre>
+    <br>
+    <b>Result</b>
+    <quote>
+    <pre><code>
+    Some code here.
+    </code></pre>
+    <br>
+    <quote>
+    Some text here.
+    </quote>
+    </quote>
+
+</div>
+<hr>
+<div id="nav2"></div>
+<hr>
+<p id="webfooter"></p>
+</div>
+<script>
+    /*
+    Edit the content of the navigation panels here
+    */
+    updatepage(`
+    <b>Next:</b>
+
+
+    <br>
+    <b>Prev:</b>
+    <a href="home.html">home</a>
+    `);
+</script>
+</body>
+</html>
