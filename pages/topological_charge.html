@@ -51,9 +51,26 @@
 
     First of all, it is known that the topological charge can be written as a surface integral of a Chern-Simon form
     $$
-    Q = \alpha_d\int_{\partial\mathcal{M}}\omega_{d-1}.
+    Q = \int_{\mathcal{M}}\text{d}\omega_{d-1} = d\times\alpha_d\int_{\partial\mathcal{M}}\omega_{d-1}.
     $$
-    I don't know how to nicely prove this in arbitrary dimensions, but you can easily confirmed this for up to $d=6$:
+    The extra factor $d$ comes from the embedding of $\omega_{d-1}$ in $\mathcal{M}$ onto $\partial\mathcal{M}$.
+    <box>
+      In case it is not clear, here is more explanation. We start with
+      $$
+      \text{d}\omega=\epsilon^{\mu_1\cdots\mu_d}\partial_{\mu_1}\omega_{\mu_2\cdots\mu_d}\text{d}x^1\wedge\cdots\wedge\text{d}x^d\quad(\text{on}~S^d)
+      $$
+      which is a $d$-form on $S^d$. With the Strokes' theorem, we instead have
+      $$
+      \omega=\epsilon^{\mu_1\cdots\mu_d}\hat n_{\mu_1}\omega_{\mu_2\cdots\mu_d}\text{d}y^1\wedge\cdots\wedge\text{d}y^{d-1}\quad(\text{on}~S^d)
+      $$
+      which is a $(d-1)$-form, still on $S^d$. $\text{d}y^i$ are the coordinates on $S^{d-1}$ and $\hat n$ is a vector normal to the surface $S^{d-1}$. To embed this onto $S^{d-1}$, we have to trace out the index $\mu_1$, which is normal to $S^{d-1}$. This gives the extra factor $d$ because $\hat n$ is a unit vector. And the Chern-Simon form becomes
+      $$
+      \omega=\epsilon^{i_1\cdots i_{d-1}}
+      \omega_{i_1\cdots i_{d-1}}\text{d}y^1\wedge\cdots\wedge\text{d}y^{d-1}.\quad(\text{on}~S^{d-1})
+      $$
+
+    </box>
+    I don't know how to nicely prove that there always exist this Chern-Simon form in arbitrary dimensions, but you can easily confirmed this for up to $d=6$:
     $$
     \text{d}\omega_{d-1} &= \text{Tr}~F^{d/2};\\
     \omega_1&=\text{Tr}A,\\
@@ -134,8 +151,113 @@
     <br>
     <ref href="https://en.wikipedia.org/wiki/Homotopy_groups_of_spheres#Table">See here</ref> for other homotopy groups.
 
-    <section label="pure_gauge">Pure gauge configuration</section>
+    <section label="coefficient">Determining the coefficients</section>
 
+    So far, we have argued that the topological charge should vanish up to some quantization term related to the homotopy group. What it means is the topological charge should not change its value by a continuous change of the gauge field except when the change is too large that it crosses some singularity that makes the topological charge discontinuously jump to another value. With this in mind, let us consider the simplest gauge configuration so that our computation is the easiest:
+    $$
+    A_\mu = -ig^{-1}\partial_\mu g
+    $$
+    for some $g\in G$. Since this is nothing but a gauge transformation of $A_\mu=0$ with $V=g^{-1}$, we can easily show that the curvature form $F=\text{d}A+iA\wedge A$ vanishes, and thus
+    $$
+    A\wedge A = i\text{d}A.
+    $$
+    In what follows, we will consider the following gauge choice in our calculation:
+    $$
+    g = \left\{
+      \begin{array}{ll}
+      \exp(iq\phi)&;\text{2d}~U(1),\\
+      \exp(-iq\chi\sigma\cdot\hat x)&;\text{4d}~SU(N),
+      \end{array}
+      \right.
+    $$
+    where $\phi\in[-\pi,\pi)$ is the $U(1)$ angle and
+    $$
+    \hat x&=(\sin\theta\cos\phi,\sin\theta\sin\phi,\cos\theta);\\
+    \phi&\in[-\pi,\pi),\\
+    \theta&\in[0,\pi),\\
+    \chi&\in[0,\pi),
+    $$
+    is the unit vector on $S^3$. Also, $\sigma_a$ are the Pauli matrices (or the $\mathfrak{su}(2)$ subalgebra of $\mathfrak{su}(N)$ with the same normalization as the Pauli matrices). The parameter $q$ is an integer parametrizing the wrapping number.
+    <nl>
+    For 2d $U(1)$, this is very simple. First we recognize that $\partial\mathcal{M}\simeq S^1$. The topological charge becomes
+    $$
+    Q &= 2\alpha_2\int_{S^1}A\\
+    &= 2\alpha_2\int_{S^1}A_\phi d\phi\\
+    &= 2\alpha_2\int_{S^1}g^{-1}\partial_\phi g d\phi\\
+    &=-2i\alpha_2 \log(g(\pi)g^{-1}(-\pi))\\
+    &= \alpha_2\times4q\pi.
+    $$
+    The topological charge becomes an integer when $\alpha_2=1/4\pi$, which is what we were trying to prove.
+    <nl>
+    Now for 4d $SU(N)$, we can rewrite the Chern-Simon form for the pure gauge configuration as
+    $$
+    \omega_3 = \text{Tr}\left(A\text{d}A+\frac{2i}{3}A^3\right)
+    = -\frac{i}{3}\text{Tr}(A^3)
+    = \frac{1}{3}\text{Tr}(g^{-1}\text{d}gg^{-1}\text{d}gg^{-1}\text{d}g).
+    $$
+
+    Next, we rewrite $g$ as
+    $$
+    g &= \cos\alpha+i\sin\alpha u;\\
+    \alpha &:= -q\chi,\\
+    u &:= \sigma\cdot\hat x.
+    $$
+    Since
+    $$
+    \text{d}g = -\sin\alpha \text{d}\alpha + i\cos\alpha u \text{d}\alpha + i\sin\alpha \text{d}u,
+    $$
+    and using the identity $u^2=(\sigma\cdot\hat x)^2=\hat x\cdot\hat x = 1$, we have
+    $$
+    g^{-1}\text{d}g = iu\text{d}\alpha+\frac{i}{2}\sin(2\alpha)\text{d}u+\sin^2\alpha u\text{d}u.
+    $$
+    Fun fact, the 1-form $g^{-1}\text{d}g$ is known as the Wess–Zumino–Witten form, which we will further rewrite as
+    $$
+      g^{-1}\text{d}g = i\Omega^i\sigma_i.
+    $$
+    To compute $\Omega^i$, we first note that
+    $$
+    u\text{d}u=(\hat x\cdot\sigma)(\text{d}\hat x\cdot\sigma)= i(\hat x\times \text{d}\hat x)\cdot\sigma.
+    $$
+    Collectively, we have
+    $$
+    g^{-1}\text{d}g = i\left[\hat x^a\text{d}\alpha+\frac{1}{2}\sin(2\alpha)\text{d}\hat x^a+\sin^2\alpha(\hat x\times \text{d}\hat x)^a\right]\sigma_a,
+    $$
+    and thus
+    $$
+    \Omega^a = \hat x^a\text{d}\alpha+\frac{1}{2}\sin(2\alpha)\text{d}\hat x^a+\sin^2\alpha(\hat x\times \text{d}\hat x)^a.
+    $$
+    We are now ready to compute $\omega_3$:
+    $$
+    \omega_3 &= \frac{1}{3}\text{Tr}~(g^{-1}\text{d}g)^3\\
+    &=\frac{i}{3}\Omega^a\wedge\Omega^b\wedge\Omega^c\wedge\text{Tr}~(\sigma_a\sigma_b\sigma_c)\\
+    &=-\frac{2}{3}\Omega^a\wedge\Omega^b\wedge\Omega^c\epsilon_{abc}\\
+    &=-4\Omega^1\wedge\Omega^2\wedge\Omega^3\\
+    &=-4 \sin^2\alpha\sin\theta~\text{d}\alpha\wedge\text{d}\theta\wedge\text{d}\phi
+    $$
+    You can get the final line with the following commands in <verb>Mathematica</verb>:
+    <nl>
+    <pre><code>
+      x = {Sin[&theta;]*Cos[&phi;], Sin[&theta;]*Sin[&phi;], Cos[&theta;]};
+      dx = D[x, &theta;]*d&theta; + D[x, &phi;]*d&phi;;
+      &Omega; = x*d&alpha; + Sin[&alpha;]*Cos[&alpha;]*dx + (Sin[&alpha;]*Sin[&alpha;])*Cross[x, dx];
+      OneForm[A_] := {D[A,d&alpha;]/.{d&theta;->0,d&phi;->0}, 
+                      D[A,d&theta;]/.{d&alpha;->0,d&phi;->0}, 
+                      D[A,d&phi;]/.{d&theta;->0,d&alpha;->0}};
+      J = Transpose@Join[{OneForm[&Omega;[[1]]], OneForm[&Omega;[[2]]],OneForm[&Omega;[[3]]]}];
+      Simplify[Det[J]]
+    </code></pre>
+    <nl>
+    Finally, we substitute $\alpha=-q\chi$ and obtain
+    $$
+    \omega_3 = 4qi \sin^2(q\chi)\sin\theta~\text{d}\chi\wedge\text{d}\theta\wedge\text{d}\phi.
+    $$
+    The topological charge can then be evaluated as
+    $$
+    Q &= 4\alpha_4\int_{S^3}\omega_3\\
+    &= 16q\alpha_4\int_0^\pi\sin^2(q\chi)d\chi\int_0^\pi\sin(\theta)d\theta\int_{-\pi}^\pi d\phi\\
+    &= 32\pi^2q\alpha_4.
+    $$
+    To get the integer topological charge, we need to set $\alpha_4=1/32\pi^2$, which is what we tried to prove.
 </div>
 <hr>
 <div id="nav2">
