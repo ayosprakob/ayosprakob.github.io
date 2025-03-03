@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Armillary sphere builder</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        section { 
+            width: 800px; 
+            margin: 0 auto; /* Centers the section */
+            margin-bottom: 20px; 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            border-radius: 8px; 
+            background-color: #f9f9f9; 
+            outline: none;
+        }
+        .term { margin-left: 20px; margin-bottom: 10px; }
+        select {
+            margin: 5px;
+            font-size: 16px;
+            padding: 5px 35px 5px 5px;
+            border: 0px solid #CCC;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background: url(images/dropdown.png) right 8px center no-repeat #EEE;
+            background-size: 8px auto; /* 8px wide, auto height */
+            outline: none;
+        }
+
+        select::-ms-expand {
+            display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
+        }
+
+        @media screen and (min-width:0\0) {
+            select {
+                background: none\9;
+                padding: 5px\9;
+            }
+        }
+
+        .term-name {
+            width: 200px;
+            height: 20px;
+            outline: none;
+        }
+        .term-tex {
+            width: 400px;
+            height: 20px;
+            outline: none;
+        }
+    </style>
+    <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="MathJax/es5/tex-mml-chtml.js"></script>
+</head>
+<body>
+    <center><h1>Armillary sphere builder</h1></center>
+
+    <section id="section1">
+        <h2>Step 1: Representation expansions</h2>
+
+        Add sets of irreps to be used in the character/series expansion.
+        Since each term in the action can be expanded with different series, you can add custom sets here for each of them.
+        <br>
+        <br>
+
+
+        <label for="dropdown-n">Gauge group: </label>
+        <select id="dropdown-n">
+            <script>
+                for (let i = 2; i <= 8; i++) {
+                    document.write(`<option value="${i}">SU(${i})</option>`);
+                }
+            </script>
+        </select>
+        <br>
+        <br>
+        <button id="spoiler1_button">Show input hint</button>
+        <div id="spoiler1">
+            Notation: For an irrep $(n_1,n_2,...,n_{N-1})$, the number $n_i$ denotes the number of boxes in the $i$<sup>th</sup> row of a Young tableau (English notation).
+            <br>
+            <br>Note: for fermionic terms, the set is usually <span id="fermionic-set-template">{(0), (1)}</span>.
+        </div>
+        <br>
+        <div id="irrep-sets"></div>
+        <br>
+        <button id="add-irrep-set">Add set</button>
+        <br>
+        <br>
+        <button id="to-section2">Next</button>
+        <br>
+    </section>
+
+    <section id="section2" style="display: none;">
+        <h2>Step 2: Wilson loops</h2>
+
+        This section counts the number of Wilson loops in your action.
+        <br>
+        <br>
+
+
+
+        <label for="dropdown-dimensions">Select dimensions: </label>
+        <select id="dropdown-dimensions">
+            <option value="2">1+1D</option>
+            <option value="3">2+1D</option>
+            <option value="4">3+1D</option>
+        </select>
+        <br>
+        <br>
+        <button id="spoiler2_button">Show input hint</button>
+        <div id="spoiler2">
+            <br>
+            Write an expression to describe your operator. <i><u>Strictly</u></i> use the following notation:
+            <ul>
+                <li> Write <font color="blue">U_\mu</font> to denote a link variable in the <font color="blue">\mu</font> direction.
+                    <br>You can replace <font color="blue">\mu</font> by any Greek or Latin letters (e.g., <font color="blue">\nu</font>, <font color="blue">\sigma</font>, etc.&mdash;small letters only).
+                <li> The inverse is given by <font color="blue">U'_\mu</font>.
+                <li> <font color="red">Do not use brackets</font>.
+                <li> Polyakov loop is denoted by <font color="blue">L_\mu</font>, where <font color="blue">\mu</font> is the wrapping direction.
+                <li> <font color="DarkMagenta">We currently <font color="red">do not</font> support operators with non-local separation</font>.
+            </ul>
+        </div>
+        <div id="terms"></div>
+        <br>
+        <button id="add-term-plaquette">+ Plaquette action</button>
+        <br>
+        <button id="add-term-theta">+ Theta term</button>
+        <br>
+        <button id="add-term-polyakov">+ Polyakov loop</button>
+        <br>
+        <button id="add-term">+ Other term</button>
+        <br>
+        <br>
+        <button id="to-section3">Next</button>
+    </section>
+
+
+    <section id="section3" style="display: none;">
+        <h2>Step 3: Processing</h2>
+        <pre id="output"></pre>
+    </section>
+
+    <script src="script.js">
+    </script>
+</body>
+</html>
