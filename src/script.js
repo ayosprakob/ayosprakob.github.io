@@ -32,6 +32,38 @@ function updatepage(linkdetails) {
     box_embed()
 }
 
+
+function updatepageHome(linkdetails) {
+    const webHeader = document.getElementById("webheader");
+    const webFooter = document.getElementById("webfooter");
+    webHeader.innerHTML = `
+        <h1>Atis Yosprakob</h1>
+        <i>Department of Physics, Niigata University, Japan</i>
+        <br>
+        <br>
+    `;
+    webFooter.innerHTML = `
+        <center>
+        <font color="#aaa">
+        Web template created by Atis Yosprakob.
+        <br>
+        Copyright 2025, Atis Yosprakob &copy; All rights reserved.
+        <!--give credits where credit is due-->
+        </font>
+        </center>
+    `;
+    const link1 = document.getElementById("nav1");
+    const link2 = document.getElementById("nav2");
+    if(link1){
+        link1.innerHTML = linkdetails   
+    }
+    if(link2){
+        link2.innerHTML = linkdetails
+    }
+
+    box_embed()
+}
+
 function box_embed(){
     document.body.innerHTML = document.body.innerHTML.replace(/\$\$(.*?)\$\$/gs, function(match, content) {
                 return `<div class="wrap">\\begin{align}${content}\\end{align}</div>`;
