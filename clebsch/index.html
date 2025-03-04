@@ -28,6 +28,7 @@
         max-width: 100%;
         margin: auto;
         text-align: left;
+        font-size:14px;
     }
   </style>
 </head>
@@ -56,8 +57,7 @@
   Use the $(N-1)$-components notation $r=[w_1,\cdots,w_{N-1}]$ where $w_N=0$ is omitted.
   <br>
   Orthogonality error is defined by $\text{Err}[C] := \|\sum_{ij}C_{ija}C_{ijb}-\delta_{ab}\|$.
-  <br>
-  <br>
+  <br><br>
   <label for="input1">$r_1$:</label>
   <input type="text" id="input1" value="[ 2, 1 ]">
   <br>
@@ -66,12 +66,12 @@
   <br><br>
   <label for="input3">$r_3$:</label>
   <input type="text" id="input3" value="all">
-  &nbsp; <i>Enter specific irrep or leave it as 'all' to show everything.</i>
+  &nbsp;
   <br>
   <label for="input4">$m$:</label>
   <input type="text" id="input4" value="all">
-  &nbsp; <i>Enter a positive integer or leave it as 'all' to show everything.</i>
   <br><br>
+  Enter specific irrep/multiplicity index or leave it as 'all' to show everything.
   <br><br>
 
   <button id="run-code">Compute the CG coefficients</button>
@@ -170,7 +170,7 @@
 
             // Append the preformatted text to the new page
             newWindow.document.body.appendChild(preElement);
-            newWindow.document.title = "Generated Python File";
+            newWindow.document.title = "clebsch.py";
         });
 
 

@@ -38,35 +38,48 @@ def main():
     jsprint("Group: SU("+str(w1.N)+")")
     jsprint()
 
+    jsprint("CG decomposition:")
+    first_line = "   "+str(w1)+" × "+str(w2)
+    indent = " "*(len(first_line)+2)
+    for i,w3 in enumerate(decomp):
+        mult = decomp.multiplicity(w3)
+        if i==0 :
+            jsprint(first_line,"=",str(w3)+("×"+str(mult) if mult>1 else ""))
+        else :
+            jsprint(indent,"+",str(w3)+("×"+str(mult) if mult>1 else ""))
+
+    jsprint()
+    jsprint("CG coefficients:")
     ishift = 0
     for w3 in decomp:
         if w3_expected != None and w3 != w3_expected:
             continue
 
+        jsprint()
         mult = decomp.multiplicity(w3)
-
         d3 = w3.dimension
+
         for m in range(1,mult+1):
             if m_expected != None and m!=m_expected :
                 continue
-            jsprint(w1,"⊗",w2,"→",w3,"("+ordinal(m)+" multiplicity)" if mult>1 else "")
-            jsprint("Coefficient dimensions:",d1,"×",d2,"×",d3)
-            jsprint()
+            jsprint("  ",w1,"×",w2,"→",w3,"("+ordinal(m)+" multiplicity)")
+            jsprint("   Coefficient dimensions:",d1,"×",d2,"×",d3)
+
+            cg_display = ""
             CGmat = np.zeros((d1,d2,d3))
             CGi = Coefficients(w3,w1,w2,m-1).tensor
             for i1,i2,i,val in CGi:
                 #CGmat[i1,i2,i+ishift] = val
                 CGmat[i1,i2,i] = val
-                jsprint("C"+str([i1,i2,i]),"=",val)
+                cg_display += "   C"+str([i1,i2,i])+" = "+str(val)+"\\n"
             ishift+=d3
 
             
             # Orthogonality test
             err = np.linalg.norm(np.einsum('ija,ijb->ab',CGmat,CGmat)-np.identity(d3))
+            jsprint("   Orthogonality error:",err)
             jsprint()
-            jsprint("Orthogonality error:",err)
-            jsprint()
-            jsprint()
+            jsprint(cg_display)
             jsprint()
 
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
