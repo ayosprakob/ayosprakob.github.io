@@ -10,15 +10,32 @@
     </script>
   <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
   <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+
   <!-- Load Pyodide from a CDN -->
   <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
   <script src="script.js"></script>
+  <script src="../src/script.js"></script>
+  <link rel="stylesheet" href="../src/style.css">
+  <style>
+    pre {
+        background-color: #fff;
+        color: #000;
+        border-radius: 0px;
+        overflow-x: auto;
+        font-family: "Courier New", monospace;
+        border-left: 0px solid #fff;
+        padding: 15px;
+        max-width: 100%;
+        margin: auto;
+        text-align: left;
+    }
+  </style>
 </head>
 <body>
   <h1>SU(N) CG coefficients calculation</h1>
 
-  This is the Python conversion from Arne Alex's C++ code provided
-  <a href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/ClebschGordan.cpp">here</a>.
+  This is the Python script converted from Arne Alex's C++ code provided
+  <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/ClebschGordan.cpp">here</a> (see also <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/">here</a>).
   <br>
   This Python script [<a href="#" id="downloadLink">download</a>] is compiled to WebAssembly using Pyodide by myself.
   <br>
@@ -26,59 +43,35 @@
   &mdash; Converted by Atis Yosprakob // 3 Mar 2025
   <br>
   <br>
-    <script>
-        document.getElementById("downloadLink").addEventListener("click", function(event) {
-            event.preventDefault();  // Prevent the default link behavior
-            
-            // Construct the file data
-            let fileData = python_src;
-            let weight1 = document.getElementById("input1").value;
-            let weight2 = document.getElementById("input2").value;
-            let nthWeight = document.getElementById("NWeight").checked;
-            if(nthWeight)
-                nthWeight = "True"
-            else
-                nthWeight = "False"
-
-            // Python code with placeholders for input values
-            fileData = fileData.replace("__weight1__", weight1);
-            fileData = fileData.replace("__weight2__", weight2);
-            fileData = fileData.replace("__NWeight__", nthWeight);
-            
-            // Create a Blob with the file content and specify the MIME type
-            const blob = new Blob([fileData], { type: "text/plain" });
-            
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            
-            // Create a temporary link element to trigger the download
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "clebsch.py";  // Specify the file name
-            document.body.appendChild(a);
-            a.click();  // Simulate a click to start the download
-            document.body.removeChild(a);  // Clean up the link element
-            URL.revokeObjectURL(url);  // Revoke the object URL to free up memory
-        });
-    </script>
-
   <hr>
 
 
 
   <!-- Add two input fields with default values -->
-  <label for="input1">Irrep 1:</label>
-  <input type="text" id="input1" value="(2,1)">
+  Enter the two irreps you wish to perform the tensor product.
   <br><br>
-  <label for="input2">Irrep 2:</label>
-  <input type="text" id="input2" value="(3,2)">
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  $r_1\otimes r_2\longrightarrow r_3\;(m\text{-th multiplicity})$
   <br><br>
-
-  <!-- Checkbox for N component notation -->
-  <label for="nthWeight">N-weight notation:</label>
-  <input type="checkbox" id="NWeight">
+  Use the $(N-1)$-components notation $r=[w_1,\cdots,w_{N-1}]$ where $w_N=0$ is omitted.
   <br>
-  If ticked, the irrep weight will have $N$ components with 0 at the end.
+  Orthogonality error is defined by $\text{Err}[C] := \|\sum_{ij}C_{ija}C_{ijb}-\delta_{ab}\|$.
+  <br>
+  <br>
+  <label for="input1">$r_1$:</label>
+  <input type="text" id="input1" value="[ 2, 1 ]">
+  <br>
+  <label for="input2">$r_2$:</label>
+  <input type="text" id="input2" value="[ 3, 2 ]">
+  <br><br>
+  <label for="input3">$r_3$:</label>
+  <input type="text" id="input3" value="all">
+  &nbsp; <i>Enter specific irrep or leave it as 'all' to show everything.</i>
+  <br>
+  <label for="input4">$m$:</label>
+  <input type="text" id="input4" value="all">
+  &nbsp; <i>Enter a positive integer or leave it as 'all' to show everything.</i>
+  <br><br>
   <br><br>
 
   <button id="run-code">Compute the CG coefficients</button>
@@ -114,17 +107,26 @@
         // Get the values from the input forms
         let weight1 = document.getElementById("input1").value;
         let weight2 = document.getElementById("input2").value;
-        let nthWeight = document.getElementById("NWeight").checked;
-        if(nthWeight)
-            nthWeight = "True"
-        else
-            nthWeight = "False"
+        let weight3 = document.getElementById("input3").value;
+        let multip3 = document.getElementById("input4").value;
+
+        weight1 = weight1.replaceAll("(","[").replaceAll(")","]")
+        weight2 = weight2.replaceAll("(","[").replaceAll(")","]")
+        weight3 = weight3.replaceAll("(","[").replaceAll(")","]")
+
+        if(weight3.toLowerCase()=="all"){
+          weight3 = "None"
+        }
+        if(multip3.toLowerCase()=="all"){
+          multip3 = "None"
+        }
 
         // Python code with placeholders for input values
         let pythonCode = python_src;
-        pythonCode = pythonCode.replace("__weight1__", weight1);
-        pythonCode = pythonCode.replace("__weight2__", weight2);
-        pythonCode = pythonCode.replace("__NWeight__", nthWeight);
+        pythonCode = pythonCode.replaceAll("__weight1__", weight1);
+        pythonCode = pythonCode.replaceAll("__weight2__", weight2);
+        pythonCode = pythonCode.replaceAll("__weight3__", weight3);
+        pythonCode = pythonCode.replaceAll("__multip3__", multip3);
 
         try {
           // Execute the Python code asynchronously
@@ -133,6 +135,46 @@
           document.getElementById("result").textContent = 'Error: ' + err;
         }
       });
+        document.getElementById("downloadLink").addEventListener("click", function(event) {
+            event.preventDefault();  // Prevent the default link behavior
+
+            // Construct the file data
+            let fileData = python_src;
+            let weight1 = document.getElementById("input1").value;
+            let weight2 = document.getElementById("input2").value;
+            let weight3 = document.getElementById("input3").value;
+            let multip3 = document.getElementById("input4").value;
+
+            weight1 = weight1.replaceAll("(","[").replaceAll(")","]")
+            weight2 = weight2.replaceAll("(","[").replaceAll(")","]")
+            weight3 = weight3.replaceAll("(","[").replaceAll(")","]")
+
+            if(weight3.toLowerCase()=="all"){
+              weight3 = "None"
+            }
+            if(multip3.toLowerCase()=="all"){
+              multip3 = "None"
+            }
+
+            fileData = fileData.replaceAll("__weight1__", weight1);
+            fileData = fileData.replaceAll("__weight2__", weight2);
+            fileData = fileData.replaceAll("__weight3__", weight3);
+            fileData = fileData.replaceAll("__multip3__", multip3);
+
+            // Open a new tab
+            const newWindow = window.open();
+            
+            // Create a <pre> element to hold the text safely
+            const preElement = newWindow.document.createElement("pre");
+            preElement.textContent = fileData;  // Properly escape and preserve formatting
+
+            // Append the preformatted text to the new page
+            newWindow.document.body.appendChild(preElement);
+            newWindow.document.title = "Generated Python File";
+        });
+
+
+
     }
 
     // Start the main function once the page is loaded.

@@ -1,25 +1,35 @@
 python_src = `
-
 '''
-  This is the Python conversion from Arne Alex's C++ code provided in
+  ::: clebsch.py :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+  This is the Python script converted from Arne Alex's C++ code provided in
   https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/ClebschGordan.cpp
   This file contains everything in the namespace "clebsch"
                
   Thanks, Arne.
 
   -- Converted by Atis Yosprakob // 3 Mar 2025
+
+  ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 '''
 
 
 # Argument passed from the webpage -- Modify this to whatever you want
-use_N_weight_notation = __NWeight__  # Boolean
-weight_tuple1         = __weight1__  # Tuple
-weight_tuple2         = __weight2__  # Tuple
+
+weight_input1 = __weight1__  # List; Nth component is omitted for SU(N)
+weight_input2 = __weight2__  # List
+
+weight_input3 = __weight3__  # List; the resulting representation (None means all)
+weight_mult3  = __multip3__  # Int; multiplicity index (None means all)
+
 
 def main():
-    w1 = Weight(weight_tuple1)
-    w2 = Weight(weight_tuple2)
+    w1 = Weight(weight_input1)
+    w2 = Weight(weight_input2)
     decomp = Decomposition(w1,w2)
+
+    w3_expected = None if weight_input3 == None else Weight(weight_input3)
+    m_expected = weight_mult3
 
     d1 = w1.dimension
     d2 = w2.dimension
@@ -30,14 +40,20 @@ def main():
 
     ishift = 0
     for w3 in decomp:
+        if w3_expected != None and w3 != w3_expected:
+            continue
+
         mult = decomp.multiplicity(w3)
+
         d3 = w3.dimension
-        for m in range(mult):
-            jsprint(w1,"⊗",w2,"→",w3,"("+ordinal(m+1)+" multiplicity)" if mult>1 else "")
+        for m in range(1,mult+1):
+            if m_expected != None and m!=m_expected :
+                continue
+            jsprint(w1,"⊗",w2,"→",w3,"("+ordinal(m)+" multiplicity)" if mult>1 else "")
             jsprint("Coefficient dimensions:",d1,"×",d2,"×",d3)
             jsprint()
             CGmat = np.zeros((d1,d2,d3))
-            CGi = Coefficients(w3,w1,w2,m).tensor
+            CGi = Coefficients(w3,w1,w2,m-1).tensor
             for i1,i2,i,val in CGi:
                 #CGmat[i1,i2,i+ishift] = val
                 CGmat[i1,i2,i] = val
@@ -46,23 +62,12 @@ def main():
 
             
             # Orthogonality test
-            err = np.einsum('ijI,ijJ->IJ',CGmat,CGmat)-np.identity(d3)
-            err = np.trace(np.dot(err,err))
+            err = np.linalg.norm(np.einsum('ija,ijb->ab',CGmat,CGmat)-np.identity(d3))
             jsprint()
             jsprint("Orthogonality error:",err)
             jsprint()
             jsprint()
             jsprint()
-
-def ordinal(n):
-    if str(n)[-1]=="1" and n!=11:
-        return str(n)+"st"
-    elif str(n)[-1]=="2" and n!=12:
-        return str(n)+"nd"
-    elif str(n)[-1]=="3" and n!=13:
-        return str(n)+"rd"
-    else:
-        return str(n)+"th"
 
 # :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 # Below here are the computations. Do not touch unless you know what you are doing.
@@ -153,7 +158,7 @@ class Weight:
                     self.elem[i] += 1
 
     def __repr__(self):
-        return str(self.elem[:self.N if use_N_weight_notation else self.N-1])
+        return str(list(self.elem[:self.N if use_N_weight_notation else self.N-1]))
 
     def __getitem__(self, k):
         assertion(k>=1 or k<=self.N ,"Weight component's index must be between 1 and N.")
@@ -869,6 +874,18 @@ def jsprint(*args,end="\\n"):
 def assertion(condition,message="Assertion condition is not met"):
     if not condition :
         raise SystemExit(message)
-        
+      
+def ordinal(n):
+    if str(n)[-1]=="1" and n!=11:
+        return str(n)+"st"
+    elif str(n)[-1]=="2" and n!=12:
+        return str(n)+"nd"
+    elif str(n)[-1]=="3" and n!=13:
+        return str(n)+"rd"
+    else:
+        return str(n)+"th"
+  
+use_N_weight_notation = False
+
 main()
         `
