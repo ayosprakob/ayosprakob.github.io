@@ -1,52 +1,43 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>CG coefficients</title>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CG coefficients</title>
     <script>
     MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
-  <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-  <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js"></script>
+    <link rel="stylesheet" href="../src/style.css">
 
-  <!-- Load Pyodide from a CDN -->
-  <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
-  <script src="script.js"></script>
-  <script src="../src/script.js"></script>
-  <link rel="stylesheet" href="../src/style.css">
-  <style>
-    pre {
-        background-color: #fff;
-        color: #000;
-        border-radius: 0px;
-        overflow-x: auto;
-        font-family: "Courier New", monospace;
-        border-left: 0px solid #fff;
-        padding: 15px;
-        max-width: 100%;
-        margin: auto;
-        text-align: left;
-        font-size:14px;
-    }
-  </style>
+    <!-- CG script -->
+    <script src="script.js"></script>
+
+    <!-- Load Pyodide from a CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
+    <style>
+      pre {
+          background-color: #fff;
+          color: #000;
+          border-radius: 0px;
+          overflow-x: auto;
+          font-family: "Courier New", monospace;
+          border-left: 0px solid #fff;
+          padding: 15px;
+          max-width: 100%;
+          margin: auto;
+          text-align: left;
+          font-size:12px;
+      }
+    </style>
 </head>
 <body>
-  <h1>SU(N) CG coefficients calculation</h1>
-
-  This is the Python script converted from Arne Alex's C++ code provided
-  <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/ClebschGordan.cpp">here</a> (see also <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/">here</a>).
-  <br>
-  This Python script [<a href="#" id="downloadLink">download</a>] is compiled to WebAssembly using Pyodide by myself.
-  <br>
-  <br>
-  &mdash; Converted by Atis Yosprakob // 3 Mar 2025
-  <br>
-  <br>
-  <hr>
-
-
+<div id="viewport">
+<p id="webheader"></p>
+<hr>
+<div id="content">
 
   <!-- Add two input fields with default values -->
   Enter the two irreps you wish to perform the tensor product.
@@ -180,5 +171,22 @@
     // Start the main function once the page is loaded.
     main();
   </script>
+</div>
+<hr>
+<p id="webfooter"></p>
+</div>
+<script>
+    updatepageUnique(`
+        <h1>SU(N) CG coefficients calculation</h1>
+
+        This is the Python script converted from Arne Alex's C++ code provided
+        <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/ClebschGordan.cpp">here</a> (see also <a target='_blank' href="https://homepages.physik.uni-muenchen.de/~vondelft/Papers/ClebschGordan/">here</a>).
+        <br>
+        This Python script [<a href="#" id="downloadLink">download</a>] is compiled to WebAssembly using Pyodide by myself.
+        <br>
+        <br>
+        &mdash; Converted by Atis Yosprakob // 3 Mar 2025
+    `);
+</script>
 </body>
 </html>

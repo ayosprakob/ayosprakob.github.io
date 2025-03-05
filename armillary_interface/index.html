@@ -4,156 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Armillary sphere builder</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
-        section { 
-            width: 800px; 
-            margin: 0 auto; /* Centers the section */
-            margin-bottom: 20px; 
-            border: 1px solid #ccc; 
-            padding: 15px; 
-            border-radius: 8px; 
-            background-color: #f9f9f9; 
-            outline: none;
-        }
-        .term { margin-left: 20px; margin-bottom: 10px; }
-        select {
-            margin: 5px;
-            font-size: 16px;
-            padding: 5px 35px 5px 5px;
-            border: 0px solid #CCC;
-            -webkit-appearance: none;
-            -moz-appearance: none;
-            appearance: none;
-            background: url(images/dropdown.png) right 8px center no-repeat #EEE;
-            background-size: 8px auto; /* 8px wide, auto height */
-            outline: none;
-        }
-
-        select::-ms-expand {
-            display: none; /* Remove default arrow in Internet Explorer 10 and 11 */
-        }
-
-        @media screen and (min-width:0\0) {
-            select {
-                background: none\9;
-                padding: 5px\9;
-            }
-        }
-
-        .term-name {
-            width: 200px;
-            height: 20px;
-            outline: none;
-        }
-        .term-tex {
-            width: 400px;
-            height: 20px;
-            outline: none;
-        }
-    </style>
     <script>
-    MathJax = {
-      tex: {
-        inlineMath: [['$', '$'], ['\\(', '\\)']]
-      },
-      svg: {
-        fontCache: 'global'
-      }
-    };
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
     </script>
     <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
-    <script id="MathJax-script" async src="MathJax/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js"></script>
+    <link rel="stylesheet" href="../src/style.css">
+
+    <!-- jquery -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>
+
+    <!-- Local script -->
+    <script src="script.js"></script>
+
+    <!-- Load Pyodide from a CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
+    <style>
+        textarea {
+            width: 90%;
+            min-height: 50px;
+            resize: vertical;
+            font-size: 14px;
+            overflow: hidden;
+        }
+        .inline {
+            display: flex;
+            align-items: flex-start; /* Align items at the top */
+            gap: 10px; /* Add space between elements */
+        }
+
+        .s-label {
+            font-size: 18px;
+            margin-top: 5px; /* Adjust if necessary */
+            max-width: 50%;
+        }
+
+        .lcol {
+            font-size: 16px;
+            margin-top: 5px; /* Adjust if necessary */
+            max-width: 40%;
+        }
+
+        .rcol {
+            font-size: 16px;
+            margin-top: 5px; /* Adjust if necessary */
+            max-width: 60%;
+        }
+
+    </style>
 </head>
 <body>
-    <center><h1>Armillary sphere builder</h1></center>
+<div id="viewport">
+<p id="webheader"></p>
+<hr>
+<div id="content">
+    <h2>Step 1: Enter the action</h2>
 
-    <section id="section1">
-        <h2>Step 1: Representation expansions</h2>
+    <div class="inline">
+        <label class="lcol">
+        <b>Presets:</b>
+        <br>
+        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D Plaquette action<br>
 
-        Add sets of irreps to be used in the character/series expansion.
-        Since each term in the action can be expanded with different series, you can add custom sets here for each of them.
-        <br>
-        <br>
+        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D Plaquette action<br>
 
+        <input type="checkbox" id="theta2d" value="+\frac{i}{2\pi}\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D theta term<br>
 
-        <label for="dropdown-n">Gauge group: </label>
-        <select id="dropdown-n">
-            <script>
-                for (let i = 2; i <= 8; i++) {
-                    document.write(`<option value="${i}">SU(${i})</option>`);
-                }
-            </script>
-        </select>
-        <br>
-        <br>
-        <button id="spoiler1_button">Show input hint</button>
-        <div id="spoiler1">
-            Notation: For an irrep $(n_1,n_2,...,n_{N-1})$, the number $n_i$ denotes the number of boxes in the $i$<sup>th</sup> row of a Young tableau (English notation).
-            <br>
-            <br>Note: for fermionic terms, the set is usually <span id="fermionic-set-template">{(0), (1)}</span>.
-        </div>
-        <br>
-        <div id="irrep-sets"></div>
-        <br>
-        <button id="add-irrep-set">Add set</button>
-        <br>
-        <br>
-        <button id="to-section2">Next</button>
-        <br>
-    </section>
+        <input type="checkbox" id="theta4d" value="+\frac{i}{32\pi^2}\sum_{\mu=1}^4\sum_{\nu=1}^4\sum_{\rho=1}^4\sum_{\sigma=1}^4\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
 
-    <section id="section2" style="display: none;">
-        <h2>Step 2: Wilson loops</h2>
-
-        This section counts the number of Wilson loops in your action.
         <br>
-        <br>
-
-
-
-        <label for="dropdown-dimensions">Select dimensions: </label>
-        <select id="dropdown-dimensions">
-            <option value="2">1+1D</option>
-            <option value="3">2+1D</option>
-            <option value="4">3+1D</option>
-        </select>
-        <br>
-        <br>
-        <button id="spoiler2_button">Show input hint</button>
-        <div id="spoiler2">
-            <br>
-            Write an expression to describe your operator. <i><u>Strictly</u></i> use the following notation:
+        <button onclick="applyPresets();renderMath()">Apply Preset</button>
+        </label>
+        <label class="rcol">
             <ul>
-                <li> Write <font color="blue">U_\mu</font> to denote a link variable in the <font color="blue">\mu</font> direction.
-                    <br>You can replace <font color="blue">\mu</font> by any Greek or Latin letters (e.g., <font color="blue">\nu</font>, <font color="blue">\sigma</font>, etc.&mdash;small letters only).
-                <li> The inverse is given by <font color="blue">U'_\mu</font>.
-                <li> <font color="red">Do not use brackets</font>.
-                <li> Polyakov loop is denoted by <font color="blue">L_\mu</font>, where <font color="blue">\mu</font> is the wrapping direction.
-                <li> <font color="DarkMagenta">We currently <font color="red">do not</font> support operators with non-local separation</font>.
+            <li>You can omit the position of the link variable; e.g., $U_\mu(x) \sim U_\mu$. The relative position between any two link variables is already fixed by gauge symmetry.</li>
+            <li>No need to worry about constants and other fields. You can use any symbols. What really matters are the Wilson loops/lines in the action.</li>
+            <li>Expand every term. Do not use parentheses.</li>
+            <li>Space-time indices start with 1, not 0.</li>
+
             </ul>
-        </div>
-        <div id="terms"></div>
-        <br>
-        <button id="add-term-plaquette">+ Plaquette action</button>
-        <br>
-        <button id="add-term-theta">+ Theta term</button>
-        <br>
-        <button id="add-term-polyakov">+ Polyakov loop</button>
-        <br>
-        <button id="add-term">+ Other term</button>
-        <br>
-        <br>
-        <button id="to-section3">Next</button>
-    </section>
+        </label>
+    </div>
+    <nl>
+    
 
 
-    <section id="section3" style="display: none;">
-        <h2>Step 3: Processing</h2>
-        <pre id="output"></pre>
-    </section>
+    <div id="output1"></div>
+    <div class="inline">
+    <label class="s-label">$S=$</label>
+    <textarea id="latexInput" oninput="adjustHeight(this);renderMath()" placeholder="Enter LaTeX expression..."></textarea>
+    </div>
+    <nl>
+    
 
-    <script src="script.js">
-    </script>
+    <h2>Step 2: Analyze the summation</h2>
+
+    <div id="output2"></div>
+    
+</div>
+<hr>
+<p id="webfooter"></p>
+</div>
+<script>
+    updatepageUnique(`
+        <h1>Armillary sphere builder</h1>
+
+        This is a web user interface for building the armillary tensor based on a given action
+        <br>
+        <br>
+        &mdash; by Atis Yosprakob
+    `);
+</script>
 </body>
 </html>

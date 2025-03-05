@@ -1,519 +1,273 @@
 
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Global variables :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-const irrepSetsDiv = document.getElementById('irrep-sets');
-const termsDiv = document.getElementById('terms');
-const section2 = document.getElementById('section2');
-const section3 = document.getElementById('section3');
-
-const dropdownN = document.getElementById('dropdown-n');
-const dropdownDimensions = document.getElementById('dropdown-dimensions');
-
-var num_sets = 0;
-
-
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Section 1 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-// Gauge group ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-dropdownN.addEventListener('change', () => {
-
-    if (irrepSetsDiv.children.length == 0 || confirm(`Changing N will reset everything. Proceed?`)) {
-        irrepSetsDiv.innerHTML = '';
-        termsDiv.innerHTML = '';
-        section2.style.display = 'none';
-    } else {
-        dropdownN.value = dropdownN.dataset.prev || 2;
+function renderMath() {
+    let input = document.getElementById("latexInput").value;
+    input = latexReformat(input)
+    if(input[0]=="+"){
+        input = input.replace("+","")
     }
-    var trv = "0";
-    var fnd = "1";
-    for(let i=0;i<dropdownN.value-2;i++){
-        trv += ",0";
-        fnd += ",0";
-    }
-    trv = "("+trv+")";
-    fnd = "("+fnd+")";
-    var fermionic_set = "{"+trv+", "+fnd+"}";
-    document.getElementById("fermionic-set-template").innerHTML = fermionic_set;
-});
-dropdownN.dataset.prev = dropdownN.value;
+    document.getElementById("output1").innerHTML = "\\[" + input + "\\]";
+    MathJax.typesetPromise();
+    countUOccurrences();
+}
 
-
-// Irreps set :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-document.getElementById('add-irrep-set').addEventListener('click', () => {
-    const irrepSet = document.createElement('div');
-    const inputId = `irrep-name-${irrepSetsDiv.children.length + 1}`;
-    var TemplateSetVal = ``
-    for (let i=1; i<=3; i++){
-        if(i>1){
-            TemplateSetVal += ", "
-        }
-        TemplateSetVal += `(${i-1}`
-        for (let r=1; r<=dropdownN.value-2; r++){
-            TemplateSetVal += ",0"
-        }
-        TemplateSetVal += ")"
-    }
-    num_sets += 1
-    irrepSet.innerHTML = `
-    <label>Set ${num_sets}:
-    <input type="text" id="${inputId}" class="irrep-name"
-    value="${TemplateSetVal}"
-    >
-    </label>
-    <button class="remove-irrep">Remove</button>
-    `;
-    irrepSetsDiv.appendChild(irrepSet);
-
-    irrepSet.querySelector('.remove-irrep').addEventListener('click', () => {
-        irrepSet.remove();
-        updateIrrepDropdowns();
-        if (irrepSetsDiv.children.length === 0) section2.style.display = 'none';
+function applyPresets() {
+    let textArea = document.getElementById("latexInput");
+    let checkboxes = document.querySelectorAll("input[type=checkbox]:checked");
+    let presetText = "";
+    
+    checkboxes.forEach(box => {
+        presetText += box.value + "\n";
     });
+    
+    textArea.value = presetText;
+    adjustHeight(textArea);
+}
 
-    irrepSet.querySelector('.irrep-name').addEventListener('change', () => {
-        updateIrrepDropdowns();
-    });
+function adjustHeight(textarea) {
+    textarea.style.height = "auto";
+    textarea.style.height = textarea.scrollHeight + "px";
+}
 
-    updateIrrepDropdowns();
+function countUOccurrences() {
+
+    let display = ""
+
+    let latexExpr = document.getElementById("latexInput").value;
+    latexExpr = latexReformat(latexExpr)
+
+    latexExpr = latexExpr.split(/[\+\-]/)
+
+    let term = 1
+    for(const expression of latexExpr){
+        let result = parseOneTerm(expression)
+        if(result==="")
+            continue
+        //display += "<b>Term "+term+"</b>: \\["+expression+"\\]<br>"
+        display += "<h4>$\\bullet$ Term "+term+"</h4>"
+        display += result
+        term+=1
+    }
+
+    document.getElementById("output2").innerHTML = display;
+    MathJax.typesetPromise();
+}
+
+function latexReformat(latexExpr){
+    latexExpr = latexExpr.replaceAll("\\tr","\\text{Tr}")
+    latexExpr = latexExpr.replaceAll("\\Tr","\\text{Tr}")
+    latexExpr = latexExpr.replaceAll("\\re","\\text{Re}")
+    latexExpr = latexExpr.replaceAll("\\Re","\\text{Re}")
+    latexExpr = latexExpr.replaceAll("\\im","\\text{Im}")
+    latexExpr = latexExpr.replaceAll("\\Im","\\text{Im}")
+    latexExpr = latexExpr.replaceAll("<=","\\leq ")
+    latexExpr = latexExpr.replaceAll(">=","\\geq ")
+    latexExpr = latexExpr.replaceAll("!=","\\ne ")
+    latexExpr = latexExpr.replaceAll("<"," < ")
+    latexExpr = latexExpr.replaceAll(">"," > ")
+    return latexExpr
+}
+
+function parseOneTerm(expression){
+    
+    if(expression==="")
+        return ""
+
+    // Analyze the summation
+    let regex = new RegExp(`\sum_{`, 'g');
+    let matches = [...expression.matchAll(regex)];
+    let sumStart = matches.map(match => match.index);
+
+    function extractParenthesisContent(str, startPos, is_subscript=true) {
+
+        if(is_subscript){
+            let openCount = 0;
+            let closeCount = 0;
+            let content = '';
+            let foundOpen = false;
+
+            for (let i = startPos; i < str.length; i++) {
+                    if (str[i] === "{") {
+                        if (!foundOpen) {
+                            foundOpen = true;
+                        } else {
+                            content += str[i];
+                        }
+                        openCount++;
+                    } else if (str[i] === "}") {
+                        closeCount++;
+                        if (openCount === closeCount) {
+                            if (str[i + 1] === '^') {
+                                return content + "!" + (i + 1) + "!";
+                            } else {
+                                return content;
+                            }
+                        } else {
+                            content += str[i];
+                        }
+                    } else if (foundOpen) {
+                        content += str[i];
+                    }
+                }
+
+                return null; // Return null if no completed parenthesis is found
+        }else{
+            let result = '';
+            for (let j = startPos; j < str.length; j++) {
+                if (str[j] === ' ' || str[j] === '\\') {
+                    break;
+                }
+                result += str[j];
+            }
+            return result;
+        }
 
     
-});
-
-document.getElementById('to-section2').addEventListener('click', () => {
-    if (irrepSetsDiv.children.length > 0){section2.style.display = 'block';}
-    else{alert("Add the set of irreps first!");}
-});
-
-// Update irreps after each modification ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-function updateIrrepDropdowns() {
-    const irrepNames = Array.from(irrepSetsDiv.children).map(irrepSet => {
-        const nameInput = irrepSet.querySelector('.irrep-name');
-        return nameInput.value || '(Unnamed)';
-    });
-
-    const irrepOptions = irrepNames.map(name => `<option value="${name}">${name}</option>`).join('');
-
-    Array.from(termsDiv.querySelectorAll('.irrep-ref')).forEach(select => {
-        const currentValue = select.value;
-        select.innerHTML = irrepOptions;
-        if (irrepNames.includes(currentValue)) {
-            select.value = currentValue;
-        }
-    });
-}
-
-updateIrrepDropdowns();
-
-
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Section 2 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-// Lattice dimensions :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-
-dropdownDimensions.addEventListener('change', () => {
-    if (termsDiv.children.length == 0 || confirm('Changing dimensions will reset all operators. Proceed?')) {
-        termsDiv.innerHTML = '';
-    } else {
-        dropdownDimensions.value = dropdownDimensions.dataset.prev || 2;
-    }
-});
-dropdownDimensions.dataset.prev = dropdownDimensions.value;
-
-
-var elements = document.getElementsByClassName("update-dropdowns");
-for (let i=0;i<elements.length;i++){
-    elements[i].addEventListener('click', updateIrrepDropdowns);
-}
-
-termsDiv.addEventListener('input', event => {
-    if (event.target.classList.contains('irrep-name')) {
-        updateIrrepDropdowns();
-    }
-});
-
-// Spoiler
-function add_hint(hint_name){
-    document.getElementById(hint_name+"_button").addEventListener("click", function() {
-        let wrapper = document.getElementById(hint_name);
-        if (wrapper.classList.contains("show")) {
-          wrapper.classList.remove("show");
-          this.textContent = "Show input hint";
-        } else {
-          wrapper.classList.add("show");
-          this.textContent = "Hide input hint";
-        }
-      });
-    const style = document.createElement("style");
-    style.textContent = `
-        #${hint_name} {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease-in-out;
-        }
-        #${hint_name}.show {
-            max-height: 1000px;
-        }
-    `;
-    document.head.appendChild(style);
-
-    const spoiler = document.getElementById(hint_name);
-
-    function toggleSpoiler() {
-        if (spoiler.style.maxHeight && spoiler.style.maxHeight !== "0px") {
-            // Collapse
-            spoiler.style.maxHeight = spoiler.scrollHeight + "px"; // Set to current height first
-            setTimeout(() => {
-                spoiler.style.maxHeight = "0px"; // Then collapse
-            }, 10); // Small delay to trigger transition
-        } else {
-            // Expand
-            spoiler.style.maxHeight = spoiler.scrollHeight + "px";
-        }
     }
 
-    // Example: Toggle on button click
-    document.getElementById(hint_name+"_button").addEventListener("click", toggleSpoiler);
+    let index_list = []
+    let condition_dict = []
+    for(const ind of sumStart){
+        let subscript = extractParenthesisContent(expression,ind)
+        let supscript = "_"
+        if(subscript.slice(-1)=="!"){
+            let supind = parseInt(subscript.split("!")[1], 10)
+            subscript = subscript.split("!")[0]
 
-}
-add_hint("spoiler1")
-add_hint("spoiler2")
-
-document.getElementById('add-term').addEventListener('click', () => add_term("") );
-document.getElementById('add-term-plaquette').addEventListener('click', () => add_term("plaquette") );
-document.getElementById('add-term-theta').addEventListener('click', () => add_term("theta") );
-document.getElementById('add-term-polyakov').addEventListener('click', () => add_term("polyakov") );
-
-function add_term(template){
-    const dimensions = parseInt(dropdownDimensions.value, 10);
-    const termDiv = document.createElement('div');
-
-    var skip_term = true
-
-    var term_name = ""
-    var term_tex = ""
-    if (template==""){
-        skip_term = false
-    }
-    if (template=="plaquette"){
-        term_name = "Plaquette action"
-        term_tex = `U_\\mu U_\\nu U'_\\mu U'_\\nu`
-        skip_term = false
-    }
-    if (template=="theta"){
-        term_name = "Theta term"
-        if(dimensions==2){
-            alert(`Theta term in 1+1D usually can be grouped with the plaquette action. If you already have the plaquette action, I recommend removing the theta term.`)
-            term_tex = `U_\\mu U_\\nu U'_\\mu U'_\\nu`
-            skip_term = false
-        }else if(dimensions==4){
-            term_tex = `U_\\mu U_\\nu U'_\\mu U'_\\nu U_\\rho U_\\sigma U'_\\rho U'_\\sigma`
-            skip_term = false
-        }else{
-            alert("")
-        }
-    }
-    if (template=="polyakov"){
-        term_name = "Polyakov loop"
-        term_tex = `L_\\mu`
-        skip_term = false
-    }
-
-    if(skip_term){
-        return 1
-    }
-
-    termDiv.classList.add('term');
-    termDiv.innerHTML = `
-        <br>
-        <div class="term-tex-out"></div>
-        <div>
-        Term Name: <input type="text" value="${term_name}" class="term-name">
-        <button class="remove-term">Remove</button>
-        <br>
-        Operator: <input type="text" value="${term_tex}" class="term-tex">
-        <button class="render-tex">Render</button>
-        <br>
-        <div class="sum-rule">
-        </div>
-        <br>
-        Expansion set: 
-        <select class="irrep-ref">
-            ${Array.from(irrepSetsDiv.children).map((irrepSet, index) => {
-                const nameInput = irrepSet.querySelector('.irrep-name');
-                const setName = `Set ${index + 1}`;
-                return `<option value="${nameInput.value}">${setName}</option>`;
-            }).join('')}
-        </select>
-        <input type="text" value="" class="link-information" style="display: none;">
-        
-    `;
-
-    termDiv.querySelector('.remove-term').addEventListener('click', () => {
-        termDiv.remove();
-    });
-
-    termDiv.querySelector('.render-tex').addEventListener('click', () => {
-        var display = ""
-        var error = ""
-        var texContent = "$$"+termDiv.querySelector('.term-tex').value+"$$"
-        texContent = texContent.replace(/'/g,"^\\dagger")
-
-        // Begin Error detection :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-        var indices = UString(termDiv.querySelector('.term-tex').value)
-        if(indices[0]=="error") error = "Invalid syntax.";
-        // check if it closes into a loop
-        var is_loop = true;
-        for(let i in indices){
-            var index = indices[i]
-            var conj
-            if(index.substring(0, 2)=="+u") conj=index.replace("+u","-u");
-            else if(index.substring(0, 2)=="-u") conj=index.replace("-u","+u");
-            else continue;
-            const countA = indices.filter(item => item === index).length;
-            const countB = indices.filter(item => item === conj).length;
-            if(countA!=countB){
-                is_loop = false;
-                break;
+            if(expression[supind+1]=="\\"){
+                supscript = "\\"+extractParenthesisContent(expression,supind+2,false)
+            }else{
+                supscript = expression[supind+1]
             }
         }
-        if(!is_loop) error = "The operator does not form a loop.";
+        let index = subscript.split(/(=|<|>|\\leq|\\geq|\\ne)/)[0]
+        let condition_sym = subscript.split(/(=|<|>|\\leq|\\geq|\\ne)/)[1]
+        let subject = subscript.split(/(=|<|>|\\leq|\\geq|\\ne)/)[2]
 
-        // End Error detection :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+        index = index.replaceAll(" ","")
+        condition_sym = condition_sym.replaceAll(" ","")
+        subject = subject.replaceAll(" ","")
 
-        if(indices[0]=="error"){
-            display = `<font color='red'>Error: ${error}</font>`
-            termDiv.querySelector('.link-information').value = "error"
-        }else{
-            if(texContent.length>0){
-                display = texContent;
-                termDiv.querySelector('.link-information').value = indices
-            }
-            if(error!=""){
-                display += `<br><br><font color='red'>Error: ${error}</font>`
-                termDiv.querySelector('.link-information').value = "error"
-            }
-        }
+        // To sumarize, for each sum, we have the following 4 strings:
+        // For \sum_{a=m}^n
+        //  index           a
+        //  condition_sym   =
+        //  subject         m
+        //  supscript       n  // is blank if there is no superscript
 
-        termDiv.querySelector('.term-tex-out').innerHTML = display
-
-        // Sum rules
-        if(error==""){
-            var sumRuleDiv = termDiv.querySelector('.sum-rule')
-            var unique_indices = [];
-            var sum_rule_val = ""
-            for(let i in indices){
-                var index = indices[i].slice(2)
-                var texIndex = "$"+mapTeXExpression(index)+"$"
-                if(!unique_indices.includes(texIndex))
-                    unique_indices.push(texIndex)
-            }
-            for(let i in unique_indices){
-                var index = unique_indices[i]
-                sum_rule_val += `<div>`
-                sum_rule_val += `&bullet; ${index} sums over `
-                sum_rule_val += `<select class="sum-rule-option">`
-                sum_rule_val += `<option value="custom">range</option>`;
-                var temp = 1
-                for(let j in unique_indices){
-                    if(j==i) continue;
-                    var index2 = unique_indices[j]
-                    sum_rule_val += `<option value="${index}<${index2}">${index}<${index2}</option>`
-                    sum_rule_val += `<option value="${index}&leq;${index2}">${index}&leq;${index2}</option>`
-                    sum_rule_val += `<option value="${index}>${index2}">${index}>${index2}</option>`
-                    sum_rule_val += `<option value="${index}&geq;${index2}">${index}&geq;${index2}</option>`
-                    sum_rule_val += `<option value="${index}&ne;${index2}">${index}&ne;${index2}</option>`
-                    temp+=1
-                }
-                sum_rule_val += `</select>`
-                sum_rule_val += `</div>`
-
-            }
-            // Insert the generated HTML
-            sumRuleDiv.innerHTML = sum_rule_val
-
-            // Add event listeners to the dropdowns
-            document.querySelectorAll('.sum-rule-option').forEach(select => {
-                select.addEventListener('change', function () {
-                    let parentDiv = this.parentElement;
-                    let existingInput = parentDiv.querySelector('.custom-input');
-
-                    if (this.value === "custom") {
-                        if (!existingInput) {
-                            let input = document.createElement('input');
-                            input.type = "text";
-                            input.classList.add('custom-input');
-
-                            var input_value = []
-                            for(let d=1;d<=dimensions;d++)
-                                input_value.push(d)
-
-                            input.value = input_value;
-                            parentDiv.appendChild(input);
-                        }
-                    } else {
-                        if (existingInput) {
-                            existingInput.remove();
-                        }
-                    }
-                });
-                var event = new Event('change');
-                select.dispatchEvent(event);
-            });
-        }else{
-            termDiv.querySelector('.sum-rule').innerHTML = ""
-        }
-
-        MathJax.typesetPromise();
-    });
-
-    termsDiv.appendChild(termDiv);
-
-    termDiv.querySelector('.render-tex').click()
-
-    updateIrrepDropdowns();
-}
-
-function UString(str) {
-    str = mapGreekExpression(str).replace(/ /g,"");
-
-    const pattern = /^([U|L]'?_[a-zα-ω])+$/;
-
-    if (!pattern.test(str)) {
-        return ["error"];
+        index_list.push(index)
+        condition_dict[index] = [condition_sym,subject,supscript]
     }
 
-    return str.match(/[U|L]'?_([a-zα-ω])/g).map(match => {
-        let char = match.match(/([a-zα-ω])/)[1];
-        
-        if (match.startsWith("U'_")) {
-            return `-u${char}`;  // For U'_a return -ua
-        } else if (match.startsWith("U_")) {
-            return `+u${char}`;  // For U_a return +ua
-        } else if (match.startsWith("L'_")) {
-            return `-l${char}`;  // For L'_a return -la
-        } else if (match.startsWith("L_")) {
-            return `+l${char}`;  // For L_a return +la
+    const resultList = iterateAll(index_list, condition_dict);
+
+    let display = ""
+    if(index_list.length==1)
+        display += "There is 1 loop:"
+    else
+        display += "There are "+index_list.length+" loops:"
+    display += "<ul>"
+    for(const index of index_list){
+        display += "<li>"
+        let condition = condition_dict[index]
+        if(condition[0]==="="){
+            display += "$"+index+"$ running from $"+condition[1]+"$ to $"+condition[2]+"$"
+        }else if(condition[0]==="<"){
+            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition[1]+"-1$"
+        }else if(condition[0]==="\\leq"){
+            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition[1]+"$"
+        }else if(condition[0]===">"){
+            display += "$"+index+"$ running from $"+condition[1]+"+1$ to $"+condition_dict[index_list[0]][1]+"$"
+        }else if(condition[0]==="\\geq"){
+            display += "$"+index+"$ running from $"+condition[1]+"$ to $"+condition_dict[index_list[0]][2]+"$"
+        }else if(condition[0]==="\\ne"){
+            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition_dict[index_list[0]][2]+"$ but $"+index+" \\ne "+condition[1]+"$"
         }
-    });
-}
-
-function mapGreekExpression(expression) {
-  const greekMap = {
-    '\\alpha': 'α', '\\Alpha': 'Α',
-    '\\beta': 'β', '\\Beta': 'Β',
-    '\\gamma': 'γ', '\\Gamma': 'Γ',
-    '\\delta': 'δ', '\\Delta': 'Δ',
-    '\\epsilon': 'ε', '\\Epsilon': 'Ε',
-    '\\zeta': 'ζ', '\\Zeta': 'Ζ',
-    '\\eta': 'η', '\\Eta': 'Η',
-    '\\theta': 'θ', '\\Theta': 'Θ',
-    '\\iota': 'ι', '\\Iota': 'Ι',
-    '\\kappa': 'κ', '\\Kappa': 'Κ',
-    '\\lambda': 'λ', '\\Lambda': 'Λ',
-    '\\mu': 'μ', '\\Mu': 'Μ',
-    '\\nu': 'ν', '\\Nu': 'Ν',
-    '\\xi': 'ξ', '\\Xi': 'Ξ',
-    '\\omicron': 'ο', '\\Omicron': 'Ο',
-    '\\pi': 'π', '\\Pi': 'Π',
-    '\\rho': 'ρ', '\\Rho': 'Ρ',
-    '\\sigma': 'σ', '\\Sigma': 'Σ',
-    '\\tau': 'τ', '\\Tau': 'Τ',
-    '\\upsilon': 'υ', '\\Upsilon': 'Υ',
-    '\\phi': 'φ', '\\Phi': 'Φ',
-    '\\chi': 'χ', '\\Chi': 'Χ',
-    '\\psi': 'ψ', '\\Psi': 'Ψ',
-    '\\omega': 'ω', '\\Omega': 'Ω'
-  };
-  
-  return expression.replace(/\\[a-zA-Z]+/g, match => greekMap[match] || match);
-}
-
-function mapTeXExpression(expression) {
-  const reverseGreekMap = {
-        'α': '\\alpha', 'Α': '\\Alpha',
-        'β': '\\beta', 'Β': '\\Beta',
-        'γ': '\\gamma', 'Γ': '\\Gamma',
-        'δ': '\\delta', 'Δ': '\\Delta',
-        'ε': '\\epsilon', 'Ε': '\\Epsilon',
-        'ζ': '\\zeta', 'Ζ': '\\Zeta',
-        'η': '\\eta', 'Η': '\\Eta',
-        'θ': '\\theta', 'Θ': '\\Theta',
-        'ι': '\\iota', 'Ι': '\\Iota',
-        'κ': '\\kappa', 'Κ': '\\Kappa',
-        'λ': '\\lambda', 'Λ': '\\Lambda',
-        'μ': '\\mu', 'Μ': '\\Mu',
-        'ν': '\\nu', 'Ν': '\\Nu',
-        'ξ': '\\xi', 'Ξ': '\\Xi',
-        'ο': '\\omicron', 'Ο': '\\Omicron',
-        'π': '\\pi', 'Π': '\\Pi',
-        'ρ': '\\rho', 'Ρ': '\\Rho',
-        'σ': '\\sigma', 'Σ': '\\Sigma',
-        'τ': '\\tau', 'Τ': '\\Tau',
-        'υ': '\\upsilon', 'Υ': '\\Upsilon',
-        'φ': '\\phi', 'Φ': '\\Phi',
-        'χ': '\\chi', 'Χ': '\\Chi',
-        'ψ': '\\psi', 'Ψ': '\\Psi',
-        'ω': '\\omega', 'Ω': '\\Omega'
-    };
-  
-  return expression.replace(/\\[a-zA-Z]+/g, match => reverseGreekMap[match] || match);
-}
-
-// This is for initial debugging
-function display_linkdata(){
-
-    section3.style.display = 'block';
-
-    const output = {
-        N: parseInt(dropdownN.value),
-        dim: parseInt(dropdownDimensions.value),
-        terms: []
-    };
-
-    let has_error = false;
-    Array.from(termsDiv.children).forEach(term => {
-        const term_name = term.querySelector('.term-name').value;
-        const irrep_set = term.querySelector('.irrep-ref').value;
-        const link_info = term.querySelector('.link-information').value;
-
-        var sumRulesData = [];
-        term.querySelectorAll('.sum-rule').forEach(sumRuleDiv => {
-            let ruleEntries = [];
-
-            sumRuleDiv.querySelectorAll('.sum-rule-option').forEach(select => {
-                let selectedValue = select.value;
-
-                if (selectedValue === "custom") {
-                    let input = select.parentElement.querySelector('.custom-input');
-                    ruleEntries.push(`custom:${input ? input.value : ''}`);
-                } else {
-                    ruleEntries.push(selectedValue.replace(/\$/g,""));
-                }
-            });
-
-            sumRulesData.push(ruleEntries);
-        });
-
-        output.terms.push({ term_name, irrep_set, link_info,sumRulesData});
-        if (link_info === "error") has_error = true;
-    });
-
-    if(has_error){
-        alert("You still have some error in step 2!");
     }
-    document.getElementById('output').textContent = JSON.stringify(output, null, 2);
+    display += "</ul>"
+    /*
+    display += "Index values:<br>"
+    for(const index of resultList){
+        display += index+"<br>"
+    }
+    */
+    return display
 }
 
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// Section 2 ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+function iterateAll(indices, cond) {
+  let results = [];
+  let current = {}; // object to store the current values for each key
 
-document.getElementById('to-section3').addEventListener('click', () => display_linkdata());
+  // first key should have "=" condition to define global bounds
+  let firstKey = indices[0];
+  if (cond[firstKey][0] !== "=") {
+    throw new Error("The first index must have an '=' condition to define its range.");
+  }
+  const firstLow = cond[firstKey][1];
+  const firstHigh = cond[firstKey][2];
+
+  // iterate over the first index's range
+  for (let v = firstLow; v <= firstHigh; v++) {
+    current[firstKey] = v;
+    // pass the first key's value as the global bound for subsequent keys
+    iterate(1, indices, cond, current, results, firstHigh);
+  }
+  return results;
+}
+
+function iterate(indexIdx, indices, cond, current, results, globalBound) {
+  // when all indices have been set, save a snapshot of the current values
+  if (indexIdx === indices.length) {
+    // Save the values in the order of the indices
+    results.push(indices.map(key => current[key]));
+    return;
+  }
+
+  const key = indices[indexIdx];
+  const condition = cond[key];
+  let low, high;
+
+  if (condition[0] === "=") {
+    // fixed range condition
+    low = condition[1];
+    high = condition[2];
+  } else if (condition[0] === "<") {
+    const dep = condition[1];
+    if (current[dep] === undefined) return;
+    low = 1;
+    high = parseInt(current[dep],10) - 1;
+  } else if (condition[0] === "\\leq") {
+    const dep = condition[1];
+    if (current[dep] === undefined) return;
+    low = 1;
+    high = parseInt(current[dep],10);
+  } else if (condition[0] === ">") {
+    const dep = condition[1];
+    if (current[dep] === undefined) return;
+    low = parseInt(current[dep],10) + 1;
+    high = globalBound;
+  } else if (condition[0] === "\\geq") {
+    const dep = condition[1];
+    if (current[dep] === undefined) return;
+    low = parseInt(current[dep],10);
+    high = globalBound;
+  } else {
+    low = 1;
+    high = globalBound;
+  }
+
+  // If the bounds are not valid, skip this branch.
+  if (low > high) return;
+
+  // iterate over the valid range for this key
+  for (let v = low; v <= high; v++) {
+
+    if (condition[0] === "\\ne"){
+        const dep = condition[1]
+        if(v==parseInt(current[dep],10))
+            continue
+    }
+
+    current[key] = v;
+    iterate(indexIdx + 1, indices, cond, current, results, globalBound);
+  }
+}

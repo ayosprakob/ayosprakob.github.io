@@ -33,15 +33,10 @@ function updatepage(linkdetails) {
 }
 
 
-function updatepageHome(linkdetails) {
+function updatepageUnique(headerdetails) {
     const webHeader = document.getElementById("webheader");
     const webFooter = document.getElementById("webfooter");
-    webHeader.innerHTML = `
-        <h1>Atis Yosprakob</h1>
-        <i>Department of Physics, Niigata University, Japan</i>
-        <br>
-        <br>
-    `;
+    webHeader.innerHTML = headerdetails;
     webFooter.innerHTML = `
         <center>
         <font color="#aaa">
@@ -52,14 +47,6 @@ function updatepageHome(linkdetails) {
         </font>
         </center>
     `;
-    const link1 = document.getElementById("nav1");
-    const link2 = document.getElementById("nav2");
-    if(link1){
-        link1.innerHTML = linkdetails   
-    }
-    if(link2){
-        link2.innerHTML = linkdetails
-    }
 
     box_embed()
 }
