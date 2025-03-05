@@ -5,7 +5,7 @@ function renderMath() {
     if(input[0]=="+"){
         input = input.replace("+","")
     }
-    document.getElementById("output1").innerHTML = "\\[" + input + "\\]";
+    document.getElementById("output1").innerHTML = "<div class=\"wrap\">\\[" + input + "\\]</div>";
     MathJax.typesetPromise();
     countUOccurrences();
 }
