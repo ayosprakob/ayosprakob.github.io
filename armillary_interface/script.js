@@ -267,22 +267,21 @@ function parseOneTerm(expression){
     display += "</ul>"
     
     let numbered_links = []
-    for(let mu=condition_dict[index_list[0]][1]; mu<condition_dict[index_list[0]][2];mu++){
+    for(let mu=condition_dict[index_list[0]][1]; mu<=condition_dict[index_list[0]][2];mu++){
         numbered_links.push("U_"+mu)
         numbered_links.push("U^\\dagger_"+mu)
     }
 
     let numbered_links_count = []
-    for(const numbered_link of numbered_links)
+    for(const numbered_link of numbered_links){
         numbered_links_count[numbered_link] = 0
+    }
     
     for(const index of resultList){
         let replaced_operator = operator
         for(let axis=0; axis<index_list.length;axis++){
             replaced_operator = replaced_operator.replaceAll(index_list[axis],index[axis]+"")
         }
-        //replaced_operator = latexReformat(replaced_operator)
-        //display += "$"+replaced_operator+"$<br>"
         for(const numbered_link of numbered_links){
             numbered_links_count[numbered_link] += (replaced_operator.split(numbered_link).length-1)
         }
