@@ -62,29 +62,30 @@
     <h2>Step 1: Enter the action</h2>
 
     <div class="inline">
-        <label class="lcol">
+        <div class="lcol">
         <b>Presets:</b>
         <br>
-        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D Plaquette action<br>
+        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D plaquette action<br>
 
-        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D Plaquette action<br>
+        <input type="checkbox" id="theta2d" value="+i\kappa\sum_{\mu=1}^2\sum_{\nu<\mu}\log(\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu)"> 2D theta term<br>
 
-        <input type="checkbox" id="theta2d" value="+\frac{i}{2\pi}\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D theta term<br>
+        <input type="checkbox" id="plaquette3d" value="-\beta\sum_{\mu=1}^3\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 3D plaquette action<br>
 
-        <input type="checkbox" id="theta4d" value="+\frac{i}{32\pi^2}\sum_{\mu=1}^4\sum_{\nu=1}^4\sum_{\rho=1}^4\sum_{\sigma=1}^4\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
+        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D plaquette action<br>
+
+        <input type="checkbox" id="theta4d" value="+i\kappa\sum_{\mu=1}^4\sum_{\nu<\mu}\sum_{\rho=1}^4\sum_{\sigma<\rho}\epsilon^{\mu\nu\rho\sigma}\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
 
         <br>
         <button onclick="applyPresets();renderMath()">Apply Preset</button>
-        </label>
-        <label class="rcol">
+        </div>
+        <div class="rcol">
             <ul>
-            <li>You can omit the position of the link variable; e.g., $U_\mu(x) \sim U_\mu$. The relative position between any two link variables is already fixed by gauge symmetry.</li>
-            <li>No need to worry about constants and other fields. You can use any symbols. What really matters are the Wilson loops/lines in the action.</li>
-            <li>Expand every term. Do not use parentheses.</li>
+            <li>You can omit the position of the link variable; e.g., $U_\mu(x) \sim U_\mu$.</li>
+            <li>Expand so that each term is a single Wilson loop.</li>
             <li>Space-time indices start with 1, not 0.</li>
 
             </ul>
-        </label>
+        </div>
     </div>
     <nl>
     
@@ -92,13 +93,14 @@
 
     <div id="output1"></div>
     <div class="inline">
-    <label class="s-label">$S=$</label>
+    <label class="s-label">$\displaystyle S=\sum_x$</label>
     <textarea id="latexInput" oninput="adjustHeight(this);renderMath()" placeholder="Enter LaTeX expression..."></textarea>
     </div>
     <nl>
     
+    <div id="interlude1to2"></div>
 
-    <h2>Step 2: Analyze the summation</h2>
+    <h2>Step 2: Analyze the terms</h2>
 
     <div id="output2"></div>
     
