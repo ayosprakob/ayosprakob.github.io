@@ -100,8 +100,9 @@ function countUOccurrences() {
                 if(ilink>0)
                     display += ", "
                 display += "$"+latexReformat(key)+"$&times;<font color='blue'>"+count+"</font>"
+                ilink+=1
             }
-            ilink+=1
+            
         }
         display += "<nl>"
     }
@@ -199,8 +200,6 @@ function parseOneTerm(expression){
             }
             return result;
         }
-
-    
     }
 
     let index_list = []
@@ -237,14 +236,18 @@ function parseOneTerm(expression){
         condition_dict[index] = [condition_sym,subject,supscript]
     }
 
-    const resultList = iterateAll(index_list, condition_dict);
-
     let display = ""
 
     let links = extractLinks(expression)
-    let operator = "\\tr~"
+    let nonsummed_links = []
+    let operator = ""
+    if(expression.includes("\\text{Tr}"))
+        operator+="\\tr~"
     for(const link of links){
         operator += link+" "
+        let index = link.replaceAll("^\\dagger","").replaceAll("U_","")
+        if(!index_list.includes(index))
+            nonsummed_links.push(link)
     }
     function strMax(expression){
         if(expression.includes(","))
@@ -281,27 +284,47 @@ function parseOneTerm(expression){
     display += "</ul>"
     
     let numbered_links = []
-    for(let mu=condition_dict[index_list[0]][1]; mu<=condition_dict[index_list[0]][2];mu++){
-        numbered_links.push("U_"+mu)
-        numbered_links.push("U^\\dagger_"+mu)
+    if(index_list.length>0){
+        for(let mu=condition_dict[index_list[0]][1]; mu<=condition_dict[index_list[0]][2];mu++){
+            numbered_links.push("U_"+mu)
+            numbered_links.push("U^\\dagger_"+mu)
+        }
     }
+    for(const link of nonsummed_links)
+        if(!numbered_links.includes(link))
+            numbered_links.push(link)
 
     let numbered_links_count = []
     for(const numbered_link of numbered_links){
         numbered_links_count[numbered_link] = 0
+        //display+=numbered_link+"<br>"
+    }
+    if(index_list.length>0){
+        const resultList = iterateAll(index_list, condition_dict);
+
+        for(const index of resultList){
+            let replaced_operator = operator
+
+            // before replacing, make sure it will not replace \dagger
+            replaced_operator = replaced_operator.replaceAll("dagger","†")
+
+            for(let axis=0; axis<index_list.length;axis++){
+                replaced_operator = replaced_operator.replaceAll(index_list[axis],index[axis]+"")
+            }
+            replaced_operator = replaced_operator.replaceAll("†","dagger")
+            //display += "$"+replaced_operator+"$<br>"
+            for(const numbered_link of numbered_links){
+                numbered_links_count[numbered_link] += (replaced_operator.split(numbered_link).length-1)
+            }
+        }
+    }else{
+        for(const numbered_link of numbered_links)
+            numbered_links_count[numbered_link] += (operator.split(numbered_link).length-1)
     }
     
-    for(const index of resultList){
-        let replaced_operator = operator
-        for(let axis=0; axis<index_list.length;axis++){
-            replaced_operator = replaced_operator.replaceAll(index_list[axis],index[axis]+"")
-        }
-        //display += "$"+replaced_operator+"$<br>"
-        for(const numbered_link of numbered_links){
-            numbered_links_count[numbered_link] += (replaced_operator.split(numbered_link).length-1)
-        }
-    }
+        
     
+
     display += "Link variable counts per site: <br> "
     display += "&nbsp;&nbsp;&nbsp;&nbsp;"
     let linkCountStr = ""
@@ -313,6 +336,7 @@ function parseOneTerm(expression){
             if(ilink>0)
                 linkCountStr += ", "
             linkCountStr += "$"+latexReformat(numbered_link)+"$&times;"+count
+            ilink+=1
         }
         if(numbered_link.includes("\\dagger")){
             let udagger = numbered_link
@@ -320,13 +344,14 @@ function parseOneTerm(expression){
             if(numbered_links_count[u]!=numbered_links_count[udagger])
                 isNotClosedLoop = true
         }
-        ilink+=1
     }
-    display += linkCountStr+"<br>"
+    display += linkCountStr
     if(isNotClosedLoop)
-        display += "<font color='red'>Warning: It seems the link variables in this term do not close into a loop. If this is intended, you can ignore this message.</font><nl>"
+        display += "<br><br><font color='red'>Warning: it seems the link variables in this term do not close into a loop. If this is intended, you can ignore this message.</font>"
+    if(!expression.includes("\\text{Tr}"))
+        display += "<br><br><font color='red'>Warning: the Wilson loop is not inside a trace. If this is intended, you can ignore this message.</font>"
+    display += "<br><br>"
 
-    
     return [display,numbered_links_count,operator+";"+linkCountStr]
 }
 
