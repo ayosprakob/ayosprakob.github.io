@@ -43,13 +43,13 @@
         .lcol {
             font-size: 16px;
             margin-top: 5px; /* Adjust if necessary */
-            max-width: 40%;
+            max-width: 35%;
         }
 
         .rcol {
             font-size: 16px;
             margin-top: 5px; /* Adjust if necessary */
-            max-width: 60%;
+            max-width: 65%;
         }
 
     </style>
@@ -65,15 +65,15 @@
         <div class="lcol">
         <b>Presets:</b>
         <br>
-        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D plaquette action<br>
+        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D plaquette<br>
 
-        <input type="checkbox" id="theta2d" value="+i\kappa\sum_{\mu=1}^2\sum_{\nu<\mu}\log(\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu)"> 2D theta term<br>
+        <input type="checkbox" id="plaqtheta2d" value="+\sum_{\mu=1}^2\sum_{\nu<\mu}f(\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu)"> 2D plaquette & theta<br>
 
-        <input type="checkbox" id="plaquette3d" value="-\beta\sum_{\mu=1}^3\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 3D plaquette action<br>
+        <input type="checkbox" id="plaquette3d" value="-\beta\sum_{\mu=1}^3\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 3D plaquette<br>
 
-        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D plaquette action<br>
+        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D plaquette<br>
 
-        <input type="checkbox" id="theta4d" value="+i\kappa\sum_{\mu=1}^4\sum_{\nu<\mu}\sum_{\rho=1}^4\sum_{\sigma<\rho}\epsilon^{\mu\nu\rho\sigma}\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
+        <input type="checkbox" id="theta4d" value="+\kappa\sum_{\mu=1}^4\sum_{\nu\ne\mu}\sum_{\rho\ne\mu,\nu}\sum_{\sigma>\mu,\nu,\rho}\epsilon^{\mu\nu\rho\sigma}\im\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
 
         <br>
         <button onclick="applyPresets();renderMath()">Apply Preset</button>
@@ -82,7 +82,9 @@
             <ul>
             <li>You can omit the position of the link variable; e.g., $U_\mu(x) \sim U_\mu$.</li>
             <li>Expand so that each term is a single Wilson loop.</li>
-            <li>Space-time indices start with 1, not 0.</li>
+            <li>Only use $\pm$ to separate terms. DO NOT use it within a term; the algorithm will be confused.</li>
+            <li>Sometimes, you may want to combine terms like $\beta~\text{Re}~\text{Tr}(...)+\kappa~\text{Im}~\text{Tr}(...)$. In this situation, you can name a new function $f(\text{Tr}(...))$ (any name is OK). Be sure to keep the trace inside your function so that the algorithm knows that your term is gauge invariant.</li>
+            <li>Rule of thumb: <font color='blue'>try to keep the format as close to the presets as possible to avoid unintended errors.</font></li>
 
             </ul>
         </div>

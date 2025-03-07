@@ -74,11 +74,11 @@ function countUOccurrences() {
             continue
         display += ("<h4>$\\bullet$ "+ordinal(term)+" term "
             +"<font color='#888'>"
-            +"::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::"
+            +"::::::::::::::::::::::::::::::::::::"
             +"</font>"
             +"</h4>")
-        if(parsed_operator.includes(result[2]))
-            display+= "<font color='red'>Note: this term can and should be merged with one of the previous terms.</font><br>"
+        //if(parsed_operator.includes(result[2]))
+        //    display+= "<font color='red'>Note: this term can and should be merged with one of the previous terms.</font><br>"
         display += result[0]
         parsed_operator.push(result[2])
         term+=1
@@ -87,12 +87,12 @@ function countUOccurrences() {
         document.getElementById("interlude1to2").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
         display += ("<h4>$\\bullet$ Summary "
             +"<font color='#888'>"
-            +"&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;"
-            +"&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;"
-            +"&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;"
+            +"&mdash;&mdash;&mdash;&mdash;&mdash;"
+            +"&mdash;&mdash;&mdash;&mdash;&mdash;&mdash;"
             +"</font>"
             +"</h4>")
-        display += "Total counts: "
+        display += "Total counts per site:  <br> "
+        display += "&nbsp;&nbsp;&nbsp;&nbsp;"
         let ilink = 0
         for(let key in linkCount){
             let count = linkCount[key]
@@ -127,6 +127,8 @@ function latexReformat(latexExpr){
     latexExpr = latexExpr.replaceAll(")"," ) ")
     latexExpr = latexExpr.replaceAll("["," [ ")
     latexExpr = latexExpr.replaceAll("]"," ] ")
+    while(latexExpr.includes("  "))
+        latexExpr = latexExpr.replaceAll("  "," ")
     return latexExpr
 }
 
@@ -138,7 +140,7 @@ function extractLinks(input) {
     while ((match = regex.exec(input)) !== null) {
       // match[0] is the full match, e.g. "U_\\alpha" or "U_b"
       // You can also check match[1] (the backslash case) or match[2] (the single letter case)
-      results.push(match[0]);
+      results.push(match[0].replaceAll(/[{} ]/g,""));
     }
 
     return results;
@@ -244,6 +246,18 @@ function parseOneTerm(expression){
     for(const link of links){
         operator += link+" "
     }
+    function strMax(expression){
+        if(expression.includes(","))
+            return "\\text{max}("+expression.replace(" ","")+")"
+        else
+            return expression.replace(" ","")
+    }
+    function strMin(expression){
+        if(expression.includes(","))
+            return "\\text{min}("+expression.replace(" ","")+")"
+        else
+            return expression.replace(" ","")
+    }
     operator = latexReformat(operator)
     display+="Relevant operator: $"+operator+"$<br>"
     display += "<ul>"
@@ -253,13 +267,13 @@ function parseOneTerm(expression){
         if(condition[0]==="="){
             display += "$"+index+"$ running from $"+condition[1]+"$ to $"+condition[2]+"$"
         }else if(condition[0]==="<"){
-            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition[1]+"-1$"
+            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+strMin(condition[1])+"-1$"
         }else if(condition[0]==="\\leq"){
-            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition[1]+"$"
+            display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+strMin(condition[1])+"$"
         }else if(condition[0]===">"){
-            display += "$"+index+"$ running from $"+condition[1]+"+1$ to $"+condition_dict[index_list[0]][2]+"$"
+            display += "$"+index+"$ running from $"+strMax(condition[1])+"+1$ to $"+condition_dict[index_list[0]][2]+"$"
         }else if(condition[0]==="\\geq"){
-            display += "$"+index+"$ running from $"+condition[1]+"$ to $"+condition_dict[index_list[0]][2]+"$"
+            display += "$"+index+"$ running from $"+strMax(condition[1])+"$ to $"+condition_dict[index_list[0]][2]+"$"
         }else if(condition[0]==="\\ne"){
             display += "$"+index+"$ running from $"+condition_dict[index_list[0]][1]+"$ to $"+condition_dict[index_list[0]][2]+"$ but $"+index+" \\ne "+condition[1]+"$"
         }
@@ -282,14 +296,17 @@ function parseOneTerm(expression){
         for(let axis=0; axis<index_list.length;axis++){
             replaced_operator = replaced_operator.replaceAll(index_list[axis],index[axis]+"")
         }
+        //display += "$"+replaced_operator+"$<br>"
         for(const numbered_link of numbered_links){
             numbered_links_count[numbered_link] += (replaced_operator.split(numbered_link).length-1)
         }
     }
     
-    display += "Link variable counts: "
+    display += "Link variable counts per site: <br> "
+    display += "&nbsp;&nbsp;&nbsp;&nbsp;"
     let linkCountStr = ""
     let ilink = 0
+    let isNotClosedLoop = false
     for(const numbered_link of numbered_links){
         let count = numbered_links_count[numbered_link]
         if(count>0){
@@ -297,9 +314,17 @@ function parseOneTerm(expression){
                 linkCountStr += ", "
             linkCountStr += "$"+latexReformat(numbered_link)+"$&times;"+count
         }
+        if(numbered_link.includes("\\dagger")){
+            let udagger = numbered_link
+            let u = udagger.replace("^\\dagger","")
+            if(numbered_links_count[u]!=numbered_links_count[udagger])
+                isNotClosedLoop = true
+        }
         ilink+=1
     }
-    display += linkCountStr+"<nl>"
+    display += linkCountStr+"<br>"
+    if(isNotClosedLoop)
+        display += "<font color='red'>Warning: It seems the link variables in this term do not close into a loop. If this is intended, you can ignore this message.</font><nl>"
 
     
     return [display,numbered_links_count,operator+";"+linkCountStr]
@@ -354,6 +379,16 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
     }
   }
 
+  function get_min(variable){
+    return Math.min(...variable.replace(" ","").split(',').map(get_index));
+  }
+  function get_max(variable){
+    return Math.max(...variable.replace(" ","").split(',').map(get_index));
+  }
+  function is_equal(y,variable){
+    return variable.split(',').map(get_index).includes(y);
+  }
+
   if (condition[0] === "=") {
     // fixed range condition
     low = get_index(condition[1])
@@ -361,26 +396,27 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
     
   } else if (condition[0] === "<") {
     const dep = condition[1];
-    if (current[dep] === undefined && notNumber(dep)) return;
+    if (current[dep] === undefined && notNumber(get_min(dep))) return;
     low = get_index(1)
-    high = get_index(dep)-1
+    high = get_min(dep)-1
 
   } else if (condition[0] === "\\leq") {
     const dep = condition[1];
-    if (current[dep] === undefined && notNumber(dep)) return;
+    if (current[dep] === undefined && notNumber(get_min(dep))) return;
     low = get_index(1)
-    high = get_index(dep)
+    high = get_min(dep)
 
   } else if (condition[0] === ">") {
     const dep = condition[1];
-    if (current[dep] === undefined && notNumber(dep)) return;
-    low = get_index(dep)+1
+    if (current[dep] === undefined && notNumber(get_max(dep))) return;
+    low = get_max(dep)+1
     high = get_index(globalBound)
 
   } else if (condition[0] === "\\geq") {
     const dep = condition[1];
-    if (current[dep] === undefined && notNumber(dep)) return;
-    low = get_index(dep)
+    if (current[dep] === undefined && notNumber(get_max(dep))) return;
+    //low = get_index(dep)
+    low = get_max(dep)
     high = get_index(globalBound)
 
   } else {
@@ -396,7 +432,8 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
 
     if (condition[0] === "\\ne"){
         const dep = condition[1]
-        if(v==get_index(dep))
+        //if(v==get_index(dep))
+        if(is_equal(v,dep))
             continue
     }
 
