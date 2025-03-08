@@ -30,46 +30,63 @@ function adjustHeight(textarea) {
     textarea.style.height = textarea.scrollHeight + "px";
 }
 
+function ordinal(x) {
+    if (typeof x !== "number" || !Number.isInteger(x)) {
+        throw new Error("Input must be an integer.");
+    }
+
+    let suffix = "th";
+    if (x % 100 < 11 || x % 100 > 13) {
+        switch (x % 10) {
+            case 1: suffix = "st"; break;
+            case 2: suffix = "nd"; break;
+            case 3: suffix = "rd"; break;
+        }
+    }
+
+    return x + suffix;
+}
+
+let gbLatexExpr
+let gbParsed_operator
+let gbParsed_sum
+let gbLinkCount
 function countUOccurrences() {
     document.getElementById("output2").innerHTML = "";
     document.getElementById("interlude1to2").innerHTML = "";
+    document.getElementById("SUN").innerHTML = "";
+    document.getElementById("characterExpansion").innerHTML = "";
+    document.getElementById("output4").innerHTML = "";
 
-    let display = ""
+    let display = "Please confirm that everything is correct. If not, check your input again."
 
     let latexExpr = document.getElementById("latexInput").value;
     latexExpr = latexReformat(latexExpr)
+    latexExpr = latexExpr.replaceAll("-","+-")
+    latexExpr = latexExpr.split("+").slice(1)
 
-    latexExpr = latexExpr.split(/[\+\-]/)
-
-    function ordinal(x) {
-        if (typeof x !== "number" || !Number.isInteger(x)) {
-            throw new Error("Input must be an integer.");
-        }
-
-        let suffix = "th";
-        if (x % 100 < 11 || x % 100 > 13) {
-            switch (x % 10) {
-                case 1: suffix = "st"; break;
-                case 2: suffix = "nd"; break;
-                case 3: suffix = "rd"; break;
-            }
-        }
-
-        return x + suffix;
-    }
+    
 
     let term = 1
     let linkCount = []
     let parsed_operator = []
+    let parsed_sum = []
+    let linkCountByTerm = []
     for(const expression of latexExpr){
         let result = parseOneTerm(expression)
+        let linkCountThisTerm = []
         for(let key in result[1]){
             if(key in linkCount)
-                linkCount[key] += result[1][key]
+                linkCount[key] += result[1][key]+result[2][key]
             else
-                linkCount[key] = result[1][key]
-            
+                linkCount[key] = result[1][key]+result[2][key]
+
+            if(key in linkCountThisTerm)
+                linkCountThisTerm[key] += result[1][key]+result[2][key]
+            else
+                linkCountThisTerm[key] = result[1][key]+result[2][key]
         }
+        linkCountByTerm.push(linkCountThisTerm)
         if(result[0]==="")
             continue
         display += ("<h4>$\\bullet$ "+ordinal(term)+" term "
@@ -80,11 +97,13 @@ function countUOccurrences() {
         //if(parsed_operator.includes(result[2]))
         //    display+= "<font color='red'>Note: this term can and should be merged with one of the previous terms.</font><br>"
         display += result[0]
-        parsed_operator.push(result[2])
+        parsed_operator.push(result[3])
+        parsed_sum.push(result[4])
         term+=1
     }
     if(display!=""){
         document.getElementById("interlude1to2").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
+        document.getElementById("interlude2to3").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
         display += ("<h4>$\\bullet$ Summary "
             +"<font color='#888'>"
             +"&mdash;&mdash;&mdash;&mdash;&mdash;"
@@ -110,6 +129,13 @@ function countUOccurrences() {
     let notice_text = ""//"<i><font color='blue'>Note: If the result looks strange, the reason might be that the input is ambiguous.</font></i><nl>"
     document.getElementById("output2").innerHTML = notice_text+display;
     MathJax.typesetPromise();
+
+    gbLatexExpr = latexExpr
+    gbParsed_operator = parsed_operator
+    gbParsed_sum = parsed_sum
+    gbLinkCount = linkCountByTerm
+
+    createSUNDropdown()
 }
 
 function latexReformat(latexExpr){
@@ -133,8 +159,8 @@ function latexReformat(latexExpr){
     return latexExpr
 }
 
-function extractLinks(input) {
-    const regex = /U(?:\^\\dagger)?_(\\(?:[^\\\s]+)|([^\\\s]))/g;
+function extractLinks(input){
+    const regex = /(?:U|P)(?:\^\\dagger)?_(\\(?:[^\\\s]+)|([^\\\s]))/g;
     let match;
     const results = [];
 
@@ -204,6 +230,7 @@ function parseOneTerm(expression){
 
     let index_list = []
     let condition_dict = []
+    let sumString = ""
     for(const ind of sumStart){
         let subscript = extractParenthesisContent(expression,ind)
         let supscript = "_"
@@ -224,6 +251,10 @@ function parseOneTerm(expression){
         index = index.replaceAll(" ","")
         condition_sym = condition_sym.replaceAll(" ","")
         subject = subject.replaceAll(" ","")
+        
+        sumString += "\\sum_{"+subscript+"}"
+        if(supscript!="_")
+            sumString+="^"+supscript
 
         // To sumarize, for each sum, we have the following 4 strings:
         // For \sum_{a=m}^n
@@ -240,15 +271,36 @@ function parseOneTerm(expression){
 
     let links = extractLinks(expression)
     let nonsummed_links = []
+    let nonsummed_polyakov = []
     let operator = ""
     if(expression.includes("\\text{Tr}"))
         operator+="\\tr~"
     for(const link of links){
         operator += link+" "
-        let index = link.replaceAll("^\\dagger","").replaceAll("U_","")
-        if(!index_list.includes(index))
-            nonsummed_links.push(link)
+        let index = link.replaceAll("^\\dagger","").replaceAll("U_","").replaceAll("P_","")
+        if(!index_list.includes(index)){
+            if(link.includes("U")){
+                nonsummed_links.push(link)
+            }
+            if(link.includes("P")){
+                nonsummed_polyakov.push(link)
+            }
+        }
     }
+
+    let pair_connection = []
+    let linksplus = []
+    for(const link of links){
+        if(link.includes("P"))
+            linksplus.push(link.replaceAll("P","U"))
+        linksplus.push(link.replaceAll("P","U"))
+    }
+    if(links.length>1)
+        linksplus.push(links[0].replaceAll("P","U"))
+    for(let i=0;i<(linksplus.length-1);i++){
+        pair_connection.push(linksplus[i]+linksplus[i+1])
+    }
+
     function strMax(expression){
         if(expression.includes(","))
             return "\\text{max}("+expression.replace(" ","")+")"
@@ -290,14 +342,21 @@ function parseOneTerm(expression){
             numbered_links.push("U^\\dagger_"+mu)
         }
     }
-    for(const link of nonsummed_links)
+    for(const link of nonsummed_links){
         if(!numbered_links.includes(link))
             numbered_links.push(link)
+    }
+    for(const link of nonsummed_polyakov){
+        if(!numbered_links.includes(link.replaceAll("P","U")))
+            numbered_links.push(link.replaceAll("P","U"))
+    }
 
     let numbered_links_count = []
+    let polyakov_links_count = []
+    let numbered_pairs = []
     for(const numbered_link of numbered_links){
         numbered_links_count[numbered_link] = 0
-        //display+=numbered_link+"<br>"
+        polyakov_links_count[numbered_link] = 0
     }
     if(index_list.length>0){
         const resultList = iterateAll(index_list, condition_dict);
@@ -308,20 +367,40 @@ function parseOneTerm(expression){
             // before replacing, make sure it will not replace \dagger
             replaced_operator = replaced_operator.replaceAll("dagger","†")
 
+
             for(let axis=0; axis<index_list.length;axis++){
                 replaced_operator = replaced_operator.replaceAll(index_list[axis],index[axis]+"")
             }
             replaced_operator = replaced_operator.replaceAll("†","dagger")
             //display += "$"+replaced_operator+"$<br>"
             for(const numbered_link of numbered_links){
+                let numbered_polyakov = numbered_link.replaceAll("U","P")
                 numbered_links_count[numbered_link] += (replaced_operator.split(numbered_link).length-1)
+                polyakov_links_count[numbered_link] += (replaced_operator.split(numbered_polyakov).length-1)
+            }
+
+            for(const pair of pair_connection){
+                let replaced_pair = pair
+                for(let axis=0; axis<index_list.length;axis++){
+                    replaced_pair = replaced_pair.replaceAll(index_list[axis],index[axis]+"")
+                }
+                numbered_pairs.push(replaced_pair)
             }
         }
     }else{
-        for(const numbered_link of numbered_links)
+        for(const numbered_link of numbered_links){
+            let numbered_polyakov = numbered_link.replaceAll("U","P")
             numbered_links_count[numbered_link] += (operator.split(numbered_link).length-1)
+            polyakov_links_count[numbered_link] += (operator.split(numbered_polyakov).length-1)
+        }
+
+        for(const pair of pair_connection){
+            numbered_pairs.push(pair)
+        }
     }
     
+    //for(const pair of numbered_pairs)
+    //    display += "$"+pair + "$<br>"
         
     
 
@@ -331,18 +410,32 @@ function parseOneTerm(expression){
     let ilink = 0
     let isNotClosedLoop = false
     for(const numbered_link of numbered_links){
-        let count = numbered_links_count[numbered_link]
+        let count = numbered_links_count[numbered_link]+polyakov_links_count[numbered_link]
         if(count>0){
             if(ilink>0)
                 linkCountStr += ", "
             linkCountStr += "$"+latexReformat(numbered_link)+"$&times;"+count
             ilink+=1
         }
+        let u = ""
+        let udagger = ""
         if(numbered_link.includes("\\dagger")){
-            let udagger = numbered_link
-            let u = udagger.replace("^\\dagger","")
-            if(numbered_links_count[u]!=numbered_links_count[udagger])
-                isNotClosedLoop = true
+            udagger = numbered_link
+            u = udagger.replace("^\\dagger","")
+            
+        }else{
+            u = numbered_link
+            udagger = u.replace("_","^\\dagger_")
+        }
+        let nu = 0
+        let nudagger = 0
+        if(u in numbered_links_count)
+            nu = numbered_links_count[u]
+        if(udagger in numbered_links_count)
+            nudagger = numbered_links_count[udagger]
+
+        if(nu!=nudagger){
+            isNotClosedLoop = true
         }
     }
     display += linkCountStr
@@ -352,10 +445,10 @@ function parseOneTerm(expression){
         display += "<br><br><font color='red'>Warning: the Wilson loop is not inside a trace. If this is intended, you can ignore this message.</font>"
     display += "<br><br>"
 
-    return [display,numbered_links_count,operator+";"+linkCountStr]
+    return [display,numbered_links_count,polyakov_links_count,operator,sumString]
 }
 
-function iterateAll(indices, cond) {
+function iterateAll(indices, cond){
   let results = [];
   let current = {}; // object to store the current values for each key
 
@@ -376,6 +469,14 @@ function iterateAll(indices, cond) {
   return results;
 }
 
+function int(x){
+    return parseInt(x,10)
+}
+
+function notNumber(variable){
+    return int(variable+"")+""==="NaN"
+}
+
 function iterate(indexIdx, indices, cond, current, results, globalBound) {
   // when all indices have been set, save a snapshot of the current values
   if (indexIdx === indices.length) {
@@ -387,14 +488,6 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
   const key = indices[indexIdx];
   const condition = cond[key];
   let low, high;
-
-    function int(x){
-        return parseInt(x,10)
-    }
-
-  function notNumber(variable){
-    return int(variable+"")+""==="NaN"
-  }
 
   function get_index(variable){
     if(int(variable+"")+""==="NaN"){
@@ -465,4 +558,216 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
     current[key] = v;
     iterate(indexIdx + 1, indices, cond, current, results, globalBound);
   }
+}
+
+let group = 2
+function createSUNDropdown() {
+    const container = document.getElementById("SUN");
+    container.innerHTML = "Gauge group: "; // Clear previous content
+    
+    let selectedValue = "..."; // Default value
+    
+    const select = document.createElement("select");
+    select.onchange = function(event) {
+        selectedValue = event.target.value;
+        if(selectedValue!="..."){
+            group = parseInt(selectedValue.replaceAll("SU(","").replaceAll(")",""),10)
+            console.log("Selected group:", selectedValue); // Logs updated value
+            createCXForms()
+        }else{
+            const container = document.getElementById("characterExpansion");
+            container.innerHTML = "";
+        }
+        
+    };
+    
+    const optiondefault = document.createElement("option");
+    optiondefault.value = `...`;
+    optiondefault.textContent = `Select one`;
+    select.appendChild(optiondefault);
+    for (let i = 2; i <= 8; i++) {
+        const option = document.createElement("option");
+        option.value = `SU(${i})`;
+        option.textContent = `SU(${i})`;
+        select.appendChild(option);
+    }
+    
+    container.appendChild(select);
+}
+
+let irrepData
+function createCXForms() {
+
+    let latexExpr = gbLatexExpr
+    let parsed_operator = gbParsed_operator
+    let parsed_sum = gbParsed_sum
+
+    const container = document.getElementById("characterExpansion");
+    container.innerHTML = ""; // Clear previous content
+    let n = latexExpr.length
+    irrepData = Array(n).fill(""); // Initialize array to store user input
+
+    let term=1;
+    for (const expression of latexExpr) {
+        const form = document.createElement("form");
+        const operator = parsed_operator[term-1]
+
+        let display = ""
+
+        display += ("<h4>$\\bullet$ "+ordinal(term)+" term "
+            +"<font color='#888'>"
+            +"::::::::::::::::::::::::::::::::::::"
+            +"</font>"
+            +"</h4>")
+
+        let minusexpression = expression
+        if(expression[0]=="-")
+            minusexpression = expression.slice(1)
+        else
+            minusexpression = "-"+expression
+        if(parsed_sum[term-1]!="")
+            minusexpression = minusexpression.replaceAll(parsed_sum[term-1],"~")
+        
+        let placeholder1 = "0,0"
+        let placeholder2 = "1,0"
+        let placeholder3 = "1,1"
+
+        if(group==2){
+            placeholder1 = "[0]"
+            placeholder2 = "[1]"
+            placeholder3 = "[2]"
+        }else{
+            let nzeros = group-3
+            for(let iz=0;iz<nzeros;iz++){
+                placeholder1 += ",0"
+                placeholder2 += ",0"
+                placeholder3 += ",0"
+            }
+            placeholder1 = "["+placeholder1+"]"
+            placeholder2 = "["+placeholder2+"]"
+            placeholder3 = "["+placeholder3+"]"
+        }
+        let placeholder = placeholder1+", "+placeholder2+", "+placeholder3
+
+        display += `
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            $
+            \\displaystyle e^{${minusexpression}}
+            =\\sum_{r\\in\\text{Irreps}}f_r${operator}$
+            <br><br>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <label>Expansion Irreps: </label>
+            <input type="text" data-index="${term}" oninput="updateData(event)" value="${placeholder}">
+            <div id="remarkCX${term}"></div>
+        `;
+        form.innerHTML = display;
+        container.appendChild(form);
+        term+=1;
+    }
+
+    window.updateData = function(event) {
+        const index = event.target.getAttribute("data-index");
+        let input_data = event.target.value.replaceAll(" ","")
+
+        let incorrectIrrep = false
+        irrepData[index] = []
+        for(const strTerm of input_data.split("],[")){
+            let inStrTerm = strTerm.replaceAll("[","").replaceAll("]","")
+            let intTerm = []
+            for(const stri of inStrTerm.split(",")){
+                if(notNumber(stri)){
+                    continue
+                }
+                intTerm.push(parseInt(stri,10))
+            }
+            if(intTerm.length!=group-1){
+                incorrectIrrep = true        
+                x = intTerm.length
+            }
+            irrepData[index].push(intTerm)
+        }
+        if(incorrectIrrep){
+            irrepData[index] = []
+            document.getElementById("remarkCX"+index).innerHTML = "<font color='red'>Irreps are not consistent with the group!</font>"
+        }else{
+            document.getElementById("remarkCX"+index).innerHTML = ""
+        }
+
+        //proceed if there is no error
+        let remarks = ""
+        for(let index=1;index<=latexExpr.length;index++){
+            remarks += document.getElementById("remarkCX"+index).innerHTML
+        }
+        if(remarks==="")
+            linkIntegral()
+        else
+            document.getElementById('output4').innerHTML = ""
+    };
+
+    //proceed if there is no error
+    let remarks = ""
+    for(let index=1;index<=latexExpr.length;index++){
+        remarks += document.getElementById("remarkCX"+index).innerHTML
+    }
+    if(remarks===""){
+        document.getElementById("interlude3to4").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
+        linkIntegral()
+    }
+    else
+        document.getElementById('output4').innerHTML = ""
+    MathJax.typesetPromise()
+}
+
+function linkIntegral(){
+    function swapKeys(obj) {
+        let swapped = {};
+
+        for (let key1 in obj) {
+            for (let key2 in obj[key1]) {
+                if (!swapped[key2]) {
+                    swapped[key2] = {};
+                }
+                swapped[key2][key1] = obj[key1][key2];
+            }
+        }
+
+        return swapped;
+    }
+    let display = ""
+    let integrand = swapKeys(gbLinkCount)
+
+    display += "<ul>"
+    for(let key in integrand){
+        if(key.includes("dagger")){
+
+            display += "<li>"
+            let Udag = key
+            let U = key.replace("^\\dagger","")
+            let I = U.replace("U","I")
+            let strIntegral = I+"=\\int d"+U+"~"
+            for(let term in integrand[U]){
+                let nU = integrand[U][term]
+                let termname = ordinal(int(term)+1)
+                strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
+                for(let i=0;i<nU;i++)
+                    strIntegral += U
+                strIntegral += "}}~"
+            }
+            for(let term in integrand[Udag]){
+                let nUdag = integrand[Udag][term]
+                let termname = ordinal(int(term)+1)
+                strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
+                for(let i=0;i<nUdag;i++)
+                    strIntegral += Udag
+                strIntegral += "}}~"
+            }
+            display += "$\\displaystyle "+strIntegral+"$<br><br>"
+            display += "</li>"
+        }
+    }
+    display += "</ul>"
+
+    document.getElementById('output4').innerHTML = display
 }
