@@ -17,6 +17,7 @@
 
     <!-- Local script -->
     <script src="script.js"></script>
+    <script src="cgdecomp.js"></script>
 
     <!-- Load Pyodide from a CDN -->
     <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
@@ -55,6 +56,7 @@
     </style>
 </head>
 <body>
+
 <div id="viewport">
 <p id="webheader"></p>
 <hr>
@@ -71,16 +73,15 @@
         <div class="lcol">
         <b>Presets:</b>
         <br>
-        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=1}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D plaquette<br>
+        <input type="checkbox" id="plaquette2d" value="-\beta\sum_{\mu=0}^1\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 2D plaquette<br>
 
-        <input type="checkbox" id="plaquette3d" value="-\beta\sum_{\mu=1}^3\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 3D plaquette<br>
+        <input type="checkbox" id="plaquette3d" value="-\beta\sum_{\mu=0}^2\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 3D plaquette<br>
 
-        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=1}^4\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D plaquette<br>
+        <input type="checkbox" id="plaquette4d" value="-\beta\sum_{\mu=0}^3\sum_{\nu<\mu}\re\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu"> 4D plaquette<br>
 
-        <input type="checkbox" id="theta4d" value="+\kappa\sum_{\mu=1}^4\sum_{\nu\ne\mu}\sum_{\rho\ne\mu,\nu}\sum_{\sigma>\mu,\nu,\rho}\epsilon^{\mu\nu\rho\sigma}\im\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
-
+        <input type="checkbox" id="theta4d" value="+\kappa\sum_{\mu=0}^3\sum_{\nu\ne\mu}\sum_{\rho\ne\mu,\nu}\sum_{\sigma>\mu,\nu,\rho}\epsilon^{\mu\nu\rho\sigma}\im\tr U_\mu U_\nu U^\dagger_\mu U^\dagger_\nu U_\rho U_\sigma U^\dagger_\rho U^\dagger_\sigma"> 4D theta term<br>
         
-        <input type="checkbox" id="polyakov" value="+\alpha\tr P_1"> Polyakov loop<br>
+        <input type="checkbox" id="polyakov" value="+\alpha\tr P_0"> Polyakov loop<br>
 
 
         <br>
@@ -108,29 +109,31 @@
     </div>
     <nl>
     
-    <div id="interlude1to2"></div>
-
-    <h2>Step 2: Analyzing the terms</h2>
+    <button onclick="countUOccurrences();">To Step 2</button>
+    <br>
 
     <div id="output2"></div>
 
-    <div id="interlude2to3"></div>
+    <div id="step3title"></div>
 
-    <h2>Step 3: Character expansion</h2>
     <div id="output3">
         <div id="SUN">
         </div>
         <div id="characterExpansion">
         </div>
     </div>
-
-    <div id="interlude3to4"></div>
-
-    <h2>Step 4: Integrating the links</h2>
+    
+    <div id="Step4Button"></div>
 
     <div id="output4"></div>
+
+    <div id="Step5Button">
+    </div>
+
+    <div id="output5"></div>
     
 </div>
+<br>
 <hr>
 <p id="webfooter"></p>
 </div>

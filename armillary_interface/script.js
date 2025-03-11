@@ -1,4 +1,89 @@
 
+function ClearStep2(){
+    document.getElementById("output2").innerHTML = "";
+    ClearStep3();
+}
+
+function ClearStep3(){
+    document.getElementById('step3title').innerHTML = ""
+    document.getElementById("SUN").innerHTML = "";
+    document.getElementById("characterExpansion").innerHTML = "";
+    document.getElementById("Step4Button").innerHTML = "";
+    ClearStep4();
+}
+
+function ClearStep4(){
+    document.getElementById("output4").innerHTML = "";
+    document.getElementById("Step5Button").innerHTML = "";
+    ClearStep5();
+}
+
+function ClearStep5(){
+    document.getElementById("output5").innerHTML = "";
+}
+
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Pyodine preparation
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
+let python_result = ""; // Global variable for Python output
+let pyodideInstance = null; // Pyodide instance placeholder
+let pyodideReady = false; // Flag to track initialization status
+
+// Function to initialize Pyodide
+async function initializePyodide() {
+    if (!pyodideInstance) {
+        console.log("Initializing Pyodide...");
+        pyodideInstance = await loadPyodide({
+            indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.3/full/"
+        });
+
+        console.log("Loading numpy...");
+        await pyodideInstance.loadPackage("numpy"); // Ensure numpy is fully loaded
+        console.log("Numpy loaded!");
+
+        // Redirect print() output to our global variable
+        pyodideInstance.globals.set("print", (text) => {
+            python_result += ""+text + "<br>";
+        });
+
+        pyodideReady = true;
+        console.log("Pyodide is fully ready.");
+    }
+
+    // Wait if Pyodide is not ready yet (prevents race conditions)
+    while (!pyodideReady) {
+        await new Promise(resolve => setTimeout(resolve, 10)); // Wait 10ms before checking again
+    }
+}
+
+// Run Python function
+async function run_python(args, raw_code) {
+    await initializePyodide(); // Make sure Pyodide is fully initialized
+    python_result = ""
+    let pythonCode = raw_code;
+    for (let key in args) {
+        pythonCode = pythonCode.replaceAll(`__${key}__`, args[key]);
+    }
+
+    try {
+        await pyodideInstance.runPythonAsync(pythonCode);
+    } catch (err) {
+        python_result = 'Error: ' + err;
+    }
+}
+
+// Automatically initialize Pyodide on script load
+initializePyodide();
+
+// Expose `run_python` globally so it can be called from anywhere
+window.run_python = run_python;
+
+
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Step 1
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+
 function renderMath() {
     let input = document.getElementById("latexInput").value;
     if(input.length>0){
@@ -8,7 +93,8 @@ function renderMath() {
         }
         document.getElementById("output1").innerHTML = "<div class=\"wrap\">\\[" + input + "\\]</div>";
         MathJax.typesetPromise();
-        countUOccurrences();
+        //countUOccurrences();
+        ClearStep2();
     }
 }
 
@@ -47,16 +133,15 @@ function ordinal(x) {
     return x + suffix;
 }
 
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Step 2
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 let gbLatexExpr
 let gbParsed_operator
 let gbParsed_sum
 let gbLinkCount
 function countUOccurrences() {
-    document.getElementById("output2").innerHTML = "";
-    document.getElementById("interlude1to2").innerHTML = "";
-    document.getElementById("SUN").innerHTML = "";
-    document.getElementById("characterExpansion").innerHTML = "";
-    document.getElementById("output4").innerHTML = "";
+    ClearStep3();
 
     let display = "Please confirm that everything is correct. If not, check your input again."
 
@@ -102,8 +187,6 @@ function countUOccurrences() {
         term+=1
     }
     if(display!=""){
-        document.getElementById("interlude1to2").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
-        document.getElementById("interlude2to3").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
         display += ("<h4>$\\bullet$ Summary "
             +"<font color='#888'>"
             +"&mdash;&mdash;&mdash;&mdash;&mdash;"
@@ -125,9 +208,13 @@ function countUOccurrences() {
         }
         display += "<nl>"
     }
+    display += `<br><br>
+    <button onclick="createSUNDropdown();">To Step 3</button>
+    <br>`
 
     let notice_text = ""//"<i><font color='blue'>Note: If the result looks strange, the reason might be that the input is ambiguous.</font></i><nl>"
-    document.getElementById("output2").innerHTML = notice_text+display;
+    let title = "<br><hr><h2>Step 2: Count the link variables</h2>"
+    document.getElementById("output2").innerHTML = title+notice_text+display;
     MathJax.typesetPromise();
 
     gbLatexExpr = latexExpr
@@ -135,16 +222,21 @@ function countUOccurrences() {
     gbParsed_sum = parsed_sum
     gbLinkCount = linkCountByTerm
 
-    createSUNDropdown()
+    //createSUNDropdown()
 }
 
 function latexReformat(latexExpr){
-    latexExpr = latexExpr.replaceAll("\\tr","\\text{Tr}")
-    latexExpr = latexExpr.replaceAll("\\Tr","\\text{Tr}")
-    latexExpr = latexExpr.replaceAll("\\re","\\text{Re}")
-    latexExpr = latexExpr.replaceAll("\\Re","\\text{Re}")
-    latexExpr = latexExpr.replaceAll("\\im","\\text{Im}")
-    latexExpr = latexExpr.replaceAll("\\Im","\\text{Im}")
+    let tr = "\\text{Tr}"
+    let re = "\\text{Re}"
+    let im = "\\text{Im}"
+    latexExpr = latexExpr.replaceAll("\\tr",tr)
+    latexExpr = latexExpr.replaceAll("\\Tr",tr)
+    latexExpr = latexExpr.replaceAll("{tr}","{Tr}")
+    latexExpr = latexExpr.replaceAll("{TR}","{Tr}")
+    latexExpr = latexExpr.replaceAll("\\re",re)
+    latexExpr = latexExpr.replaceAll("\\Re",re)
+    latexExpr = latexExpr.replaceAll("\\im",im)
+    latexExpr = latexExpr.replaceAll("\\Im",im)
     latexExpr = latexExpr.replaceAll("<=","\\leq ")
     latexExpr = latexExpr.replaceAll(">=","\\geq ")
     latexExpr = latexExpr.replaceAll("!=","\\ne ")
@@ -515,13 +607,13 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
   } else if (condition[0] === "<") {
     const dep = condition[1];
     if (current[dep] === undefined && notNumber(get_min(dep))) return;
-    low = get_index(1)
+    low = get_index(0)
     high = get_min(dep)-1
 
   } else if (condition[0] === "\\leq") {
     const dep = condition[1];
     if (current[dep] === undefined && notNumber(get_min(dep))) return;
-    low = get_index(1)
+    low = get_index(0)
     high = get_min(dep)
 
   } else if (condition[0] === ">") {
@@ -533,12 +625,11 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
   } else if (condition[0] === "\\geq") {
     const dep = condition[1];
     if (current[dep] === undefined && notNumber(get_max(dep))) return;
-    //low = get_index(dep)
     low = get_max(dep)
     high = get_index(globalBound)
 
   } else {
-    low = get_index(1)
+    low = get_index(0)
     high = get_index(globalBound)
   }
 
@@ -550,7 +641,6 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
 
     if (condition[0] === "\\ne"){
         const dep = condition[1]
-        //if(v==get_index(dep))
         if(is_equal(v,dep))
             continue
     }
@@ -560,8 +650,15 @@ function iterate(indexIdx, indices, cond, current, results, globalBound) {
   }
 }
 
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Step 3
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 let group = 2
 function createSUNDropdown() {
+    ClearStep4();
+
+    document.getElementById('step3title').innerHTML = "<br><hr><h2>Step 3: Character expansion</h2>"
+
     const container = document.getElementById("SUN");
     container.innerHTML = "Gauge group: "; // Clear previous content
     
@@ -593,6 +690,7 @@ function createSUNDropdown() {
     }
     
     container.appendChild(select);
+
 }
 
 let irrepData
@@ -654,7 +752,7 @@ function createCXForms() {
             &nbsp;&nbsp;&nbsp;&nbsp;
             $
             \\displaystyle e^{${minusexpression}}
-            =\\sum_{r\\in\\text{Irreps}}f_r${operator}$
+            =\\sum_{r\\in\\text{Irreps}}f_r${operator.replaceAll("Tr}","Tr}_r")}$
             <br><br>
             &nbsp;&nbsp;&nbsp;&nbsp;
             &nbsp;&nbsp;&nbsp;&nbsp;
@@ -666,61 +764,86 @@ function createCXForms() {
         container.appendChild(form);
         term+=1;
     }
+    container.innerHTML += "<br>"
 
-    window.updateData = function(event) {
-        const index = event.target.getAttribute("data-index");
-        let input_data = event.target.value.replaceAll(" ","")
+    function toStep4(){
+        
+        document.querySelectorAll('input[data-index]').forEach(input => {
+            const index = input.getAttribute("data-index");
+            let input_data = input.value.replaceAll(" ","")
 
-        let incorrectIrrep = false
-        irrepData[index] = []
-        for(const strTerm of input_data.split("],[")){
-            let inStrTerm = strTerm.replaceAll("[","").replaceAll("]","")
-            let intTerm = []
-            for(const stri of inStrTerm.split(",")){
-                if(notNumber(stri)){
-                    continue
-                }
-                intTerm.push(parseInt(stri,10))
-            }
-            if(intTerm.length!=group-1){
-                incorrectIrrep = true        
-                x = intTerm.length
-            }
-            irrepData[index].push(intTerm)
-        }
-        if(incorrectIrrep){
+            let incorrectIrrep = false
             irrepData[index] = []
-            document.getElementById("remarkCX"+index).innerHTML = "<font color='red'>Irreps are not consistent with the group!</font>"
-        }else{
-            document.getElementById("remarkCX"+index).innerHTML = ""
-        }
+            for(const strTerm of input_data.split("],[")){
+                let inStrTerm = strTerm.replaceAll("[","").replaceAll("]","")
+                let intTerm = []
+                for(const stri of inStrTerm.split(",")){
+                    if(notNumber(stri)){
+                        continue
+                    }
+                    intTerm.push(parseInt(stri,10))
+                }
+                if(intTerm.length!=group-1){
+                    incorrectIrrep = true        
+                    x = intTerm.length
+                }
+                irrepData[index].push(intTerm)
+            }
+            if(incorrectIrrep){
+                irrepData[index] = []
+                document.getElementById("remarkCX"+index).innerHTML = "<font color='red'>Irreps are not consistent with the group!</font>"
+            }else{
+                document.getElementById("remarkCX"+index).innerHTML = ""
+            }
+        });
+        
 
         //proceed if there is no error
         let remarks = ""
         for(let index=1;index<=latexExpr.length;index++){
             remarks += document.getElementById("remarkCX"+index).innerHTML
         }
-        if(remarks==="")
+        if(remarks===""){
             linkIntegral()
-        else
-            document.getElementById('output4').innerHTML = ""
-    };
+            document.getElementById("Step5Button").innerHTML = `
+            <button id="toStep5Button">To Step 5</button>
+            <br>`
+            document.getElementById("toStep5Button").onclick = function(){
+                CGDecomposition();
+            }
+            MathJax.typesetPromise();
+        }
+        else{
+            ClearStep4();
+        }
+        MathJax.typesetPromise()
+    }
 
-    //proceed if there is no error
-    let remarks = ""
-    for(let index=1;index<=latexExpr.length;index++){
-        remarks += document.getElementById("remarkCX"+index).innerHTML
+    window.updateData = function(event) {
+        document.getElementById("Step4Button").innerHTML = `
+        <button id="toStep4Button">To Step 4</button>
+        <br>`
+        document.getElementById("toStep4Button").onclick = function(){
+            toStep4();
+        }
+        MathJax.typesetPromise();
+    };
+    document.getElementById("Step4Button").innerHTML = `
+        <button id="toStep4Button">To Step 4</button>
+        <br>`
+    document.getElementById("toStep4Button").onclick = function(){
+        toStep4();
     }
-    if(remarks===""){
-        document.getElementById("interlude3to4").innerHTML = "<center><img src='images/downarrow.jpg' width='10%'></center>";
-        linkIntegral()
-    }
-    else
-        document.getElementById('output4').innerHTML = ""
-    MathJax.typesetPromise()
+    MathJax.typesetPromise();
+    
 }
 
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Step 4
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+let integrand = {};
 function linkIntegral(){
+    ClearStep5();
     function swapKeys(obj) {
         let swapped = {};
 
@@ -736,8 +859,12 @@ function linkIntegral(){
         return swapped;
     }
     let display = ""
-    let integrand = swapKeys(gbLinkCount)
+    integrand = swapKeys(gbLinkCount)
 
+    display += `We can group the same link variables together and integrate.
+    Below, $C$ and $\\tilde C$ are the generalized Clebsch-Gordan coefficients
+    and $K$ is the link-conditional tensor,
+    both of which will be determined explicitly below.`
     display += "<ul>"
     for(let key in integrand){
         if(key.includes("dagger")){
@@ -747,27 +874,181 @@ function linkIntegral(){
             let U = key.replace("^\\dagger","")
             let I = U.replace("U","I")
             let strIntegral = I+"=\\int d"+U+"~"
+            let Us = ""
+            let Udags = ""
+            strIntegral += "\\displaystyle\\underset{=~C"+U+"C^\\intercal}{\\underbrace{"
             for(let term in integrand[U]){
                 let nU = integrand[U][term]
                 let termname = ordinal(int(term)+1)
                 strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
-                for(let i=0;i<nU;i++)
+                for(let i=0;i<nU;i++){
                     strIntegral += U
+                    Us += U
+                }
                 strIntegral += "}}~"
+                Us += "~"
             }
+            strIntegral += "}}~~"
+            strIntegral += "\\displaystyle\\underset{=~\\tilde C"+Udag+"\\tilde C^\\intercal}{\\underbrace{"
             for(let term in integrand[Udag]){
                 let nUdag = integrand[Udag][term]
                 let termname = ordinal(int(term)+1)
                 strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
-                for(let i=0;i<nUdag;i++)
+                for(let i=0;i<nUdag;i++){
                     strIntegral += Udag
+                    Udags += Udag
+                }
                 strIntegral += "}}~"
+                Udags += "~"
             }
-            display += "$\\displaystyle "+strIntegral+"$<br><br>"
+                strIntegral += "}}~"
+            display += "$\\displaystyle "+strIntegral+"$<br>&nbsp;&nbsp;&nbsp;&nbsp;"
+            display += "$=(C\\otimes \\tilde C)K(C^\\intercal\\otimes \\tilde C^\\intercal)$<br><br>"
+
+            
+            // CG decompositions
+            //display += "<ul>"
+            //display += "<li>$\\displaystyle "+Us+"$</li>"
+            //display += "<li>$\\displaystyle "+Udags+"$</li>"
+            //display += "</ul>"
+
             display += "</li>"
         }
     }
     display += "</ul>"
+    let title = "<br><hr><h2>Step 4: Integrate the link variables</h2>"
+    MathJax.typesetPromise();
+    document.getElementById('output4').innerHTML = title+display
+}
 
-    document.getElementById('output4').innerHTML = display
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+//         Step 5
+// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
+function CGDecomposition(){
+    let display = ""
+
+    display = "We will now perform the CG decomposition just to identify relevant CG matrices to be computed in the next step."
+
+    function cartesianProduct(arrays) {
+        return arrays.reduce((acc, curr) => {
+            return acc.flatMap(a => curr.map(b => [...a, b]));
+        }, [[]]);
+    }
+
+    let button_num = 0
+    let combi = []
+    display += "<ul>"
+    for(let key in integrand){
+        display += "<li> <h4>$"+key+"$'s decomposition</h4>"
+
+        // CG equation
+        display += "$\\displaystyle "
+        let j = 1
+        let ris = ""
+        let rjs = ""
+        for(let term in integrand[key]){
+            for(let iterm=0; iterm<integrand[key][term]; iterm++){
+                display += `(${key})^{r_{${j}}}_{i_{${j}}j_{${j}}}`
+                if(j>1){
+                    ris+=";"
+                    rjs+=";"
+                }
+                ris += `r_{${j}}i_{${j}}`
+                rjs += `r_{${j}}j_{${j}}`
+                j+=1
+            }
+        }
+        display += `=\\sum_{(\\rho,i,j)}C^{\\rho i}_{${ris}}C^{\\rho j}_{${rjs}}(${key})^\\rho_{ij}`
+        display += "$"
+        display += "<br><br>"
+
+
+        display += "<ul>"
+        let ranges = []
+        j = 1
+        for(let term in integrand[key]){
+
+            for(let iterm=0; iterm<integrand[key][term]; iterm++)
+                ranges.push(irrepData[int(term)+1])
+
+            display += "<li>"
+            display+="$"
+            for(let iterm=0; iterm<integrand[key][term]; iterm++){
+                if(iterm>0){
+                    display+=", "
+                }
+                display += `r_{${j}}`
+                j+=1
+            }
+            display+="\\in\\{"
+            let ir = 0
+            for(let r of irrepData[int(term)+1]){
+                if(ir>0)
+                    display += ", "
+                display += `[${r}]`
+                ir+=1
+            }
+            display += `\\}$`
+            display += "</li>"
+        }
+        display += "</ul><br>"
+
+        // List all irreps to be computed
+        const irreps_list = cartesianProduct(ranges)
+        // A list of all possible irrep combination
+
+
+        display += `<button id='cgbutton${button_num}'>Count all unique CG decompositions</button>`
+        display += `<br><br>`
+        display += `<div id='cgresult${button_num}'></div>`
+        button_num += 1
+        combi.push(irreps_list)
+
+        //await getCGDecomp({"weight1":weight1,"weight2":weight2},cgdecomp_src)
+        /*
+        for(let iter of irreps_list){
+            let ir = 0
+            display += "$"
+            for(let r of iter){
+                if(ir>0)
+                    display += "\\otimes"
+                display += `[${r}]`
+                ir+=1
+            }
+            display += "$<br>"
+
+        }
+        */
+        
+
+        display += "</li>"
+    }
+    display += "</ul>"
+
+    let title = "<br><hr><h2>Step 5: Clebsch-Gordan decomposition</h2>"
+    document.getElementById("output5").innerHTML = title+display
+
+
+    for(let ibutton=0;ibutton<button_num;ibutton++){
+        document.getElementById(`cgbutton${ibutton}`).addEventListener("click", async () => {
+
+            let arg_text = ""
+            for(let iter of combi[ibutton]){
+                let itertext = ""
+                for(let r of iter){
+                    itertext += `[${r}] `
+                }
+                arg_text += itertext+";"
+            }
+
+            await run_python({"iter":`"${arg_text}"`},cgdecomp_src)
+
+            //result of the computation
+            document.getElementById(`cgresult${ibutton}`).innerHTML = python_result
+            MathJax.typesetPromise()
+        });
+    }
+
+
+    MathJax.typesetPromise()
 }
