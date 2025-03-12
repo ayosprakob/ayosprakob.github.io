@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+    MathJax={tex:{inlineMath:[['$','$']],displayMath:[['\\[','\\]']]},svg:{fontCache:'global'}};
+    </script>
+    <script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script id="MathJax-script" async src="../src/MathJax/es5/tex-mml-chtml.js"></script>
+    <script src="../src/script.js"></script>
+
+
+    <!-- Load Pyodide from a CDN -->
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"></script>
+
+    <!-- The Python script(s) -->
+    <script src="pyodide_scripts/source.py.js"></script>
+
+    <!-- Your main script -->
+    <script src="pyodide_scripts/script.js"></script>
+
+    <title>Running Python on a Webpage</title>
+    <link rel="stylesheet" href="../src/style.css">
+</head>
+<body>
+<div id="viewport">
+<p id="webheader"></p>
+<hr>
+<div id="nav1"></div>
+<hr>
+<div id="content">
+    <h2>Running Python on a Webpage</h2>
+    
+    <div id="anchors"></div>
+
+    <section label="how_it_works">How it works</section>
+    In this chapter, I will explain how to run your python script on your webpage in an organized way. In this way, the client can run the calculation with the input given by the user interface without having to install anything.
+    <nl>
+    There are several ways to do this, but i'm going to use <ref href="https://pyodide.org/en/stable/">Pyodide</ref>, which is very convenient.
+    In summary, you need to prepare the following files:
+    <ul>
+        <li><b>index.html</b>: main HTML page</li>
+        <li><b>script.js</b>: the Javascript file you plan to use in the main page</li>
+        <li><b>source.py.js</b>: the Javascript file containing the python script (can have multiple)</li>
+    </ul>
+    Our goal is to reproduce the following example of a script that computes an SVD of a random matrix:
+    <nl>
+    <quote>
+        <button id="button-id">click me!</button>
+        <br><br>
+        <div id="output"></div>
+    </quote>
+    <br>
+    Let's go through this step-by-step.
+
+    <section label="html">index.html</section>
+
+    Here is the simplest way to setup Pyodide. You actually don't need to download anything. You only need the internet to access Pyodide via a content delivery network:
+    <nl>
+    <pre><code>&lt;html lang="en"&gt;
+&lt;head&gt;
+
+    &lt;!-- Load Pyodide from a CDN --&gt;
+    &lt;script src="https://cdn.jsdelivr.net/pyodide/v0.23.3/full/pyodide.js"&gt;&lt;/script&gt;
+
+    &lt;!-- The Python script(s) --&gt;
+    &lt;script src="source.py.js"&gt;&lt;/script&gt;
+
+    &lt;!-- Your main script --&gt;
+    &lt;script src="script.js"&gt;&lt;/script&gt;
+
+&lt;/head&gt;
+&lt;body&gt;
+
+    &lt;button id="button-id"&gt;click me!&lt;/button&gt;
+    &lt;br&gt;&lt;br&gt;
+    &lt;div id="output"&gt;&lt;/div&gt;
+
+    &lt;script&gt;
+        my_function();
+        update_button();
+    &lt;/script&gt;
+
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+    <br>
+    In the head section, you load only three scripts: the pyodide script (pyodide.js), you python source (source.py.js), and your main script (script.js).
+    <nl>
+    In the body section, I add a button that triggers the python script (this is optional&mdash;the script can be called by other means). I also create a div tag to display the result of your python script. The script tag is there to run relevant functions in you main js file. Note that this script tag should be placed at the end of the body section to ensure that everything else is already loaded.
+    <nl>
+    In this example, my_function() is a function that runs the python script, while update_button() is used to add an event listener to the button so that it can run the python script.
+
+    <section label="js">script.js</section>
+
+    As for the main Javascript, you have to initialize the pyodide instance before using it, then import the python script into pyodide. I made it so that it's very easy to call from anywhere in your script:
+    <nl>
+    <pre><code>//** :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: *//
+//**      Place this at the beginning of your script.                                       *//
+//** :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: *//
+//**// 
+//**// let python_result = ""; // Global variable for Python output
+//**// let pyodideInstance = null; // Pyodide instance placeholder
+//**// let pyodideReady = false; // Flag to track initialization status
+//**// 
+//**// async function initializePyodide() {
+//**//     if (!pyodideInstance) {
+//**//         console.log("Initializing Pyodide...");
+//**//         pyodideInstance = await loadPyodide({
+//**//             indexURL: "https://cdn.jsdelivr.net/pyodide/v0.23.3/full/"
+//**//         });
+//**// 
+//**//         await pyodideInstance.loadPackage("numpy");
+//**// 
+//**//         pyodideInstance.globals.set("print", (text) =&gt; {
+//**//             python_result += ""+text + "&lt;br&gt;";
+//**//         });
+//**//         pyodideReady = true;
+//**//     }
+//**// 
+//**//     while (!pyodideReady) {
+//**//         await new Promise(resolve =&gt; setTimeout(resolve, 10));
+//**//         // Wait 10ms before checking again
+//**//     }
+//**// }
+//**// 
+//**// // Run Python function
+//**// async function run_python(args, script) {
+//**//     await initializePyodide(); // Make sure Pyodide is fully initialized
+//**//     python_result = ""
+//**//     let pythonCode = script;
+//**// 
+//**//     //injecting the jsprint definition into the script
+//**//     pythonCode = pythonCode.replace(/(^|[\s;\t])print/g, '$1jsprint');
+//**//     let jsprint = `
+//**//     def jsprint(*args,end="\\n"):
+//**//      ret = ""
+//**//      for i,elem in enumerate(args):
+//**//       ret += str(elem).replace("\\n","&lt;br&gt;")
+//**//       if i!=len(args) : ret += " "
+//**//       else: ret += end
+//**//      print(ret)
+//**//     `.replaceAll(`//**//     `,'')
+//**//     pythonCode = jsprint+pythonCode
+//**// 
+//**//     for (let key in args) {
+//**//         pythonCode = pythonCode.replaceAll(`__${key}__`, args[key]);
+//**//     }
+//**//     try {
+//**//         await pyodideInstance.runPythonAsync(pythonCode);
+//**//     } catch (err) {
+//**//         python_result = 'Error: ' + err;
+//**//     }
+//**// }
+//**// 
+//**// // Automatically initialize Pyodide on script load
+//**// initializePyodide();
+//**// 
+//**// // Expose `run_python` globally so it can be called from anywhere
+//**// window.run_python = run_python;
+//**// 
+//** :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: *//
+//**      Place this at the beginning of your script.                                       *//
+//** :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: *//
+
+// This is the example where you run the python script inside a function
+async function my_function(){
+    
+    document.getElementById("output").innerHTML = "running the script...";
+
+    await run_python({"matrix_input":`np.random.rand(3,3)`},SVD_script)
+    //SVD_script is the script imported from py_script.js
+
+    //print the result to the prepared div tag
+    document.getElementById("output").innerHTML = python_result;
+    
+}
+
+// This is the example where you run the python script via an event listener
+function update_button(){
+
+    document.addEventListener('click', async () => {
+    if (event.target && event.target.id === 'button-id') {
+        document.getElementById("output").innerHTML = "running the script...";
+
+        await run_python({"matrix_input":`np.random.rand(3,3)`},SVD_script)
+        //SVD_script is the script imported from py_script.js
+
+        //print the result to the prepared div tag
+        document.getElementById("output").innerHTML = python_result;
+
+    }})
+    
+}</code></pre>
+    <br>
+    Place the big chunk of code at the beginning of your script file.
+    <nl>
+    The function run_python(args,script) has two arguments:
+    <ul>
+        <li><span style="color: purple;"><b>args</b></span>: This is a dictionary {variable_name:variable_value} of all the variables you want to pass into the python script. To be specific, every instances of __variable_name__ inside your script will be replaced by variable_value.</li>
+        <li><span style="color: purple;"><b>script</b></span>: the script variable from source.py.js.</li>
+    </ul>
+    To run the python script inside a function, your function has to be defined with <span style="color: blue;">async</span> in front.
+    Or in the case you want to add an event listener, the attached function similarly needs to have <span style="color: blue;">async</span> in its definition. Also, you have to add <span style="color: crimson;">await</span> every time you call run_python().
+    <nl>
+    In this example, notice that the package <span style="color: green;">numpy</span> is imported inside initializePyodide():
+    <nl>
+    <pre><code>//**//         await pyodideInstance.loadPackage("numpy");</code></pre>
+    <br>
+    This is because my example python script is also importing numpy. If your script imports some other <ref href="https://pyodide.org/en/stable/usage/packages-in-pyodide.html">standard packages</ref>, be sure to also import these packages from the javascript side as well.
+
+    <section label="python">source.py.js</section>
+    Finally, write your python script in source.py.js:
+    <nl>
+    <pre><code>window.SVD_script = `
+
+"""Computes the Singular Value Decomposition (SVD) of a nested list."""
+
+import numpy as np
+
+# The variable passed from JS ::::::::::::::::::::::::::
+nested_list = __matrix_input__
+
+matrix = np.array(nested_list)
+U, S, Vt = np.linalg.svd(matrix, full_matrices=False)
+
+print("initial matrix:")
+print(matrix)
+
+print("\\nU:")
+print(U)
+
+print("\\nS:")
+print(S)
+
+print("\\nVt:")
+print(Vt)
+
+`</code></pre>
+    <br>
+    A few things to note here. First of all, do not forget that this is not a Python file. Your Python script is actually a string stored in the variable window.SVD_script (or you can name it however you want, e.g., window.some_script_name). Consequently, every time you have a backslash '\' in your script, you need to escape it with double backslashes '\\\\' (as shown in the example).
+
+</div>
+<hr>
+<div id="nav2">
+</div>
+<hr>
+<p id="webfooter"></p>
+</div>
+<script>
+    updatepage(`
+    <b>Prev:</b>
+    <a href="home.html">home</a>
+    
+    `);
+    my_function();
+    update_button();
+</script>
+</body>
+</html>
