@@ -139,6 +139,7 @@ function ordinal(x) {
 let gbLatexExpr
 let gbParsed_operator
 let gbParsed_sum
+let gbPairs
 let gbLinkCount
 function countUOccurrences() {
     ClearStep3();
@@ -156,6 +157,7 @@ function countUOccurrences() {
     let linkCount = []
     let parsed_operator = []
     let parsed_sum = []
+    let pairs = []
     let linkCountByTerm = []
     for(const expression of latexExpr){
         let result = parseOneTerm(expression)
@@ -184,6 +186,7 @@ function countUOccurrences() {
         display += result[0]
         parsed_operator.push(result[3])
         parsed_sum.push(result[4])
+        pairs.push(result[5])
         term+=1
     }
     if(display!=""){
@@ -220,6 +223,7 @@ function countUOccurrences() {
     gbLatexExpr = latexExpr
     gbParsed_operator = parsed_operator
     gbParsed_sum = parsed_sum
+    gbPairs = pairs
     gbLinkCount = linkCountByTerm
 
     //createSUNDropdown()
@@ -537,7 +541,12 @@ function parseOneTerm(expression){
         display += "<br><br><font color='red'>Warning: the Wilson loop is not inside a trace. If this is intended, you can ignore this message.</font>"
     display += "<br><br>"
 
-    return [display,numbered_links_count,polyakov_links_count,operator,sumString]
+    return [display,
+        numbered_links_count,
+        polyakov_links_count,
+        operator,
+        sumString,
+        numbered_pairs]
 }
 
 function iterateAll(indices, cond){
@@ -861,62 +870,108 @@ function linkIntegral(){
     let display = ""
     integrand = swapKeys(gbLinkCount)
 
-    display += `We can group the same link variables together and integrate.
-    Below, $C$ and $\\tilde C$ are the generalized Clebsch-Gordan coefficients
-    and $K$ is the link-conditional tensor,
-    both of which will be determined explicitly below.`
-    display += "<ul>"
+    display += `The information you gave is sufficient to determine the following:<br>
+    <ul>
+    <li>How many link variables there are in the group integrals.</li>
+    <li>The representation sets for the group integrals (used as the indices of the vertex tensors).</li>
+    <li>The connection of the matrix indices between the vertex tensors.</li>
+    <li>And finally, the armillary sphere.</li>
+    </ul>
+    <br>
+    The final step is to pass these information to the python script and let it handle the rest.
+    <br><br>
+    To summarize, here is all the information to be passed to the python script:
+    <br><br>
+    <pre><code>`
+    let passed_param = ""
+
+    passed_param += "irrep_set = []<br>"
+    for(let term=1;term<irrepData.length;term++){
+        let elem_str = "[ "
+        let ielem = 0
+        for(let elem of irrepData[term]){
+            if(ielem>0)
+                elem_str += ", "
+            elem_str += `[${elem}]`
+            ielem ++
+        }
+        elem_str += " ]"
+        passed_param += `irrep_set.append( ${elem_str} ) # irrep set for term ${term-1}<br>`
+    }
+
+    passed_param += "<br><br>"
+
+    passed_param += "axis_info = {}<br>"
+    let first_key = true
     for(let key in integrand){
-        if(key.includes("dagger")){
-
-            display += "<li>"
-            let Udag = key
-            let U = key.replace("^\\dagger","")
-            let I = U.replace("U","I")
-            let strIntegral = I+"=\\int d"+U+"~"
-            let Us = ""
-            let Udags = ""
-            strIntegral += "\\displaystyle\\underset{=~C"+U+"C^\\intercal}{\\underbrace{"
-            for(let term in integrand[U]){
-                let nU = integrand[U][term]
-                let termname = ordinal(int(term)+1)
-                strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
-                for(let i=0;i<nU;i++){
-                    strIntegral += U
-                    Us += U
-                }
-                strIntegral += "}}~"
-                Us += "~"
+        let new_key = key.replaceAll("U^\\dagger","V").replaceAll("_","")
+        passed_param += `axis_info["${new_key}"] = [`
+        let j = 0
+        for(let term in integrand[key]){
+            for(let i=1; i<=integrand[key][term];i++){
+                if(j>0)
+                    passed_param += `, ${int(term)}`
+                else
+                    passed_param += `${int(term)}`
+                j+=1
             }
-            strIntegral += "}}~~"
-            strIntegral += "\\displaystyle\\underset{=~\\tilde C"+Udag+"\\tilde C^\\intercal}{\\underbrace{"
-            for(let term in integrand[Udag]){
-                let nUdag = integrand[Udag][term]
-                let termname = ordinal(int(term)+1)
-                strIntegral += "\\underset{\\text{"+termname+" term}}{\\underbrace{"
-                for(let i=0;i<nUdag;i++){
-                    strIntegral += Udag
-                    Udags += Udag
-                }
-                strIntegral += "}}~"
-                Udags += "~"
-            }
-                strIntegral += "}}~"
-            display += "$\\displaystyle "+strIntegral+"$<br>&nbsp;&nbsp;&nbsp;&nbsp;"
-            display += "$=(C\\otimes \\tilde C)K(C^\\intercal\\otimes \\tilde C^\\intercal)$<br><br>"
+        }
+        passed_param += `]`
+        if(first_key){
+            passed_param += ` # a list of terms where each ${new_key} came from`
+            first_key = false
+        }
+        passed_param += `<br>`
+    }
 
-            
-            // CG decompositions
-            //display += "<ul>"
-            //display += "<li>$\\displaystyle "+Us+"$</li>"
-            //display += "<li>$\\displaystyle "+Udags+"$</li>"
-            //display += "</ul>"
+    passed_param += "<br><br>"
 
-            display += "</li>"
+    // reorganize the pair
+    let pair_dict = {}
+    for(let term in gbPairs){
+        for(let pair of gbPairs[term]){
+            pair = pair.replaceAll("U^\\dagger","V").replaceAll("_","")
+            if(pair in pair_dict)
+                pair_dict[pair].push(term)
+            else
+                pair_dict[pair] = [term]
         }
     }
-    display += "</ul>"
-    let title = "<br><hr><h2>Step 4: Integrate the link variables</h2>"
+
+    let ikey = 0
+    passed_param += "connection_info = {}<br>"
+    for(let pair in pair_dict){
+        let temp = pair.replaceAll("U",",U").replaceAll("V",",V").split(",")
+        let l1 = temp[1][0]
+        let l2 = temp[2][0]
+        let mu1 = temp[1].replaceAll("U","").replaceAll("V","")
+        let mu2 = temp[2].replaceAll("U","").replaceAll("V","")
+
+        let processed_pair = ""
+        if(l1+l2=="UU")
+            processed_pair = "-U"+mu1+" to "+"+U"+mu2
+        else if(l1+l2=="UV")
+            processed_pair = "-U"+mu1+" to "+"-V"+mu2
+        else if(l1+l2=="VV")
+            processed_pair = "+V"+mu1+" to "+"-V"+mu2
+        else if(l1+l2=="VU")
+            processed_pair = "+V"+mu1+" to "+"+U"+mu2
+        else
+            processed_pair = "??,"
+
+        passed_param += `connection_info["${processed_pair}"] = [${pair_dict[pair]}]`
+
+        if(ikey==0)
+            passed_param += ` # a list of terms where`
+        if(ikey==1)
+            passed_param += ` # these connections came from.`
+        passed_param += `<br>`
+        ikey ++
+    }
+
+    display += passed_param+"</code></pre><br>"
+
+    let title = "<br><hr><h2>Step 4: Summary</h2>"
     MathJax.typesetPromise();
     document.getElementById('output4').innerHTML = title+display
 }
@@ -927,128 +982,8 @@ function linkIntegral(){
 function CGDecomposition(){
     let display = ""
 
-    display = "We will now perform the CG decomposition just to identify relevant CG matrices to be computed in the next step."
-
-    function cartesianProduct(arrays) {
-        return arrays.reduce((acc, curr) => {
-            return acc.flatMap(a => curr.map(b => [...a, b]));
-        }, [[]]);
-    }
-
-    let button_num = 0
-    let combi = []
-    display += "<ul>"
-    for(let key in integrand){
-        display += "<li> <h4>$"+key+"$'s decomposition</h4>"
-
-        // CG equation
-        display += "$\\displaystyle "
-        let j = 1
-        let ris = ""
-        let rjs = ""
-        for(let term in integrand[key]){
-            for(let iterm=0; iterm<integrand[key][term]; iterm++){
-                display += `(${key})^{r_{${j}}}_{i_{${j}}j_{${j}}}`
-                if(j>1){
-                    ris+=";"
-                    rjs+=";"
-                }
-                ris += `r_{${j}}i_{${j}}`
-                rjs += `r_{${j}}j_{${j}}`
-                j+=1
-            }
-        }
-        display += `=\\sum_{(\\rho,i,j)}C^{\\rho i}_{${ris}}C^{\\rho j}_{${rjs}}(${key})^\\rho_{ij}`
-        display += "$"
-        display += "<br><br>"
-
-
-        display += "<ul>"
-        let ranges = []
-        j = 1
-        for(let term in integrand[key]){
-
-            for(let iterm=0; iterm<integrand[key][term]; iterm++)
-                ranges.push(irrepData[int(term)+1])
-
-            display += "<li>"
-            display+="$"
-            for(let iterm=0; iterm<integrand[key][term]; iterm++){
-                if(iterm>0){
-                    display+=", "
-                }
-                display += `r_{${j}}`
-                j+=1
-            }
-            display+="\\in\\{"
-            let ir = 0
-            for(let r of irrepData[int(term)+1]){
-                if(ir>0)
-                    display += ", "
-                display += `[${r}]`
-                ir+=1
-            }
-            display += `\\}$`
-            display += "</li>"
-        }
-        display += "</ul><br>"
-
-        // List all irreps to be computed
-        const irreps_list = cartesianProduct(ranges)
-        // A list of all possible irrep combination
-
-
-        display += `<button id='cgbutton${button_num}'>Count all unique CG decompositions</button>`
-        display += `<br><br>`
-        display += `<div id='cgresult${button_num}'></div>`
-        button_num += 1
-        combi.push(irreps_list)
-
-        //await getCGDecomp({"weight1":weight1,"weight2":weight2},cgdecomp_src)
-        /*
-        for(let iter of irreps_list){
-            let ir = 0
-            display += "$"
-            for(let r of iter){
-                if(ir>0)
-                    display += "\\otimes"
-                display += `[${r}]`
-                ir+=1
-            }
-            display += "$<br>"
-
-        }
-        */
-        
-
-        display += "</li>"
-    }
-    display += "</ul>"
-
-    let title = "<br><hr><h2>Step 5: Clebsch-Gordan decomposition</h2>"
+    let title = "<br><hr><h2>Step 5: Python Export</h2>"
     document.getElementById("output5").innerHTML = title+display
-
-
-    for(let ibutton=0;ibutton<button_num;ibutton++){
-        document.getElementById(`cgbutton${ibutton}`).addEventListener("click", async () => {
-
-            let arg_text = ""
-            for(let iter of combi[ibutton]){
-                let itertext = ""
-                for(let r of iter){
-                    itertext += `[${r}] `
-                }
-                arg_text += itertext+";"
-            }
-
-            await run_python({"iter":`"${arg_text}"`},cgdecomp_src)
-
-            //result of the computation
-            document.getElementById(`cgresult${ibutton}`).innerHTML = python_result
-            MathJax.typesetPromise()
-        });
-    }
-
 
     MathJax.typesetPromise()
 }
