@@ -14,12 +14,6 @@ function ClearStep3(){
 
 function ClearStep4(){
     document.getElementById("output4").innerHTML = "";
-    document.getElementById("Step5Button").innerHTML = "";
-    ClearStep5();
-}
-
-function ClearStep5(){
-    document.getElementById("output5").innerHTML = "";
 }
 
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -805,7 +799,6 @@ function createCXForms() {
                 document.getElementById("remarkCX"+index).innerHTML = ""
             }
         });
-        
 
         //proceed if there is no error
         let remarks = ""
@@ -852,7 +845,6 @@ function createCXForms() {
 // ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 let integrand = {};
 function linkIntegral(){
-    ClearStep5();
     function swapKeys(obj) {
         let swapped = {};
 
@@ -870,22 +862,47 @@ function linkIntegral(){
     let display = ""
     integrand = swapKeys(gbLinkCount)
 
-    display += `The information you gave is sufficient to determine the following:<br>
-    <ul>
-    <li>How many link variables there are in the group integrals.</li>
-    <li>The representation sets for the group integrals (used as the indices of the vertex tensors).</li>
-    <li>The connection of the matrix indices between the vertex tensors.</li>
-    <li>And finally, the armillary sphere.</li>
-    </ul>
-    <br>
-    The final step is to pass these information to the python script and let it handle the rest.
-    <br><br>
-    To summarize, here is all the information to be passed to the python script:
-    <br><br>
-    <pre><code>`
+    display += `
+        The final step is to run the python script to compute the armillary sphere tensor.<br>
+        Download: <a href="#" id="downloadLink">armillary.py</a>
+        <br><font color="red">Read the explanation below!</font>
+        <br>
+        <br>
+        Requirement: latest version of Python and the NumPy package.
+        <br>
+        <br>
+        At the beginning of the file, you can set "multiprocess" to False if you encounter some problem.
+        <br>
+        You can also set "mute_progress" to True if your system encounters some problem displaying the progress bar.
+        <br>
+        <br>
+        I recommend testing 2D or 3D preset first to see if you have any trouble runing before going to 4D.
+        <br>
+        <br>
+        If the code runs successfully, it will produce 3 output files which has the following format:
+        <ul>
+        <li>TensorElements.xxx.txt</li>
+        For each entry, you have a list of tensor indices, followed by the tensor element.<br>
+        The index ordering is $[i_0,i_1,i_2,...i_{D-1},j_0,j_1,j_2,...,j_{D-1}]$
+        <br> where $i_n$ is the index in the positive $n$-direction
+        <br> and $j_n$ is the index in the negative $n$-direction.
+        <br>
+        <li>IndexKey.xxx.txt</li>
+        This gives the meaning of each index for each axis.
+        <br> For example, axis 0 with entry "123 : (1,0),(1,0),(1,1);(0,0),(1,0);(1,0),1,0" means that
+        <br> The index 123 of either $i_0$ or $j_0$ corresponds to the case where the vertex tensor
+        <br> comes from the product $(1,0)\\otimes(1,0)\\otimes(1,1)$ of $U$s and $(0,0)\\otimes(1,0)$ of $U^\\dagger$s.
+        <br> and resulting in $(1,0)$ where the 1st multiplicity of the first product 
+        <br> is matched with the 0th multiplicity of the second product.
+        <br> To understand which plaquette each of the irrep is associated with, see the third file below.
+        <li>VertexContractionScheme.xxx.txt</li>
+        This file tells how the vertex tensors are contracted.
+        <br> To understand which plaquette is associated with which index of the vertex tensor,
+        <br> use the contraction scheme in this file to draw the armillary sphere.
+        </ul>`
     let passed_param = ""
 
-    passed_param += "irrep_set = []<br>"
+    passed_param += "irrep_set = []\n"
     for(let term=1;term<irrepData.length;term++){
         let elem_str = "[ "
         let ielem = 0
@@ -896,12 +913,12 @@ function linkIntegral(){
             ielem ++
         }
         elem_str += " ]"
-        passed_param += `irrep_set.append( ${elem_str} ) # irrep set for term ${term-1}<br>`
+        passed_param += `irrep_set.append( ${elem_str} ) # irrep set for term ${term-1}\n`
     }
 
-    passed_param += "<br><br>"
+    passed_param += "\n\n"
 
-    passed_param += "axis_info = {}<br>"
+    passed_param += "axis_info = {}\n"
     let first_key = true
     for(let key in integrand){
         let new_key = key.replaceAll("U^\\dagger","V").replaceAll("_","")
@@ -921,10 +938,10 @@ function linkIntegral(){
             passed_param += ` # a list of terms where each ${new_key} came from`
             first_key = false
         }
-        passed_param += `<br>`
+        passed_param += `\n`
     }
 
-    passed_param += "<br><br>"
+    passed_param += "\n\n"
 
     // reorganize the pair
     let pair_dict = {}
@@ -939,7 +956,7 @@ function linkIntegral(){
     }
 
     let ikey = 0
-    passed_param += "connection_info = {}<br>"
+    passed_param += "connection_info = {}\n"
     for(let pair in pair_dict){
         let temp = pair.replaceAll("U",",U").replaceAll("V",",V").split(",")
         let l1 = temp[1][0]
@@ -965,25 +982,28 @@ function linkIntegral(){
             passed_param += ` # a list of terms where`
         if(ikey==1)
             passed_param += ` # these connections came from.`
-        passed_param += `<br>`
+        passed_param += `\n`
         ikey ++
     }
 
-    display += passed_param+"</code></pre><br>"
+    passed_param = armillary_script.replaceAll(`__replace_data_here__`, passed_param)
 
     let title = "<br><hr><h2>Step 4: Summary</h2>"
-    MathJax.typesetPromise();
     document.getElementById('output4').innerHTML = title+display
-}
 
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-//         Step 5
-// ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
-function CGDecomposition(){
-    let display = ""
+    document.getElementById("downloadLink").addEventListener("click", function(event) {
+            event.preventDefault();  // Prevent the default link behavior
 
-    let title = "<br><hr><h2>Step 5: Python Export</h2>"
-    document.getElementById("output5").innerHTML = title+display
+            // Open a new tab
+            const newWindow = window.open();
+            
+            // Create a <pre> element to hold the text safely
+            const preElement = newWindow.document.createElement("pre");
+            preElement.textContent = passed_param;  // Properly escape and preserve formatting
 
-    MathJax.typesetPromise()
+            // Append the preformatted text to the new page
+            newWindow.document.body.appendChild(preElement);
+            newWindow.document.title = "armillary.py";
+        });
+    MathJax.typesetPromise();
 }
