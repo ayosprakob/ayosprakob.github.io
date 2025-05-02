@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Cube with Grids and Function Plots</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+        #controls {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+        #controls label { margin-right: 10px; }
+        #functionInput { width: 300px; } /* Larger textbox */
+        .function-entry { margin-top: 10px; }
+        .function-entry input[type="text"] { width: 300px; }
+        .function-entry input[type="color"] { vertical-align: middle; }
+        #rangeSlider { width: 300px; }
+        #rangeValue { margin-left: 10px; }
+    </style>
+</head>
+<body>
+    <!-- Control form -->
+    <div id="controls">
+        <b>Minimal 3d function visualizer</b>&mdash;by Atis Yosprakob
+        <br>
+        <!--<label><input type="checkbox" id="showCube" checked> Show Cube</label><br>-->
+        <label>
+            Plot Range (-a < x,z < a): 
+            <input type="range" id="rangeSlider" min="0" max="10" value="2.5" step="0.1">
+            <span id="rangeValue">2.5</span>
+        </label><br>
+        <div id="functionList">
+            <!-- Dynamically added function entries -->
+        </div>
+        <button onclick="addFunctionEntry()">Add Function Mesh</button>
+    </div>
+
+    <!-- Load Three.js core -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- Load OrbitControls -->
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script>
+        // Set up the scene, camera, and renderer
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x808080); // Gray background
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        /*
+        // Create a cube (1x1x1, centered at (0, 0.5, 0))
+        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        const cubeMaterial = new THREE.MeshStandardMaterial({ color: 0x0000ff }); // Solid blue cube
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        cube.position.set(0, 0.5, 0); // Center at y=0.5
+        scene.add(cube);
+        */
+
+        // Add lighting (required for MeshStandardMaterial)
+        const light = new THREE.PointLight(0xffffff, 1, 100);
+        light.position.set(5, 5, 5);
+        scene.add(light);
+        const ambientLight = new THREE.AmbientLight(0x404040); // Soft ambient light
+        scene.add(ambientLight);
+
+        // Create grid planes
+        function createGridPlane(yPos, rotation) {
+            const planeGeometry = new THREE.PlaneGeometry(500, 500, 500, 500); // Large plane
+            const planeMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    uColor: { value: new THREE.Color(0x555555) }, // Gray grid lines
+                    uFadeDistance: { value: 20.0 }, // Distance at which grid fades
+                    uGridSpacing: { value: 1.0 }, // Grid lines every 1 unit
+                    uLineThickness: { value: 0.01 }, // Thickness of grid lines
+                },
+                vertexShader: `
+                    varying vec3 vPosition;
+                    void main() {
+                        vPosition = position;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+                    }
+                `,
+                fragmentShader: `
+                    uniform vec3 uColor;
+                    uniform float uFadeDistance;
+                    uniform float uGridSpacing;
+                    uniform float uLineThickness;
+                    varying vec3 vPosition;
+                    void main() {
+                        // Calculate distance from center
+                        float dist = length(vPosition.xz);
+                        // Grid pattern (x and z lines)
+                        vec2 coord = vPosition.xz / uGridSpacing;
+                        vec2 grid = fract(coord);
+                        vec2 distToLine = abs(grid - 0.5);
+                        float lineX = step(distToLine.x, uLineThickness);
+                        float lineZ = step(distToLine.y, uLineThickness);
+                        float gridLine = max(lineX, lineZ);
+                        // Fade based on distance
+                        float fade = 1.0 - smoothstep(0.0, uFadeDistance, dist);
+                        // Combine grid and fade
+                        float alpha = gridLine * fade;
+                        gl_FragColor = vec4(uColor, alpha);
+                    }
+                `,
+                transparent: true,
+                side: THREE.DoubleSide,
+            });
+            const gridPlane = new THREE.Mesh(planeGeometry, planeMaterial);
+            gridPlane.position.y = yPos;
+            gridPlane.rotation.set(rotation.x || 0, rotation.y || 0, rotation.z || 0);
+            scene.add(gridPlane);
+        }
+
+        // Add two grid planes
+        createGridPlane(-0.002, { x: -Math.PI / 2 }); // At y=0 (XZ plane)
+        createGridPlane(-0.001, { x: -Math.PI / 2, z: -Math.PI / 2 }); // At y=-0.01 (XZ plane)
+
+        // Function meshes array
+        const functionMeshes = [];
+        let plotRange = 2.5; // Initial range: -2.5 < x,z < 2.5
+        let segments = parseInt(50*plotRange*plotRange)
+
+        // Create a function mesh
+        function createFunctionMesh(funcStr, color, range) {
+            const size = range * 2; // Size is 2a for -a < x,z < a
+            const funcGeometry = new THREE.PlaneGeometry(size, size, segments, segments);
+            const funcMaterial = new THREE.MeshStandardMaterial({ color: color, side: THREE.DoubleSide });
+            const functionMesh = new THREE.Mesh(funcGeometry, funcMaterial);
+            functionMesh.rotation.x = -Math.PI / 2; // Align with XZ plane
+
+            // Prepend Math. to math functions
+            let processedFuncStr = funcStr.replace(/\b(sin|cos|tan|sqrt|abs|exp|log|pow|min|max)\b/g, 'Math.$1');
+            try {
+                const func = new Function('x', 'z', `return ${processedFuncStr}`);
+                const vertices = funcGeometry.attributes.position.array;
+                for (let i = 0; i < vertices.length; i += 3) {
+                    const x = vertices[i];
+                    const z = vertices[i + 1];
+                    vertices[i + 2] = func(x, z) || 0; // y = f(x, z), default to 0 if invalid
+                }
+                funcGeometry.attributes.position.needsUpdate = true;
+                funcGeometry.computeVertexNormals(); // Update normals for lighting
+            } catch (e) {
+                console.error('Invalid function:', e);
+                return null;
+            }
+
+            return functionMesh;
+        }
+
+        // Reset and recreate all function meshes
+        function resetFunctionMeshes() {
+            // Remove all existing meshes from scene and clear array
+            functionMeshes.forEach(({ mesh }) => {
+                scene.remove(mesh);
+            });
+            functionMeshes.length = 0;
+
+            // Recreate meshes for checked entries
+            const entries = document.querySelectorAll('.function-entry');
+            entries.forEach(entry => {
+                const id = entry.querySelector('input[type="checkbox"]').id.replace('-check', '');
+                const checkbox = document.getElementById(`${id}-check`);
+                const input = document.getElementById(`${id}-input`);
+                const colorPicker = document.getElementById(`${id}-color`);
+                if (checkbox.checked && input && colorPicker) {
+                    const mesh = createFunctionMesh(input.value, colorPicker.value, plotRange);
+                    if (mesh) {
+                        functionMeshes.push({ id, mesh });
+                        scene.add(mesh);
+                    } else {
+                        checkbox.checked = false; // Uncheck if function is invalid
+                    }
+                }
+            });
+        }
+
+        // Form interaction
+        //const showCubeCheckbox = document.getElementById('showCube');
+        const functionList = document.getElementById('functionList');
+        const rangeSlider = document.getElementById('rangeSlider');
+        const rangeValue = document.getElementById('rangeValue');
+
+        //showCubeCheckbox.addEventListener('change', () => {
+        //    cube.visible = showCubeCheckbox.checked;
+        //});
+
+        // Slider interaction
+        rangeSlider.addEventListener('input', () => {
+            plotRange = parseFloat(rangeSlider.value);
+            rangeValue.textContent = plotRange.toFixed(1);
+            resetFunctionMeshes();
+        });
+
+        function getRandomInRange(min, max) {
+          return Math.random() * (max - min) + min;
+        }
+
+        function hexToHSL(hex) {
+          const r = parseInt(hex.slice(1, 3), 16) / 255;
+          const g = parseInt(hex.slice(3, 5), 16) / 255;
+          const b = parseInt(hex.slice(5, 7), 16) / 255;
+
+          const max = Math.max(r, g, b), min = Math.min(r, g, b);
+          let h, s, l = (max + min) / 2;
+
+          if (max === min) {
+            h = s = 0; // achromatic
+          } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+              case r: h = ((g - b) / d + (g < b ? 6 : 0)); break;
+              case g: h = ((b - r) / d + 2); break;
+              case b: h = ((r - g) / d + 4); break;
+            }
+            h *= 60;
+          }
+
+          return { h, s, l };
+        }
+
+        function hslToHex(h, s, l) {
+          s = s;
+          l = l;
+
+          const c = (1 - Math.abs(2 * l - 1)) * s;
+          const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+          const m = l - c/2;
+          let r, g, b;
+
+          if (h < 60) [r, g, b] = [c, x, 0];
+          else if (h < 120) [r, g, b] = [x, c, 0];
+          else if (h < 180) [r, g, b] = [0, c, x];
+          else if (h < 240) [r, g, b] = [0, x, c];
+          else if (h < 300) [r, g, b] = [x, 0, c];
+          else [r, g, b] = [c, 0, x];
+
+          const toHex = (n) => Math.round((n + m) * 255).toString(16).padStart(2, '0');
+          return `#${toHex(r)}${toHex(g)}${toHex(b)}`;
+        }
+
+        function randomizeHue(hex='#b8f774', range = 90) {
+          const hsl = hexToHSL(hex);
+          const randomShift = (Math.random() * 2 - 1) * range; // +/- range
+          const newHue = (hsl.h + randomShift + 360) % 360;
+          return hslToHex(newHue, hsl.s, hsl.l);
+        }
+
+        // Add a new function entry
+        function addFunctionEntry(funcStr = '', color = '') {
+            if(funcStr==''){
+              const a = getRandomInRange(-1, 1);
+              const b = getRandomInRange(-1, 1);
+              const c = getRandomInRange(0.1, 0.5);
+              funcStr=`exp(-(pow(x-${a.toFixed(2)},2) + pow(z-${b.toFixed(2)},2))/${c.toFixed(2)})`;
+              funcStr = funcStr.replace(/--/g, '+');
+            }
+            if(color==''){
+              color = randomizeHue()
+            }
+            const entryDiv = document.createElement('div');
+            entryDiv.className = 'function-entry';
+            const id = `func-${functionMeshes.length}-${Date.now()}`;
+            entryDiv.innerHTML = `
+                <label>
+                    <input type="checkbox" id="${id}-check">
+                    Function y=f(x,z): <input type="text" id="${id}-input" value="${funcStr}">
+                    Color: <input type="color" id="${id}-color" value="${color}">
+                </label>
+                <button onclick="removeFunctionEntry('${id}')">Remove</button>
+            `;
+            functionList.appendChild(entryDiv);
+
+            const checkbox = document.getElementById(`${id}-check`);
+            const input = document.getElementById(`${id}-input`);
+            const colorPicker = document.getElementById(`${id}-color`);
+
+            checkbox.addEventListener('change', () => {
+                resetFunctionMeshes();
+            });
+
+            input.addEventListener('input', () => {
+                resetFunctionMeshes();
+            });
+
+            colorPicker.addEventListener('input', () => {
+                resetFunctionMeshes();
+            });
+        }
+
+        // Remove a function entry
+        window.removeFunctionEntry = function (id) {
+            const entry = document.getElementById(`${id}-check`).parentElement.parentElement;
+            entry.remove();
+            resetFunctionMeshes();
+        };
+
+        // Initialize with one function entry
+        addFunctionEntry();
+
+        // Position the camera
+        camera.position.z = 5;
+
+        // Add OrbitControls for drag rotation
+        const controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.enableZoom = false; // Disable default zoom
+
+        // Handle scroll for zooming
+        window.addEventListener('wheel', (event) => {
+            const zoomSpeed = 0.1; // Smooth zooming
+            const zoomDirection = event.deltaY > 0 ? 1 : -1;
+            const distance = camera.position.distanceTo(controls.target);
+            const newDistance = distance * (1 + zoomDirection * zoomSpeed);
+            // Clamp the distance
+            const minDistance = 2;
+            const maxDistance = 10;
+            const clampedDistance = Math.max(minDistance, Math.min(maxDistance, newDistance));
+            // Scale the camera position relative to the target
+            const direction = camera.position.clone().sub(controls.target).normalize();
+            camera.position.copy(controls.target).add(direction.multiplyScalar(clampedDistance));
+            controls.update();
+        });
+
+        // Handle window resize
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Animation loop
+        function animate() {
+            requestAnimationFrame(animate);
+            controls.update();
+            renderer.render(scene, camera);
+        }
+        animate();
+    </script>
+</body>
+</html>
