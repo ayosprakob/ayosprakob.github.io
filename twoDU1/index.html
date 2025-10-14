@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>2D U(1) LGT</title>
+<style>
+  :root{
+    --bg: #0b1020; --panel: #0f172a; --panel-2: #111827; --text: #e5e7eb; --muted: #94a3b8;
+    --accent: #60a5fa; --ring: #1f2937; --green: #34d399; --red: #f87171; --yellow:#facc15; --violet:#a78bfa;
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{
+    margin:0; font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans";
+    color:var(--text); background:
+      radial-gradient(1200px 900px at 10% -10%, #1b2548 0%, #0b1020 60%),
+      radial-gradient(1000px 800px at 120% 10%, #12204a 0%, #0b1020 60%),
+      var(--bg);
+      background-attachment: fixed;   /* ✅ key line */
+      background-size: cover;         /* (optional but recommended) */
+  }
+  .container{max-width:1200px; margin:0 auto; padding:24px;}
+  h1{font-size:clamp(20px, 3vw, 32px); margin:0 0 18px; font-weight:650}
+  .grid{display:grid; grid-template-columns: 1fr; gap:16px}
+  @media (min-width: 980px){ .grid{ grid-template-columns: 2fr 1fr; } }
+  .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01)); border:1px solid var(--ring); border-radius:16px; box-shadow:0 10px 30px rgba(0,0,0,.30);}
+  .card h2{margin:0; padding:14px 16px; font-size:16px; letter-spacing:.2px; border-bottom:1px solid var(--ring); background: rgba(255,255,255,0.02); border-radius:16px 16px 0 0}
+  .card .content{padding:16px}
+  .row{display:flex; gap:12px; align-items:center;}
+  .row > * {flex:1}
+  .label{font-size:12px; color:var(--muted); margin-bottom:6px}
+  .small{font-size:12px; color:var(--muted)}
+  .controls{display:grid; grid-template-columns: 1fr 1fr; gap:14px}
+  .controls .span2{grid-column: span 2}
+  input[type="number"], input[type="text"]{
+    width:100%; padding:8px 10px; border-radius:10px; border:1px solid var(--ring); background: var(--panel); color:var(--text);
+  }
+  input[type="range"]{ width:100% }
+  .btns{display:flex; gap:8px; flex-wrap:wrap}
+  .btn{
+    padding:8px 12px; border-radius:12px; border:1px solid var(--ring); background: var(--panel); color:var(--text); cursor:pointer;
+    transition:.2s transform, .2s background;
+  }
+  .btn.primary{background: linear-gradient(180deg, #1e293b, #111827);}
+  .btn:hover{transform: translateY(-1px)}
+  .pill{padding:4px 8px; border-radius:999px; background:#0b1327; border:1px solid var(--ring); font-size:11px; color:var(--muted)}
+  canvas{display:block}
+  .subtle{color:var(--muted); font-size:13px}
+  select{padding:6px 10px; border-radius:8px; background:var(--panel); color:var(--text); border:1px solid var(--ring);}
+  label{font-size:12px; color:var(--muted)}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>2D U(1) Lattice Gauge Theory — the Langevin Dynamics</h1>
+    <h2><i>by Atis Yosprakob</i></h2>
+
+    <div class="grid">
+      <div class="card">
+        <h2>Lattice Field Strength (plaquette heatmap)</h2>
+        <div class="content">
+          <canvas id="lattice" style="width:100%; height:auto; image-rendering: pixelated;"></canvas>
+          <div class="small" id="status"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>Controls</h2>
+        <div class="content">
+          <div class="controls">
+            <div class="span2">
+              <div class="label">Coupling β <span class="pill" id="betaVal"></span></div>
+              <input type="range" id="beta" min="0" max="10" step="0.01" value="3.00">
+            </div>
+            <div>
+              <div class="label">Lattice size N</div>
+              <input type="number" id="N" value="16" min="6" max="96">
+            </div>
+            <div class="span2 btns">
+              <button class="btn primary" id="runBtn">Run</button>
+              <button class="btn" id="stepBtn">Step</button>
+              <button class="btn" id="resetBtn">Reset</button>
+              <button class="btn" id="randBtn">Randomize</button>
+              <span class="pill" id="tick">step: 0</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HISTORY CARD (restored) -->
+    <div class="card" style="margin-top:16px">
+      <h2>Observable history (not the expectation value)</h2>
+      <div class="content">
+        <div class="row" style="margin-bottom:8px">
+          <label for="quantitySelect">Select quantity:</label>
+          <select id="quantitySelect">
+            <option value="plaquette">avg plaquette</option>
+            <!--<option value="W">W(R×T)</option>-->
+            <option value="Sdens">action density</option>
+            <option value="Q">topological charge</option>
+          </select>
+        </div>
+        <canvas id="chart" height="260" style="width:100%"></canvas>
+        <div class="subtle">The exact value of the average plaquette at large volume is w(β)=I<sub>1</sub>(β)/I<sub>0</sub>(β); e.g, w(0.2)=0.0995, w(1)=0.446, w(3)=0.810, w(5)=0.893</div>
+      </div>
+    </div>
+
+    <div class="card" style="margin-top:16px">
+      <h2>Notes</h2>
+      <div class="content subtle">
+        I'm making this mainly to demonstrate the topology freezing.
+      </div>
+    </div>
+  </div>
+
+<script>
+  // ======= Math helpers =======
+  const TAU = Math.PI * 2;
+  const clampAngle = a => ((a + Math.PI) % TAU + TAU) % TAU - Math.PI; // (-π, π]
+  function gauss(){ let u=0,v=0; while(u===0) u=Math.random(); while(v===0) v=Math.random(); return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v); }
+  const idx = (i,j,N)=> (( (i%N+N)%N )*N + ((j%N+N)%N));
+
+  // ======= Links storage =======
+  function createLinks(N){ return { N, h: new Float64Array(N*N), v: new Float64Array(N*N) }; }
+  function zeroLinks(L){ L.h.fill(0); L.v.fill(0); }
+  function randomizeLinks(L, scale=0.1){ for(let k=0;k<L.h.length;k++){ L.h[k]=clampAngle(scale*gauss()); L.v[k]=clampAngle(scale*gauss()); } }
+
+  // Plaquette angle θ_p(i,j) = h(i,j) + v(i+1,j) - h(i,j+1) - v(i,j)
+  function plaquetteTheta(L,i,j){ const {N,h,v}=L; const t=h[idx(i,j,N)] + v[idx(i+1,j,N)] - h[idx(i,j+1,N)] - v[idx(i,j,N)]; return clampAngle(t); }
+
+  function avgPlaquette(L){ const {N}=L; let s=0; for(let i=0;i<N;i++) for(let j=0;j<N;j++) s+=Math.cos(plaquetteTheta(L,i,j)); return s/(N*N); }
+  function actionDensity(L,beta){ const {N}=L; let s=0; for(let i=0;i<N;i++) for(let j=0;j<N;j++) s+= -beta*Math.cos(plaquetteTheta(L,i,j)); return s/(N*N); }
+
+  // Wilson loop (R x T)
+  function wilsonLoop(L,R,T){ const {N,h,v}=L; let sum=0, count=0;
+    for(let i0=0;i0<N;i0++) for(let j0=0;j0<N;j0++){
+      let th=0;
+      for(let dx=0;dx<R;dx++) th += h[idx(i0+dx,j0,N)];
+      for(let dy=0;dy<T;dy++) th += v[idx(i0+R,j0+dy,N)];
+      for(let dx=0;dx<R;dx++) th -= h[idx(i0+dx,j0+T,N)];
+      for(let dy=0;dy<T;dy++) th -= v[idx(i0,j0+dy,N)];
+      sum += Math.cos(clampAngle(th)); count++;
+    }
+    return sum/count;
+  }
+
+  function topologicalCharge(L){ const {N}=L; let s=0; for(let i=0;i<N;i++) for(let j=0;j<N;j++) s+=plaquetteTheta(L,i,j); return s/TAU; }
+
+  // Langevin step
+  function stepLangevin(L, beta, dt, noiseScale=1){
+    const {N,h,v}=L; const sinP=new Float64Array(N*N);
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++) sinP[idx(i,j,N)] = Math.sin(plaquetteTheta(L,i,j));
+    const hF=new Float64Array(h.length), vF=new Float64Array(v.length);
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+      const id=idx(i,j,N), up=idx(i,j,N), down=idx(i,j-1,N), right=idx(i,j,N), left=idx(i-1,j,N);
+      hF[id] = beta * (sinP[up] - sinP[down]);
+      vF[id] = beta * (sinP[left] - sinP[right]);
+    }
+    const sigma = Math.sqrt(2*dt)*noiseScale;
+    for(let k=0;k<h.length;k++){
+      h[k]=clampAngle(h[k] - dt*hF[k] + sigma*gauss());
+      v[k]=clampAngle(v[k] - dt*vF[k] + sigma*gauss());
+    }
+  }
+
+  // ======= UI state =======
+  const el = (id)=>document.getElementById(id);
+  const cLat = el('lattice'); const cChart = el('chart');
+  const ctxLat = cLat.getContext('2d'); const ctxChart = cChart.getContext('2d');
+  const statusEl = el('status'); const tickEl = el('tick'); const betaVal = el('betaVal');
+
+  let params = { N:16, beta:3.0, dt:0.02, noise:1.0, speed:1, R:1, T:1, maxHist:600, auto:true };
+  let L = createLinks(params.N); zeroLinks(L);
+  let running=false, stepCount=0;
+
+  // Dropdown state
+  let selectedKey = "plaquette";
+  el("quantitySelect").addEventListener("change", (e)=>{ selectedKey = e.target.value; drawChart(); });
+
+  // Resize
+  function resizeLattice(){ const scale = Math.max(6, Math.floor(600/params.N)); cLat.width=params.N*scale; cLat.height=params.N*scale; drawLattice(); }
+  function resizeChart(){
+    const rect = cChart.getBoundingClientRect();
+    const dpr = window.devicePixelRatio || 1;
+    cChart.width = Math.max(300, Math.floor(rect.width * dpr));
+    cChart.height = Math.floor(260 * dpr);
+    cChart.style.height = '260px';
+    drawChart();
+  }
+  window.addEventListener('resize', ()=>{ resizeLattice(); resizeChart(); });
+
+  // ======= Render lattice =======
+  function drawLattice(){
+    const {N}=L; const S = cLat.width/N; const ctx = ctxLat;
+    ctx.clearRect(0,0,cLat.width,cLat.height);
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,cLat.width,cLat.height);
+    for(let i=0;i<N;i++) for(let j=0;j<N;j++){
+      const th = plaquetteTheta(L,i,j); const val = (th + Math.PI) / TAU; const c = Math.floor(255*val);
+      ctx.fillStyle = `rgb(${c},30,${255-c})`; ctx.fillRect(i*S, (N-1-j)*S, S, S);
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,0.08)'; ctx.lineWidth = 1;
+    for(let i=0;i<=N;i++){ ctx.beginPath(); ctx.moveTo(i*S+0.5, 0); ctx.lineTo(i*S+0.5, N*S); ctx.stroke(); }
+    for(let j=0;j<=N;j++){ ctx.beginPath(); ctx.moveTo(0, j*S+0.5); ctx.lineTo(N*S, j*S+0.5); ctx.stroke(); }
+  }
+
+  // ======= Chart =======
+  const hist = []; // {t, plaquette, W, Sdens, Q}
+  function pushHist(d){ hist.push(d); if(hist.length>params.maxHist) hist.splice(0, hist.length-params.maxHist); }
+
+  function dataRange(){
+    if(hist.length === 0) return {minX:0, maxX:1, minY:-1, maxY:1};
+    let minX = hist[0].t, maxX = hist[hist.length-1].t;
+    let minY = Infinity, maxY = -Infinity;
+    for(const d of hist){
+      const v = d[selectedKey];
+      if(v < minY) minY = v;
+      if(v > maxY) maxY = v;
+    }
+    if(!isFinite(minY) || !isFinite(maxY)){ minY=-1; maxY=1; }
+    if(minY === maxY){ minY -= 1; maxY += 1; }
+    return {minX, maxX, minY, maxY};
+  }
+
+  function drawChart(){
+    const ctx=ctxChart; const w=cChart.width, h=cChart.height;
+    ctx.clearRect(0,0,w,h);
+    const P={l:60,r:16,t:16,b:28};
+    ctx.fillStyle = '#0f172a'; ctx.fillRect(0,0,w,h);
+    const {minX,maxX,minY,maxY} = dataRange();
+    const x = v => P.l + (w-P.l-P.r) * ((v-minX)/Math.max(1,(maxX-minX)||1));
+    const y = v => h-P.b - (h-P.t-P.b) * ((v-minY)/(maxY-minY)); // positive up
+
+    // grid
+    ctx.strokeStyle='rgba(255,255,255,0.1)'; ctx.lineWidth=1;
+    const gridY=5; for(let i=0;i<=gridY;i++){ const gy=P.t + (h-P.t-P.b)*i/gridY; ctx.beginPath(); ctx.moveTo(P.l,gy); ctx.lineTo(w-P.r,gy); ctx.stroke(); }
+    const gridX=6; for(let i=0;i<=gridX;i++){ const gx=P.l + (w-P.l-P.r)*i/gridX; ctx.beginPath(); ctx.moveTo(gx,P.t); ctx.lineTo(gx,h-P.b); ctx.stroke(); }
+
+    // axes
+    ctx.strokeStyle='rgba(255,255,255,0.25)'; ctx.beginPath(); ctx.moveTo(P.l,P.t); ctx.lineTo(P.l,h-P.b); ctx.lineTo(w-P.r,h-P.b); ctx.stroke();
+
+    // labels
+    const dpr = window.devicePixelRatio || 1;
+    ctx.fillStyle='#94a3b8'; ctx.font=`${12*dpr}px sans-serif`; ctx.textAlign='right'; ctx.textBaseline='middle';
+      for(let i=0;i<=gridY;i++){
+        const val = maxY - (maxY - minY) * (i / gridY);     // invert value order
+        const yy  = P.t + (h - P.t - P.b) * (i / gridY);    // same position
+        ctx.fillText(val.toFixed(2), P.l - 8, yy);
+      }
+    ctx.textAlign='center'; ctx.textBaseline='top';
+    for(let i=0;i<=gridX;i++){ const val=Math.round(minX+(maxX-minX)*i/gridX); const xx=P.l + (w-P.l-P.r)*i/gridX; ctx.fillText(val, xx, h-P.b+6); }
+
+    // line
+    if(hist.length > 1){
+      ctx.strokeStyle = "#60a5fa";
+      ctx.lineWidth = 2 * dpr;
+      ctx.beginPath();
+      let first = true;
+      for(const d of hist){
+        const X = x(d.t), Y = y(d[selectedKey]);
+        if(first){ ctx.moveTo(X,Y); first=false; } else { ctx.lineTo(X,Y); }
+      }
+      ctx.stroke();
+    }
+
+    // zero line if within range
+    if(minY < 0 && maxY > 0){
+      ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+      ctx.setLineDash([6,4]);
+      ctx.beginPath(); ctx.moveTo(P.l, y(0)); ctx.lineTo(w-P.r, y(0)); ctx.stroke(); ctx.setLineDash([]);
+    }
+  }
+
+  // ======= Simulation =======
+  function measureAndRecord(){
+    const pla=avgPlaquette(L), W=wilsonLoop(L, params.R, params.T), Sd=actionDensity(L, params.beta), Q=topologicalCharge(L);
+    pushHist({ t: stepCount, plaquette: pla, W, Sdens: Sd, Q });
+    tickEl.textContent = `step: ${stepCount}`;
+    statusEl.textContent = `N=${params.N} • β=${params.beta.toFixed(2)} • dt=${0.02}`;
+  }
+
+  function stepOnce(){
+    for(let s=0;s<1;s++){ stepLangevin(L, params.beta, 0.02, 1.0); stepCount++; }
+    measureAndRecord(); drawLattice(); drawChart();
+  }
+
+  let raf=null, last=0;
+  function loop(ts){
+    if(!running) return;
+    if(!last) last=ts;
+    const elapsed=ts-last;
+    if(elapsed>=1000/30){ last=ts; if(params.auto) stepOnce(); }
+    raf=requestAnimationFrame(loop);
+  }
+
+  // ======= Controls =======
+  function clampInt(v,lo,hi){ v=Math.floor(Number(v)); return Math.max(lo, Math.min(hi, v)); }
+  function rebuildLattice(keepRandom=false){
+    const Nnew = clampInt(el('N').value, 6, 96); params.N=Nnew;
+    L=createLinks(params.N); keepRandom ? randomizeLinks(L,0.5) : zeroLinks(L);
+    stepCount=0; hist.length=0; resizeLattice(); drawChart();
+  }
+
+  el('beta').addEventListener('input', (e)=>{ params.beta = Number(e.target.value); betaVal.textContent = params.beta.toFixed(2); });
+  el('N').addEventListener('change', ()=> rebuildLattice(false));
+
+  el('runBtn').addEventListener('click', ()=>{
+    running=!running; el('runBtn').textContent = running? 'Pause':'Run';
+    if(running){ last=0; raf=requestAnimationFrame(loop);} else { if(raf) cancelAnimationFrame(raf); }
+  });
+  el('stepBtn').addEventListener('click', ()=> stepOnce());
+  el('resetBtn').addEventListener('click', ()=> rebuildLattice(false));
+  el('randBtn').addEventListener('click', ()=> rebuildLattice(true));
+
+  // ======= Init =======
+  betaVal.textContent = params.beta.toFixed(2);
+  resizeLattice(); resizeChart();
+  measureAndRecord(); drawLattice(); drawChart();
+</script>
+</body>
+</html>
